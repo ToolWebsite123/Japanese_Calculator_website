@@ -295,6 +295,7 @@ export function StandardCalculator({
       >
         <div className={compact ? "space-y-4 md:space-y-2" : "space-y-4"}>
           <InlineHistoryTape
+            route="/"
             onSelect={(expr, res) => {
               setExpression(expr);
               setDisplay(res);
@@ -320,6 +321,7 @@ export function StandardCalculator({
       </CalculatorCard>
       {!hideHeader && (
         <HistoryPanel
+          route="/"
           open={historyOpen}
           onClose={() => setHistoryOpen(false)}
           onSelect={(expression, result) => {

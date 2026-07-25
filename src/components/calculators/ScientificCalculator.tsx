@@ -425,6 +425,7 @@ export function ScientificCalculator() {
       >
         <div className="space-y-4">
           <InlineHistoryTape
+            route="/scientific-calculator"
             onSelect={(expr, res) => {
               setExpression(expr);
               setDisplay(res);
@@ -457,6 +458,7 @@ export function ScientificCalculator() {
       </CalculatorCard>
 
       <HistoryPanel
+        route="/scientific-calculator"
         open={historyOpen}
         onClose={() => setHistoryOpen(false)}
         onSelect={(expression, result) => {
