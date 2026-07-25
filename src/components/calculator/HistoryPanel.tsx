@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useHistory } from "@/context/HistoryContext";
 import { useLocale } from "@/context/LocaleContext";
 import { IconButton, SecondaryButton } from "@/components/ui/primitives";
@@ -8,11 +9,25 @@ type HistoryPanelProps = {
   open: boolean;
   onClose: () => void;
   onSelect?: (expression: string, result: string) => void;
+  route?: string;
 };
 
-export function HistoryPanel({ open, onClose, onSelect }: HistoryPanelProps) {
-  const { history, clearHistory } = useHistory();
+export function HistoryPanel({ open, onClose, onSelect, route }: HistoryPanelProps) {
+  const { history: allHistory, clearHistory } = useHistory();
+  const [filterMode, setFilterMode] = useState<"current" | "all">(route ? "current" : "all");
   const { t } = useLocale();
+
+  const routeCount = useMemo(() => {
+    if (!route) return allHistory.length;
+    return allHistory.filter((e) => e.route === route).length;
+  }, [allHistory, route]);
+
+  const displayedHistory = useMemo(() => {
+    if (filterMode === "current" && route) {
+      return allHistory.filter((e) => e.route === route);
+    }
+    return allHistory;
+  }, [allHistory, filterMode, route]);
 
   if (!open) return null;
 
@@ -37,14 +52,41 @@ export function HistoryPanel({ open, onClose, onSelect }: HistoryPanelProps) {
           </IconButton>
         </div>
 
+        {route && (
+          <div className="flex gap-1 border-b border-border bg-surface-sunken/40 p-2">
+            <button
+              type="button"
+              onClick={() => setFilterMode("current")}
+              className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
+                filterMode === "current"
+                  ? "bg-surface-raised text-brand shadow-sm font-semibold dark:text-white"
+                  : "text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              この計算機 ({routeCount})
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterMode("all")}
+              className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
+                filterMode === "all"
+                  ? "bg-surface-raised text-brand shadow-sm font-semibold dark:text-white"
+                  : "text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              すべての計算機 ({allHistory.length})
+            </button>
+          </div>
+        )}
+
         <div className="flex-1 overflow-y-auto p-4">
-          {history.length === 0 ? (
+          {displayedHistory.length === 0 ? (
             <p className="py-8 text-center text-sm text-text-tertiary">
               {t.common.historyEmpty}
             </p>
           ) : (
             <ul className="space-y-2">
-              {history.map((entry) => (
+              {displayedHistory.map((entry) => (
                 <li key={entry.id}>
                   <button
                     type="button"
@@ -71,7 +113,7 @@ export function HistoryPanel({ open, onClose, onSelect }: HistoryPanelProps) {
           )}
         </div>
 
-        {history.length > 0 && (
+        {allHistory.length > 0 && (
           <div className="border-t border-border p-4">
             <SecondaryButton
               fullWidth

@@ -170,7 +170,7 @@ export const NAV_ITEMS: NavItem[] = [
   ...SECONDARY_NAV_ITEMS,
 ];
 
-export const HISTORY_MAX = 10;
+export const HISTORY_MAX = 50;
 export const HISTORY_STORAGE_KEY = "dentaku-pro-history";
 export const THEME_STORAGE_KEY = "dentaku-pro-theme";
 

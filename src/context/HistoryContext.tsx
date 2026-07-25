@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -90,4 +91,20 @@ export function useHistory() {
   const ctx = useContext(HistoryContext);
   if (!ctx) throw new Error("useHistory must be used within HistoryProvider");
   return ctx;
+}
+
+export function useHistoryForRoute(route?: string) {
+  const { history, addEntry, clearHistory } = useHistory();
+
+  const routeHistory = useMemo(() => {
+    if (!route) return history;
+    return history.filter((e) => e.route === route);
+  }, [history, route]);
+
+  return {
+    history: routeHistory,
+    allHistory: history,
+    addEntry,
+    clearHistory,
+  };
 }

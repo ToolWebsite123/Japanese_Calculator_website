@@ -1,25 +1,27 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useHistory } from "@/context/HistoryContext";
+import { useHistoryForRoute } from "@/context/HistoryContext";
 import { useLocale } from "@/context/LocaleContext";
 
 type InlineHistoryTapeProps = {
   onSelect?: (expression: string, result: string) => void;
   onOpenFullHistory?: () => void;
   compact?: boolean;
+  route?: string;
 };
 
 export function InlineHistoryTape({
   onSelect,
   onOpenFullHistory,
   compact = false,
+  route,
 }: InlineHistoryTapeProps) {
-  const { history } = useHistory();
+  const { history, allHistory } = useHistoryForRoute(route);
   const { t } = useLocale();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Take the latest 6 history entries, reversed so the most recent is at the bottom
+  // Take the latest 6 history entries for this calculator route, reversed so the most recent is at the bottom
   const recentEntries = history.slice(0, 6).reverse();
 
   useEffect(() => {
@@ -47,8 +49,8 @@ export function InlineHistoryTape({
             onClick={onOpenFullHistory}
             className="text-[11px] font-medium text-brand hover:underline dark:text-[#d6ccf0]"
           >
-            {history.length > 0
-              ? `すべて表示 (${history.length})`
+            {allHistory.length > 0
+              ? `すべて表示 (${allHistory.length})`
               : "履歴一覧"}
           </button>
         )}
