@@ -62,6 +62,15 @@ export function ScientificCalculator() {
   const [justEvaluated, setJustEvaluated] = useState(false);
   const [awaitingOperand, setAwaitingOperand] = useState(true);
   const [error, setError] = useState(false);
+  const [variables, setVariables] = useState<Record<string, number>>({
+    x: 0,
+    y: 0,
+    a: 0,
+    b: 0,
+    c: 0,
+    d: 0,
+  });
+  const [stoMode, setStoMode] = useState(false);
   const [memory, setMemory] = useState(0);
   const [isFraction, setIsFraction] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -232,6 +241,24 @@ export function ScientificCalculator() {
     [display, memory, awaitingOperand]
   );
 
+  const handleVariable = useCallback(
+    (varName: string) => {
+      if (stoMode) {
+        const val = parseFloat(display);
+        if (Number.isFinite(val)) {
+          setVariables((prev) => ({ ...prev, [varName]: val }));
+        }
+        setStoMode(false);
+      } else {
+        const val = variables[varName] ?? 0;
+        setDisplay(formatDisplayNumber(val));
+        setJustEvaluated(false);
+        setAwaitingOperand(false);
+      }
+    },
+    [stoMode, display, variables]
+  );
+
   const applyFn = useCallback(
     (fn: string) => {
       setError(false);
@@ -336,6 +363,15 @@ export function ScientificCalculator() {
   }, [inputDigit, inputOperator, handleEquals, handleClear, handleBackspace, handlePercent, handleParen]);
 
   const keypad: ButtonConfig[] = [
+    // Variable Row
+    { id: "sto", label: stoMode ? "STO" : "STO/RCL", variant: "function", active: stoMode, onClick: () => setStoMode((p) => !p) },
+    { id: "var_x", label: stoMode ? "→x" : "x", variant: "memory", onClick: () => handleVariable("x") },
+    { id: "var_y", label: stoMode ? "→y" : "y", variant: "memory", onClick: () => handleVariable("y") },
+    { id: "var_a", label: stoMode ? "→a" : "a", variant: "memory", onClick: () => handleVariable("a") },
+    { id: "var_b", label: stoMode ? "→b" : "b", variant: "memory", onClick: () => handleVariable("b") },
+    { id: "var_c", label: stoMode ? "→c" : "c", variant: "memory", onClick: () => handleVariable("c") },
+    { id: "var_d", label: stoMode ? "→d" : "d", variant: "memory", onClick: () => handleVariable("d") },
+
     // Row 1
     { id: "m+", label: "M+", variant: "memory", onClick: () => handleMemory("M+") },
     { id: "m-", label: "M−", variant: "memory", onClick: () => handleMemory("M-") },
@@ -450,7 +486,7 @@ export function ScientificCalculator() {
               <ButtonGrid
                 buttons={keypad}
                 columns={7}
-                separatorsBefore={[7, 28]}
+                separatorsBefore={[7, 14, 35]}
               />
             </div>
           </div>
