@@ -104,6 +104,7 @@ export function ScientificCalculator() {
   );
 
   const handleEquals = useCallback(() => {
+    if (justEvaluated) return;
     if (error) return;
     try {
       let full = buildEvalExpression(expression, display, awaitingOperand);
@@ -129,7 +130,7 @@ export function ScientificCalculator() {
       setJustEvaluated(true);
       setAwaitingOperand(true);
     }
-  }, [expression, display, awaitingOperand, error, mode, addEntry]);
+  }, [justEvaluated, expression, display, awaitingOperand, error, mode, addEntry]);
 
   const handleClear = useCallback(() => {
     setDisplay("0");

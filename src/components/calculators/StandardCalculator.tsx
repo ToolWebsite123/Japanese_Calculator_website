@@ -83,6 +83,7 @@ export function StandardCalculator({
   );
 
   const handleEquals = useCallback(() => {
+    if (justEvaluated) return;
     try {
       const full = buildEvalExpression(expression, display, awaitingOperand);
       if (!full) return;
@@ -100,7 +101,7 @@ export function StandardCalculator({
       setJustEvaluated(true);
       setAwaitingOperand(true);
     }
-  }, [expression, display, awaitingOperand, addEntry]);
+  }, [justEvaluated, expression, display, awaitingOperand, addEntry]);
 
   const handleClear = useCallback(() => {
     setDisplay("0");
