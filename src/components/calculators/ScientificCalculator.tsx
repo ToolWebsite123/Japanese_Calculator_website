@@ -22,6 +22,9 @@ import {
 } from "@/lib/calculators/expression-input";
 import {
   evaluateScientific,
+  primeFactorize,
+  formatPrimeFactors,
+  detectRepeatingDecimal,
   type AngleMode,
 } from "@/lib/calculators/scientific";
 import { formatDisplayNumber, parseNumericResult, CALCULATOR_ERROR_DISPLAY } from "@/lib/format";
@@ -71,9 +74,21 @@ export function ScientificCalculator() {
     d: 0,
   });
   const [stoMode, setStoMode] = useState(false);
+  const [pFactResult, setPFactResult] = useState<string | null>(null);
   const [memory, setMemory] = useState(0);
   const [isFraction, setIsFraction] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+
+  const handlePFact = useCallback(() => {
+    try {
+      const val = parseFloat(display);
+      const factors = primeFactorize(val);
+      const formatted = formatPrimeFactors(factors);
+      setPFactResult(formatted ? `${val} = ${formatted}` : null);
+    } catch (e) {
+      setPFactResult(e instanceof Error ? e.message : "無効な数値");
+    }
+  }, [display]);
 
   const inputDigit = useCallback(
     (digit: string) => {
@@ -378,8 +393,8 @@ export function ScientificCalculator() {
     { id: "mr", label: "MR", variant: "memory", onClick: () => handleMemory("MR") },
     { id: "mc", label: "MC", variant: "memory", onClick: () => handleMemory("MC") },
     { id: "abs", label: "Abs", variant: "function", onClick: () => applyFn("abs") },
-    { id: "mod", label: "mod", variant: "function", onClick: () => inputOperator("mod") },
-    { id: "sd", label: "S⇔D", variant: "function", onClick: () => setIsFraction(p => !p) },
+    { id: "pfact", label: "PFact", variant: "function", onClick: handlePFact },
+    { id: "sd", label: "S⇔D", variant: "function", onClick: () => setIsFraction((p) => !p) },
 
     // Row 2
     { id: "sinh", label: invMode ? "sinh⁻¹" : "sinh", variant: "function", onClick: () => applyFn(invMode ? "asinh" : "sinh") },
@@ -478,9 +493,27 @@ export function ScientificCalculator() {
                 ? toFraction(parseFloat(display))
                 : display
             }
-            secondary={mode === "deg" ? t.scientific.deg : t.scientific.rad}
+            secondary={
+              (() => {
+                if (expression) {
+                  const match = expression.trim().match(/^(-?\d+)\s*[/÷]\s*(-?\d+)$/);
+                  if (match) {
+                    const num = parseInt(match[1], 10);
+                    const den = parseInt(match[2], 10);
+                    const rep = detectRepeatingDecimal(num, den);
+                    if (rep) return `循環小数: ${rep}`;
+                  }
+                }
+                return mode === "deg" ? t.scientific.deg : t.scientific.rad;
+              })()
+            }
             memoryActive={memory !== 0}
           />
+          {pFactResult && (
+            <div className="rounded-lg border border-brand/20 bg-brand-muted/40 p-2 text-center text-xs font-semibold text-brand dark:border-brand/40 dark:text-[#d6ccf0]">
+              素因数分解: {pFactResult}
+            </div>
+          )}
           <div className="-mx-1 overflow-x-auto px-1 pb-1">
             <div className="min-w-[400px]">
               <ButtonGrid

@@ -18,6 +18,104 @@ export function factorial(n: number): number {
   return result;
 }
 
+export type PrimeFactor = { prime: number; exponent: number };
+
+export function primeFactorize(n: number): PrimeFactor[] {
+  if (!Number.isInteger(n) || n <= 1 || Math.abs(n) > 1e12) {
+    throw new Error("素因数分解は1より大きく10¹²以下の整数で実行してください");
+  }
+
+  let num = Math.abs(n);
+  const factors: PrimeFactor[] = [];
+
+  for (let d = 2; d * d <= num; d += d === 2 ? 1 : 2) {
+    if (num % d === 0) {
+      let count = 0;
+      while (num % d === 0) {
+        count++;
+        num /= d;
+      }
+      factors.push({ prime: d, exponent: count });
+    }
+  }
+
+  if (num > 1) {
+    factors.push({ prime: num, exponent: 1 });
+  }
+
+  return factors;
+}
+
+export function formatPrimeFactors(factors: PrimeFactor[]): string {
+  if (factors.length === 0) return "";
+  const superscripts: Record<string, string> = {
+    "0": "⁰",
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "4": "⁴",
+    "5": "⁵",
+    "6": "⁶",
+    "7": "⁷",
+    "8": "⁸",
+    "9": "⁹",
+  };
+  const toSuperscript = (num: number) =>
+    String(num)
+      .split("")
+      .map((ch) => superscripts[ch] ?? ch)
+      .join("");
+
+  return factors
+    .map(({ prime, exponent }) =>
+      exponent === 1 ? String(prime) : `${prime}${toSuperscript(exponent)}`
+    )
+    .join(" × ");
+}
+
+export function detectRepeatingDecimal(
+  numerator: number,
+  denominator: number
+): string | null {
+  if (
+    !Number.isInteger(numerator) ||
+    !Number.isInteger(denominator) ||
+    denominator === 0
+  ) {
+    return null;
+  }
+
+  const sign = (numerator < 0) !== (denominator < 0) ? "-" : "";
+  let n = Math.abs(numerator);
+  const d = Math.abs(denominator);
+
+  const integerPart = Math.floor(n / d);
+  n = n % d;
+
+  if (n === 0) return null;
+
+  const remainders = new Map<number, number>();
+  const digits: number[] = [];
+
+  while (n !== 0) {
+    if (remainders.has(n)) {
+      const repeatStart = remainders.get(n)!;
+      const nonRepeat = digits.slice(0, repeatStart).join("");
+      const repeat = digits.slice(repeatStart).join("");
+      return `${sign}${integerPart}.${nonRepeat}(${repeat})`;
+    }
+
+    remainders.set(n, digits.length);
+    n *= 10;
+    digits.push(Math.floor(n / d));
+    n = n % d;
+
+    if (digits.length > 100) return null;
+  }
+
+  return null;
+}
+
 export function applyUnary(
   value: number,
   fn: string,
