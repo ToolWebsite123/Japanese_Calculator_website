@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Display } from "@/components/calculator/Display";
+import { InlineHistoryTape } from "@/components/calculator/InlineHistoryTape";
 import { ButtonGrid, type ButtonConfig } from "@/components/calculator/ButtonGrid";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { HistoryPanel } from "@/components/calculator/HistoryPanel";
@@ -423,6 +424,16 @@ export function ScientificCalculator() {
         }
       >
         <div className="space-y-4">
+          <InlineHistoryTape
+            onSelect={(expr, res) => {
+              setExpression(expr);
+              setDisplay(res);
+              setJustEvaluated(true);
+              setAwaitingOperand(true);
+              setError(false);
+            }}
+            onOpenFullHistory={() => setHistoryOpen(true)}
+          />
           <Display
             expression={expression}
             value={

@@ -48,7 +48,7 @@ export function Button({
     <button
       type="button"
       className={[
-        "btn-interactive min-h-11 border text-base",
+        "btn-interactive min-h-11 border text-base px-2 sm:px-3",
         compact ? "md:min-h-9 md:text-sm" : "",
         variantClasses[variant],
         span === 2 ? "col-span-2" : "",

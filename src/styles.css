@@ -78,7 +78,7 @@ body {
 }
 
 .btn-interactive {
-  @apply rounded-[var(--radius-md)] transition-all duration-150;
+  @apply rounded-full transition-all duration-150;
   @apply active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40;
 }
 
