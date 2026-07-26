@@ -43,7 +43,7 @@ export function Button({
       type="button"
       className={[
         "btn-interactive min-h-10 border text-sm sm:text-base px-1 sm:px-2",
-        compact ? "min-h-8 sm:min-h-9 text-[11px] sm:text-xs md:text-sm px-0.5 sm:px-1.5" : "",
+        compact ? "h-7 sm:h-8 min-h-7 sm:min-h-8 text-[11px] sm:text-xs px-0.5 sm:px-1 py-0" : "",
         variantClasses[variant],
         span === 2 ? "col-span-2" : "",
         active

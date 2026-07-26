@@ -11,10 +11,11 @@ export function NavbarCalcLinks() {
   const allCalculatorsActive = pathsEqual(pathname, "/calculators");
 
   return (
-    <div className="hidden items-center lg:flex">
-      <nav aria-label="カテゴリ別ナビゲーション">
+    <div className="hidden items-center lg:flex" suppressHydrationWarning>
+      <nav aria-label="カテゴリ別ナビゲーション" suppressHydrationWarning>
         <Link
           href="/calculators"
+          suppressHydrationWarning
           className={[
             "rounded-[var(--radius-md)] px-3 py-2 text-sm font-medium transition",
             allCalculatorsActive

@@ -87,8 +87,8 @@ export function PercentageCalculator() {
 
   return (
     <>
-      <CalculatorCard title={t.percentagePage.title} description={t.percentagePage.description}>
-        <div className="space-y-8">
+      <CalculatorCard compact maxWidthClass="max-w-[520px]">
+        <div className="space-y-3 sm:space-y-4">
           <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
             <InputWell
               type="number"
@@ -179,7 +179,16 @@ export function PercentageCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.percentagePage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.percentagePage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.percentagePage.introParagraph} />
       </p>
 

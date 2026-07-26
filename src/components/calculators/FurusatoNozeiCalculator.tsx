@@ -117,35 +117,32 @@ export function FurusatoNozeiCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title="ふるさと納税 控除上限額を計算"
-        description="年収・配偶者控除・扶養家族の年齢区分から、ふるさと納税の寄付上限額の目安を公式計算式で算出します。"
-      >
-        <div className="space-y-6">
+      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+        <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label="年収（円）"
             type="number"
             min={0}
             value={annualIncome}
             onChange={(e) => setAnnualIncome(e.target.value)}
-            className="text-lg"
+            className="py-1 px-2.5 text-xs sm:text-sm h-8 sm:h-9"
           />
 
-          <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <label className="flex items-center gap-1.5 text-xs text-text-secondary">
             <input
               type="checkbox"
               checked={hasSpouse}
               onChange={(e) => setHasSpouse(e.target.checked)}
-              className="h-4 w-4"
+              className="h-3.5 w-3.5"
             />
             配偶者控除の対象となる配偶者がいる
           </label>
 
-          <div className="space-y-3">
-            <div className="text-sm font-medium text-text-secondary">
+          <div className="space-y-1.5">
+            <div className="text-xs font-medium text-text-secondary">
               扶養家族の人数（年齢区分ごと）
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-2 grid-cols-2 sm:grid-cols-3">
               {DEP_LABELS.map(({ key, label }) => (
                 <FormField
                   key={key}
@@ -154,6 +151,7 @@ export function FurusatoNozeiCalculator() {
                   min={0}
                   value={deps[key]}
                   onChange={(e) => setDeps((prev) => ({ ...prev, [key]: e.target.value }))}
+                  className="py-1 px-2 text-xs h-8"
                 />
               ))}
             </div>
@@ -165,9 +163,10 @@ export function FurusatoNozeiCalculator() {
             min={0}
             value={socialInsurance}
             onChange={(e) => setSocialInsurance(e.target.value)}
+            className="py-1 px-2.5 text-xs sm:text-sm h-8 sm:h-9"
           />
 
-          <PrimaryButton onClick={handleCalculate}>計算する</PrimaryButton>
+          <PrimaryButton onClick={handleCalculate} className="py-2 text-sm h-9">計算する</PrimaryButton>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -247,12 +246,20 @@ export function FurusatoNozeiCalculator() {
             </div>
           )}
 
-          <p className="text-xs leading-relaxed text-text-tertiary">
-            ※
-            自己負担は常に2,000円です。上限額を超えて寄付するとその超過分は自己負担となり、実質負担が増えます。実際の控除上限額は医療費控除・住宅ローン控除・iDeCoなど本ツールで扱わない控除により変動します。正確な金額はお住まいの自治体または税理士にご確認ください。
+          <p className="text-[10px] leading-tight text-text-tertiary">
+            ※ 自己負担は常に2,000円です。上限額を超えて寄付するとその超過分は自己負担となり、実質負担が増えます。実際の控除上限額は医療費控除・住宅ローン控除・iDeCoなど本ツールで扱わない控除により変動します。
           </p>
         </div>
       </CalculatorCard>
+
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          ふるさと納税 控除上限額を計算
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          年収・配偶者控除・扶養家族の年齢区分から、ふるさと納税の寄付上限額の目安を公式計算式で算出します。
+        </p>
+      </div>
 
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={INTRO} activeHref="/furusato-nozei-calculation" />

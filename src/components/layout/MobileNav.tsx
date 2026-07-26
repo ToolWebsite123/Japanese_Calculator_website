@@ -168,6 +168,7 @@ export function MobileNav({
             role="dialog"
             aria-modal="true"
             aria-label={t.nav.menu}
+            suppressHydrationWarning
             className="fixed inset-y-0 left-0 z-50 w-72 overflow-y-auto bg-surface-raised p-4 animate-fade-in lg:hidden"
             style={{ boxShadow: "var(--shadow-card)" }}
           >
@@ -189,7 +190,7 @@ export function MobileNav({
               <SearchInput size="compact" />
             </div>
 
-            <nav className="space-y-2" aria-label="計算機メニュー">
+            <nav className="space-y-2" aria-label="計算機メニュー" suppressHydrationWarning>
               <Link
                 href="/calculators"
                 onClick={onMenuClose}

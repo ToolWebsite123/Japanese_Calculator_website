@@ -129,14 +129,8 @@ export function SocialInsuranceCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title={t.socialInsurancePage?.title || "社会保険プレミアム計算"}
-        description={
-          t.socialInsurancePage?.description ||
-          "健康保険・厚生年金などの社会保険プレミアムを計算します。"
-        }
-      >
-        <div className="space-y-6">
+      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+        <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label="月額給与（標準報酬月額）"
             type="number"
@@ -454,7 +448,16 @@ export function SocialInsuranceCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.socialInsurancePage?.title || "社会保険料 計算"}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.socialInsurancePage?.description || "健康保険・厚生年金などの社会保険料を計算します。"}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         {t.socialInsurancePage?.introParagraph && (
           <LinkedText
             text={t.socialInsurancePage.introParagraph}

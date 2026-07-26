@@ -35,7 +35,7 @@ export function Display({
       className={[
         "relative overflow-hidden rounded-[var(--radius-lg)] border border-border",
         "bg-surface-sunken p-2.5 sm:p-4",
-        compact ? "p-2 sm:p-3" : "",
+        compact ? "p-1.5 sm:p-2.5" : "",
         className,
       ].join(" ")}
       style={{ boxShadow: "var(--shadow-key-pressed)" }}
@@ -46,7 +46,7 @@ export function Display({
         aria-hidden
       />
 
-      <div className="relative mb-1 flex items-center justify-between gap-2">
+      <div className="relative mb-0.5 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
           {memoryActive && (
             <span className="rounded-full bg-brand-muted px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
@@ -83,11 +83,11 @@ export function Display({
         </div>
 
         {expression ? (
-          <div className="min-h-4 truncate text-right text-xs sm:text-sm font-medium text-text-tertiary">
+          <div className="min-h-3 truncate text-right text-[11px] sm:text-xs font-medium text-text-tertiary">
             {expression}
           </div>
         ) : (
-          <div className="min-h-4" />
+          <div className="min-h-3" />
         )}
       </div>
 
@@ -96,10 +96,10 @@ export function Display({
           "tabular-display relative break-all text-right font-bold text-text-primary",
           value.length > 12
             ? compact
-              ? "text-xl sm:text-2xl"
+              ? "text-lg sm:text-xl"
               : "text-2xl sm:text-3xl"
             : compact
-              ? "text-2xl sm:text-3xl"
+              ? "text-xl sm:text-2xl"
               : "text-3xl sm:text-4xl",
         ].join(" ")}
       >

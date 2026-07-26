@@ -107,7 +107,7 @@ export function LongDivisionCalculator() {
 
   return (
     <>
-      <CalculatorCard title={t.longDivisionPage.title} description={t.longDivisionPage.description}>
+      <CalculatorCard compact>
         <div className="space-y-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
@@ -228,7 +228,16 @@ export function LongDivisionCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.longDivisionPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.longDivisionPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.longDivisionPage.introParagraph} />
       </p>
 

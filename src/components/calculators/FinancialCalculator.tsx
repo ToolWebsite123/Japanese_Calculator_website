@@ -749,8 +749,7 @@ export function FinancialCalculator() {
   return (
     <>
       <CalculatorCard
-        title={tPage.title}
-        description={tPage.description}
+        compact
         actions={
           result ? (
             <CopyResultButton value={formatTvmValue(solveFor, result.solvedValue)} />
@@ -855,7 +854,16 @@ export function FinancialCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {tPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {tPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={tPage.introParagraph} />
       </p>
 

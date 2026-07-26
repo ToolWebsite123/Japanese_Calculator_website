@@ -56,10 +56,10 @@ export function CompoundInterestCalculator() {
   return (
     <>
       <CalculatorCard
-        title={t.compoundInterestPage.title}
-        description={t.compoundInterestPage.description}
+        compact
+        maxWidthClass="max-w-[480px]"
       >
-        <div className="space-y-5">
+        <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label={t.compoundInterest.principal}
             type="number"
@@ -137,7 +137,16 @@ export function CompoundInterestCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.compoundInterestPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.compoundInterestPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.compoundInterestPage.introParagraph} />
       </p>
 

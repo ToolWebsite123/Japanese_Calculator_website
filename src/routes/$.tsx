@@ -248,7 +248,11 @@ function CatchAllPage() {
   const Component = pages[pathname];
 
   if (Component) {
-    return <Component />;
+    return (
+      <div suppressHydrationWarning>
+        <Component />
+      </div>
+    );
   }
 
   return (

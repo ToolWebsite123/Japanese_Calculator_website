@@ -173,10 +173,7 @@ export function FurusatoNozeiSimulator() {
 
   return (
     <>
-      <CalculatorCard
-        title="ふるさと納税 シミュレーション（詳細版）"
-        description="全ての所得控除を反映した詳細な控除上限額シミュレーション。入力するたびにリアルタイムで結果が更新されます。"
-      >
+      <CalculatorCard compact>
         <div className="space-y-6">
           <FormField
             label="給与収入（円・額面年収）"
@@ -404,6 +401,15 @@ export function FurusatoNozeiSimulator() {
         </div>
       </CalculatorCard>
 
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          ふるさと納税 シミュレーション（詳細版）
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          全ての所得控除を反映した詳細な控除上限額シミュレーション。入力するたびにリアルタイムで結果が更新されます。
+        </p>
+      </div>
+
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={INTRO} activeHref="/furusato-nozei-simulation-calculation" />
       </p>
@@ -444,13 +450,12 @@ function Row({
     <tr className="border-b border-border/60 last:border-b-0">
       <td className="py-2 pr-3 align-top text-text-secondary">{label}</td>
       <td
-        className={`tabular-display py-2 pl-3 text-right align-top ${
-          highlight
+        className={`tabular-display py-2 pl-3 text-right align-top ${highlight
             ? "text-brand font-bold"
             : strong
               ? "font-semibold text-text-primary"
               : "text-text-primary"
-        }`}
+          }`}
       >
         {value}
       </td>

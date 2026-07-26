@@ -107,9 +107,9 @@ export function SearchInput({
         : "h-11 rounded-[var(--radius-lg)] px-4 pl-10 text-sm";
 
   return (
-    <div ref={containerRef} className={`relative w-full ${className}`}>
-      <div className="relative" role="search">
-        <label htmlFor={listboxId} className="sr-only">
+    <div ref={containerRef} className={`relative w-full ${className}`} suppressHydrationWarning>
+      <div className="relative" role="search" suppressHydrationWarning>
+        <label htmlFor={listboxId} className="sr-only" suppressHydrationWarning>
           {t.home.searchLabel}
         </label>
         <svg
@@ -149,6 +149,7 @@ export function SearchInput({
           aria-activedescendant={
             activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
           }
+          suppressHydrationWarning
           className={`w-full border border-border bg-surface-raised text-text-primary placeholder:text-text-tertiary transition focus:border-brand/40 focus:outline-none focus:ring-2 focus:ring-brand/20 ${inputClasses}`}
           style={{ boxShadow: "var(--shadow-card)" }}
         />

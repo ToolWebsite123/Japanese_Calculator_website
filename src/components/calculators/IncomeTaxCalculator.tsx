@@ -96,11 +96,8 @@ export function IncomeTaxCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title="所得税 計算"
-        description="年収と雇用形態から所得税・復興特別所得税・納税額合計を概算します。2025年改正の給与所得控除・基礎控除に対応。"
-      >
-        <div className="space-y-6">
+      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+        <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label="年収（円）"
             type="number"
@@ -255,7 +252,16 @@ export function IncomeTaxCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          所得税 計算
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          年収と雇用形態から所得税・復興特別所得税・納税額合計を概算します。2025年改正の給与所得控除・基礎控除に対応。
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={INTRO} activeHref="/income-tax-calculation" />
       </p>
 

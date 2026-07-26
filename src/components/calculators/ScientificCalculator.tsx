@@ -551,12 +551,12 @@ export function ScientificCalculator() {
   return (
     <>
       <CalculatorCard
-        title={t.scientificPage.title}
-        description={t.scientificPage.description}
         compact
-        wide
-        actions={
-          <div className="flex items-center gap-2">
+        maxWidthClass="max-w-[400px]"
+      >
+        <div className="space-y-1.5 sm:space-y-2">
+          {/* Top Actions Row: Deg/Rad Pill & History Button */}
+          <div className="flex items-center justify-between gap-2 pb-0.5">
             {/* Segmented Pill Toggle for Deg / Rad */}
             <div className="inline-flex items-center rounded-full bg-surface-sunken p-0.5 border border-border">
               <button
@@ -587,12 +587,12 @@ export function ScientificCalculator() {
             <button
               type="button"
               onClick={() => setHistoryOpen(true)}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-sunken hover:bg-border text-text-secondary transition dark:hover:bg-zinc-700"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-surface-sunken hover:bg-border text-text-secondary transition dark:hover:bg-zinc-700"
               aria-label={t.nav.history}
               title={t.nav.history}
             >
               <svg
-                className="h-4 w-4"
+                className="h-3.5 w-3.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -606,9 +606,6 @@ export function ScientificCalculator() {
               </svg>
             </button>
           </div>
-        }
-      >
-        <div className="space-y-1.5 sm:space-y-2">
           <Display
             compact
             expression={expression}
@@ -650,9 +647,8 @@ export function ScientificCalculator() {
             >
               <span>{advancedOpen ? "簡易表示 (Simple)" : "詳細機能 (More functions)"}</span>
               <svg
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                  advancedOpen ? "rotate-180" : ""
-                }`}
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${advancedOpen ? "rotate-180" : ""
+                  }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -685,7 +681,16 @@ export function ScientificCalculator() {
         }}
       />
 
-      <p className="mt-6 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.scientificPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.scientificPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.scientificPage.introParagraph} />
       </p>
 

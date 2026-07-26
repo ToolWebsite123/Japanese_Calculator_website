@@ -123,11 +123,8 @@ export function DueDateCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title="出産予定日計算機"
-        description="最終月経日・排卵日・希望日の3方向から出産予定日を計算。生理周期の調整と、妊娠週数カレンダー（初期/中期/後期・正期産）にも対応。"
-      >
-        <div className="space-y-6">
+      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+        <div className="space-y-2.5 sm:space-y-3">
           <label className="block space-y-1.5">
             <span className="text-sm font-medium text-text-secondary">計算モード</span>
             <SelectWell
@@ -281,7 +278,16 @@ export function DueDateCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          出産予定日計算機
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          最終月経日・排卵日・希望日の3方向から出産予定日を計算。生理周期の調整と、妊娠週数カレンダー（初期/中期/後期・正期産）にも対応。
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={INTRO} activeHref="/due-date-calculation" />
       </p>
 

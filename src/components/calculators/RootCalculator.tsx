@@ -293,19 +293,17 @@ export function RootCalculator() {
   const nthStepProps =
     result && mode === "nth"
       ? {
-          step1Title: formatTemplate(page.step1Title, displayR),
-          step2Title: page.step2Title,
-          step3Title: page.step3Title,
-          step4Title: page.step4Title,
-          step5Title: page.step5Title,
-        }
+        step1Title: formatTemplate(page.step1Title, displayR),
+        step2Title: page.step2Title,
+        step3Title: page.step3Title,
+        step4Title: page.step4Title,
+        step5Title: page.step5Title,
+      }
       : null;
 
   return (
     <>
       <CalculatorCard
-        title={t.rootPage.title}
-        description={t.rootPage.description}
         actions={
           result ? <CopyResultButton value={formatDisplayNumber(result.value, 8)} /> : undefined
         }
@@ -439,7 +437,16 @@ export function RootCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.rootPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.rootPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.rootPage.introParagraph} />
       </p>
 

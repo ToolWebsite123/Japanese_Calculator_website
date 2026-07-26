@@ -1386,6 +1386,7 @@ const ja = {
   },
   footer: {
     about: "このサイトについて",
+    aboutUs: "当サイトについて",
     disclaimer: "免責事項",
     privacy: "プライバシーポリシー",
     contact: "お問い合わせ",

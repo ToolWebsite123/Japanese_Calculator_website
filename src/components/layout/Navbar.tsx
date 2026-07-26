@@ -17,7 +17,7 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
   const { t } = useLocale();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-surface-raised">
+    <header className="sticky top-0 z-30 border-b border-border bg-surface-raised" suppressHydrationWarning>
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
         <div className="flex min-w-0 shrink-0 items-center gap-2">
           <IconButton
@@ -26,6 +26,7 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
             aria-label={t.nav.menu}
             aria-expanded={menuOpen}
             aria-controls={menuId}
+            suppressHydrationWarning
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +43,9 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
             </svg>
           </IconButton>
           <Link href="/" className="min-w-0">
-            <span className="block truncate text-base font-bold text-brand">電卓</span>
+            <span className="block truncate text-base font-bold text-brand" suppressHydrationWarning>
+              電卓
+            </span>
           </Link>
         </div>
 

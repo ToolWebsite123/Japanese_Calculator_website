@@ -75,8 +75,6 @@ export function UnitConverter() {
   return (
     <>
       <CalculatorCard
-        title={t.unitsPage.title}
-        description={t.unitsPage.description}
         actions={
           result !== null ? <CopyResultButton value={formatDisplayNumber(result, 6)} /> : undefined
         }
@@ -153,7 +151,16 @@ export function UnitConverter() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.unitsPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.unitsPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.unitsPage.introParagraph} />
       </p>
 

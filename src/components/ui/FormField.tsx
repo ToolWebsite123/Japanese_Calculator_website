@@ -58,6 +58,7 @@ export function CalculatorCard({
   actions,
   compact = false,
   wide = false,
+  maxWidthClass,
 }: {
   title?: string;
   description?: string;
@@ -65,17 +66,20 @@ export function CalculatorCard({
   actions?: ReactNode;
   compact?: boolean;
   wide?: boolean;
+  maxWidthClass?: string;
 }) {
   const showHeader = title || description || actions;
+  const widthClass = maxWidthClass || (wide ? "max-w-3xl" : "max-w-2xl");
 
   return (
-    <div className={["mx-auto w-full", wide ? "max-w-3xl" : "max-w-2xl"].join(" ")}>
+    <div className={["mx-auto w-full", widthClass].join(" ")} suppressHydrationWarning>
       {showHeader && (
         <div
           className={[
             "flex items-start justify-between gap-3",
             compact ? "mb-2 sm:mb-3" : "mb-4 sm:mb-6",
           ].join(" ")}
+          suppressHydrationWarning
         >
           <div>
             {title && (
@@ -93,9 +97,10 @@ export function CalculatorCard({
       <div
         className={[
           "rounded-[var(--radius-xl)] border border-border bg-surface-raised",
-          compact ? "p-2 sm:p-3" : "p-4 sm:p-6",
+          compact ? "p-1.5 sm:p-2.5" : "p-4 sm:p-6",
         ].join(" ")}
         style={{ boxShadow: "var(--shadow-card)" }}
+        suppressHydrationWarning
       >
         {children}
       </div>

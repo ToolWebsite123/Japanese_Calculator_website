@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Display } from "@/components/calculator/Display";
-import { InlineHistoryTape } from "@/components/calculator/InlineHistoryTape";
 import { ButtonGrid, type ButtonConfig } from "@/components/calculator/ButtonGrid";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { HistoryPanel } from "@/components/calculator/HistoryPanel";
@@ -275,32 +274,40 @@ export function StandardCalculator({
   return (
     <>
       <CalculatorCard
-        title={hideHeader ? undefined : title || t.standard.title}
-        description={hideHeader ? undefined : description || t.standard.description}
         actions={
-          hideHeader ? undefined : (
-            <div className="flex items-center gap-2">
-              <ChipButton onClick={() => setHistoryOpen(true)}>{t.nav.history}</ChipButton>
-              <CopyResultButton value={error ? "" : display} />
-            </div>
-          )
+          <div className="flex items-center gap-2">
+            <ChipButton onClick={() => setHistoryOpen(true)}>{t.nav.history}</ChipButton>
+            <CopyResultButton value={error ? "" : display} />
+          </div>
         }
         compact={compact}
       >
         <div className={compact ? "space-y-4 md:space-y-2" : "space-y-4"}>
           {hideHeader && (
-            <InlineHistoryTape
-              route="/"
-              onSelect={(expr, res) => {
-                setExpression(expr);
-                setDisplay(res);
-                setJustEvaluated(true);
-                setAwaitingOperand(true);
-                setError(false);
-              }}
-              onOpenFullHistory={() => setHistoryOpen(true)}
-              compact={compact}
-            />
+            <div className="flex items-center justify-between pb-1">
+              <button
+                type="button"
+                onClick={() => setHistoryOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-sunken/80 px-2.5 py-1 text-xs font-medium text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition dark:bg-surface-dark/60"
+                aria-label={t.nav.history}
+                title={t.nav.history}
+              >
+                <svg
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{t.nav.history}</span>
+              </button>
+            </div>
           )}
           <Display
             expression={expression}
@@ -315,20 +322,18 @@ export function StandardCalculator({
           </div>
         </div>
       </CalculatorCard>
-      {!hideHeader && (
-        <HistoryPanel
-          route="/"
-          open={historyOpen}
-          onClose={() => setHistoryOpen(false)}
-          onSelect={(expression, result) => {
-            setExpression(expression);
-            setDisplay(result);
-            setJustEvaluated(true);
-            setAwaitingOperand(true);
-            setError(false);
-          }}
-        />
-      )}
+      <HistoryPanel
+        route="/"
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        onSelect={(expression, result) => {
+          setExpression(expression);
+          setDisplay(result);
+          setJustEvaluated(true);
+          setAwaitingOperand(true);
+          setError(false);
+        }}
+      />
     </>
   );
 }

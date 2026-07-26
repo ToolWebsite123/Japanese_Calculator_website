@@ -63,10 +63,7 @@ export function FactorizationCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title={t.factorizationPage.title}
-        description={t.factorizationPage.description}
-      >
+      <CalculatorCard compact>
         <div className="space-y-6">
           <FormField
             label={t.factorization.number}
@@ -107,7 +104,16 @@ export function FactorizationCalculator() {
         </div>
       </CalculatorCard>
 
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.factorizationPage.title}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.factorizationPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.factorizationPage.introParagraph} />
       </p>
 

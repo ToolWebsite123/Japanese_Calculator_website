@@ -32,7 +32,7 @@ export function Footer() {
   const { t } = useLocale();
 
   const legalLinks = [
-    { href: "/about", label: t.footer.about },
+    { href: "/about", label: t.footer.aboutUs },
     { href: "/privacy-policy", label: t.footer.privacy },
     { href: "/terms", label: t.footer.terms },
     { href: "/contact", label: t.footer.contact },
@@ -51,31 +51,29 @@ export function Footer() {
   const linkClass = "text-sm text-black transition hover:opacity-80 dark:text-foreground";
 
   return (
-    <footer className="border-t border-border/20 px-4 py-12 sm:px-6 sm:py-16">
+    <footer className="border-t border-border/20 px-4 py-12 sm:px-6 sm:py-16" suppressHydrationWarning>
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-12 sm:flex-row sm:justify-between">
           <div className="flex flex-col gap-3 sm:max-w-xs">
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 text-lg font-bold text-black dark:text-foreground"
+              suppressHydrationWarning
             >
               <LogoIcon className="h-5 w-5" />
               電卓
             </Link>
-            <p className="text-sm leading-relaxed text-black/70 dark:text-foreground/70">
+            <p className="text-sm leading-relaxed text-black/70 dark:text-foreground/70" suppressHydrationWarning>
               {t.home.footerTagline}
             </p>
           </div>
 
           <div className="flex flex-col gap-12 sm:flex-row sm:gap-16 lg:gap-24">
-            <nav aria-label="フッター about ナビゲーション">
-              <h3 className="mb-3 text-sm font-semibold text-black dark:text-foreground">
-                {t.footer.about}
-              </h3>
+            <nav aria-label="フッター about ナビゲーション" suppressHydrationWarning>
               <ul className="flex flex-col gap-2">
                 {legalLinks.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href} className={linkClass}>
+                    <Link href={link.href} className={linkClass} suppressHydrationWarning>
                       {link.label}
                     </Link>
                   </li>
@@ -83,7 +81,7 @@ export function Footer() {
               </ul>
             </nav>
 
-            <nav aria-label="フッター計算ツールナビゲーション">
+            <nav aria-label="フッター計算ツールナビゲーション" suppressHydrationWarning>
               <h3 className="mb-3 text-sm font-semibold text-black dark:text-foreground">
                 {t.footer.calculators}
               </h3>
