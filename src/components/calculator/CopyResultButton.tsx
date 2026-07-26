@@ -9,10 +9,7 @@ type CopyResultButtonProps = {
   className?: string;
 };
 
-export function CopyResultButton({
-  value,
-  className = "",
-}: CopyResultButtonProps) {
+export function CopyResultButton({ value, className = "" }: CopyResultButtonProps) {
   const { t } = useLocale();
   const [copied, setCopied] = useState(false);
 

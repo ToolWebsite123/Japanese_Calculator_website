@@ -9,27 +9,13 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { UnitConverterWorkedExamples } from "@/components/calculator/UnitConverterWorkedExamples";
-import {
-  PrimaryButton,
-  SegmentedControl,
-  SelectWell,
-  Divider,
-} from "@/components/ui/primitives";
+import { PrimaryButton, SegmentedControl, SelectWell, Divider } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
-import {
-  convertUnit,
-  getUnits,
-  type UnitCategory,
-} from "@/lib/calculators/units";
+import { convertUnit, getUnits, type UnitCategory } from "@/lib/calculators/units";
 import { formatDisplayNumber } from "@/lib/format";
 
-const CATEGORIES: UnitCategory[] = [
-  "length",
-  "weight",
-  "temperature",
-  "currency",
-];
+const CATEGORIES: UnitCategory[] = ["length", "weight", "temperature", "currency"];
 
 export function UnitConverter() {
   const { t } = useLocale();
@@ -92,9 +78,7 @@ export function UnitConverter() {
         title={t.unitsPage.title}
         description={t.unitsPage.description}
         actions={
-          result !== null ? (
-            <CopyResultButton value={formatDisplayNumber(result, 6)} />
-          ) : undefined
+          result !== null ? <CopyResultButton value={formatDisplayNumber(result, 6)} /> : undefined
         }
       >
         <div className="space-y-4">
@@ -118,13 +102,8 @@ export function UnitConverter() {
 
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block space-y-1.5">
-              <span className="text-sm font-medium text-text-secondary">
-                {t.units.from}
-              </span>
-              <SelectWell
-                value={fromId}
-                onChange={(e) => setFromId(e.target.value)}
-              >
+              <span className="text-sm font-medium text-text-secondary">{t.units.from}</span>
+              <SelectWell value={fromId} onChange={(e) => setFromId(e.target.value)}>
                 {units.map((u) => (
                   <option key={u.id} value={u.id}>
                     {u.label}
@@ -133,9 +112,7 @@ export function UnitConverter() {
               </SelectWell>
             </label>
             <label className="block space-y-1.5">
-              <span className="text-sm font-medium text-text-secondary">
-                {t.units.to}
-              </span>
+              <span className="text-sm font-medium text-text-secondary">{t.units.to}</span>
               <SelectWell value={toId} onChange={(e) => setToId(e.target.value)}>
                 {units.map((u) => (
                   <option key={u.id} value={u.id}>
@@ -146,9 +123,7 @@ export function UnitConverter() {
             </label>
           </div>
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate}
-          </PrimaryButton>
+          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
           {error && <ErrorMessage message={error} />}
 
@@ -178,23 +153,14 @@ export function UnitConverter() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.unitsPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={t.unitsPage.howToTitle}
-        steps={t.unitsPage.howToSteps}
-      />
+      <CalculatorHowToSection title={t.unitsPage.howToTitle} steps={t.unitsPage.howToSteps} />
 
-
-
-      <CalculatorFaqSection
-        title={t.unitsPage.faqTitle}
-        items={t.unitsPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.unitsPage.faqTitle} items={t.unitsPage.faqItems} />
       <RelatedCalculators activeHref="/unit-converter" />
-        </>
+    </>
   );
 }

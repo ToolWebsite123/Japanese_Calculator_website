@@ -2,13 +2,7 @@
 
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
-export type ButtonVariant =
-  | "number"
-  | "operator"
-  | "function"
-  | "equals"
-  | "memory"
-  | "danger";
+export type ButtonVariant = "number" | "operator" | "function" | "equals" | "memory" | "danger";
 
 type CalcButtonProps = {
   label: ReactNode;
@@ -48,11 +42,13 @@ export function Button({
     <button
       type="button"
       className={[
-        "btn-interactive min-h-11 border text-base px-2 sm:px-3",
-        compact ? "md:min-h-9 md:text-sm" : "",
+        "btn-interactive min-h-10 border text-sm sm:text-base px-1 sm:px-2",
+        compact ? "min-h-8 sm:min-h-9 text-[11px] sm:text-xs md:text-sm px-0.5 sm:px-1.5" : "",
         variantClasses[variant],
         span === 2 ? "col-span-2" : "",
-        active ? "ring-2 ring-brand ring-offset-1 ring-offset-surface dark:ring-offset-surface" : "",
+        active
+          ? "ring-2 ring-brand ring-offset-1 ring-offset-surface dark:ring-offset-surface"
+          : "",
         className,
       ]
         .filter(Boolean)

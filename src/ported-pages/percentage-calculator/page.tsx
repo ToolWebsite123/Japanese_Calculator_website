@@ -16,10 +16,7 @@ export const metadata = buildPageMetadata({
 });
 
 export default function PercentagePage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.percentagePage.faqItems,
-    ja.percentagePage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.percentagePage.faqItems, ja.percentagePage.title);
 
   return (
     <>

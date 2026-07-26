@@ -25,7 +25,7 @@ export type LoanResult = {
 export function calculateLoan(
   principal: number,
   annualRatePercent: number,
-  termYears: number
+  termYears: number,
 ): LoanResult {
   if (!Number.isFinite(principal) || principal <= 0) {
     throw new Error("借入額が無効です");
@@ -81,9 +81,7 @@ export function calculateLoan(
 
   const scheduleMode = months < 60 ? "monthly" : "yearly";
   const schedule =
-    scheduleMode === "monthly"
-      ? monthlySchedule
-      : summarizeYearlySchedule(monthlySchedule);
+    scheduleMode === "monthly" ? monthlySchedule : summarizeYearlySchedule(monthlySchedule);
   const chartPoints = schedule.map((row) => ({
     period: row.period,
     label: row.label,

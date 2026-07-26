@@ -12,21 +12,11 @@ export const metadata = buildPageMetadata({
   title: metaTitle,
   description: metaDescription,
   path: "/era-converter",
-  keywords: [
-    "和暦西暦変換",
-    "和暦計算",
-    "元号",
-    "令和",
-    "平成",
-    "昭和",
-  ],
+  keywords: ["和暦西暦変換", "和暦計算", "元号", "令和", "平成", "昭和"],
 });
 
 export default function EraPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.eraPage.faqItems,
-    ja.eraPage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.eraPage.faqItems, ja.eraPage.title);
 
   return (
     <>

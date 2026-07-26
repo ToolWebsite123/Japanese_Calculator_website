@@ -10,9 +10,7 @@ type LocaleContextValue = {
 const LocaleContext = createContext<LocaleContextValue>({ t: ja });
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  return (
-    <LocaleContext.Provider value={{ t: ja }}>{children}</LocaleContext.Provider>
-  );
+  return <LocaleContext.Provider value={{ t: ja }}>{children}</LocaleContext.Provider>;
 }
 
 export function useLocale() {

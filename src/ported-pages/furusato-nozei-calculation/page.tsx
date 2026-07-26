@@ -16,7 +16,10 @@ export const metadata = buildPageMetadata({
 });
 
 export default function FurusatoNozeiCalculationPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(FurusatoNozeiCalculatorFaq.items, "ふるさと納税 寄付｜年収別の寄付上限");
+  const faqJsonLd = buildCalculatorFaqJsonLd(
+    FurusatoNozeiCalculatorFaq.items,
+    "ふるさと納税 寄付｜年収別の寄付上限",
+  );
 
   return (
     <>

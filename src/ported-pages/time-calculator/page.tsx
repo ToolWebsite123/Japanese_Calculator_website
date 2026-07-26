@@ -16,10 +16,7 @@ export const metadata = buildPageMetadata({
 });
 
 export default function TimePage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.timePage.faqItems,
-    ja.timePage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.timePage.faqItems, ja.timePage.title);
 
   return (
     <>

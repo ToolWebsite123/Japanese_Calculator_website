@@ -44,9 +44,7 @@ function readTheme(): Theme {
     return stored;
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function applyThemeClass(theme: Theme) {
@@ -63,11 +61,7 @@ function getServerThemeSnapshot(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const theme = useSyncExternalStore(
-    subscribeTheme,
-    readTheme,
-    getServerThemeSnapshot
-  );
+  const theme = useSyncExternalStore(subscribeTheme, readTheme, getServerThemeSnapshot);
   const mounted = useIsMounted();
 
   const setTheme = useCallback((next: Theme) => {

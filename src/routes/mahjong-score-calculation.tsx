@@ -6,10 +6,9 @@ import MahjongScoreCalculationPage, {
 const title =
   typeof mahjongMetadata.title === "string"
     ? mahjongMetadata.title
-    : mahjongMetadata.title?.absolute ?? "麻雀 点数 計算";
+    : (mahjongMetadata.title?.absolute ?? "麻雀 点数 計算");
 const description = mahjongMetadata.description ?? "";
-const canonical =
-  mahjongMetadata.alternates?.canonical ?? "/mahjong-score-calculation";
+const canonical = mahjongMetadata.alternates?.canonical ?? "/mahjong-score-calculation";
 const keywords = mahjongMetadata.keywords ?? [];
 const og = (mahjongMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (mahjongMetadata.twitter ?? {}) as Record<string, unknown>;

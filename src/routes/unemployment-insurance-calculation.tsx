@@ -6,7 +6,7 @@ import UnemploymentInsurancePage, {
 const title =
   typeof unemploymentMetadata.title === "string"
     ? unemploymentMetadata.title
-    : unemploymentMetadata.title?.absolute ?? "失業保険 計算";
+    : (unemploymentMetadata.title?.absolute ?? "失業保険 計算");
 const description = unemploymentMetadata.description ?? "";
 const canonical =
   unemploymentMetadata.alternates?.canonical ?? "/unemployment-insurance-calculation";

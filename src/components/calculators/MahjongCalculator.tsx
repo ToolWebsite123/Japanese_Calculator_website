@@ -28,20 +28,48 @@ const FU_OPTIONS = [20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110];
 const HOW_TO = {
   title: "麻雀 点数 計算の使い方",
   steps: [
-    { title: "翻と符を入力", body: "翻（1〜13以上）と符（20/25/30/…/110）を選びます。符が分からない場合は下部の符計算ヘルパーで自動計算できます。" },
-    { title: "親／子とロン／ツモを選ぶ", body: "上がった人が親か子か、ロン（他家から出上がり）かツモ（自摸和）かを選択します。" },
-    { title: "点数を計算する", body: "「計算する」を押すと、合計点数と支払いの内訳が表示されます。満貫以上（5翻〜）は自動的に固定点数に切り替わります。" },
-    { title: "符計算ヘルパー（任意）", body: "待ち・雀頭・面子構成を選ぶと符が自動で積み上がり、10符単位に切り上げた値を本計算の符欄に反映できます。" },
+    {
+      title: "翻と符を入力",
+      body: "翻（1〜13以上）と符（20/25/30/…/110）を選びます。符が分からない場合は下部の符計算ヘルパーで自動計算できます。",
+    },
+    {
+      title: "親／子とロン／ツモを選ぶ",
+      body: "上がった人が親か子か、ロン（他家から出上がり）かツモ（自摸和）かを選択します。",
+    },
+    {
+      title: "点数を計算する",
+      body: "「計算する」を押すと、合計点数と支払いの内訳が表示されます。満貫以上（5翻〜）は自動的に固定点数に切り替わります。",
+    },
+    {
+      title: "符計算ヘルパー（任意）",
+      body: "待ち・雀頭・面子構成を選ぶと符が自動で積み上がり、10符単位に切り上げた値を本計算の符欄に反映できます。",
+    },
   ],
 };
 
 export const FAQ = {
   title: "麻雀の点数計算に関するよくある質問",
   items: [
-    { question: "符（fu）とは何ですか？", answer: "符は手牌の構成要素（副底20・待ちの形・雀頭・面子の種類）ごとに加算される点数の細分値です。合計を10符単位で切り上げて使用します（20符はそのまま）。翻とかけ合わせて基本点を算出します。" },
-    { question: "翻（han）とは何ですか？", answer: "翻は成立した役の合計値です。役ごとに1翻・2翻…と決まっており、ドラも1枚1翻として加算します。翻が大きいほど点数が跳ね上がり、5翻以上は満貫以上の固定点になります。" },
-    { question: "親と子で点数はなぜ違うのですか？", answer: "親はすべての支払い倍率が1.5倍になります。基本点に対して親ロンは×6、親ツモは各家×2、子ロンは×4、子ツモは親×2/子×1で計算します。" },
-    { question: "満貫以上で符が関係なくなるのはなぜですか？", answer: "5翻以上、または基本点が2000を超える場合は上限に達したとみなし、固定の点数表（満貫・跳満・倍満・三倍満・役満）を使用します。そのため翻数だけで点数が決まり、符は無視されます。" },
+    {
+      question: "符（fu）とは何ですか？",
+      answer:
+        "符は手牌の構成要素（副底20・待ちの形・雀頭・面子の種類）ごとに加算される点数の細分値です。合計を10符単位で切り上げて使用します（20符はそのまま）。翻とかけ合わせて基本点を算出します。",
+    },
+    {
+      question: "翻（han）とは何ですか？",
+      answer:
+        "翻は成立した役の合計値です。役ごとに1翻・2翻…と決まっており、ドラも1枚1翻として加算します。翻が大きいほど点数が跳ね上がり、5翻以上は満貫以上の固定点になります。",
+    },
+    {
+      question: "親と子で点数はなぜ違うのですか？",
+      answer:
+        "親はすべての支払い倍率が1.5倍になります。基本点に対して親ロンは×6、親ツモは各家×2、子ロンは×4、子ツモは親×2/子×1で計算します。",
+    },
+    {
+      question: "満貫以上で符が関係なくなるのはなぜですか？",
+      answer:
+        "5翻以上、または基本点が2000を超える場合は上限に達したとみなし、固定の点数表（満貫・跳満・倍満・三倍満・役満）を使用します。そのため翻数だけで点数が決まり、符は無視されます。",
+    },
   ],
 };
 
@@ -69,7 +97,7 @@ export function MahjongCalculator() {
 
   const builder = useMemo(
     () => buildFu({ method, wait, pair, melds } satisfies FuBuilderInput),
-    [method, wait, pair, melds]
+    [method, wait, pair, melds],
   );
 
   const handleCalculate = () => {
@@ -90,7 +118,7 @@ export function MahjongCalculator() {
 
   const applyBuilderFu = () => {
     const nearest = FU_OPTIONS.reduce((prev, curr) =>
-      Math.abs(curr - builder.rounded) < Math.abs(prev - builder.rounded) ? curr : prev
+      Math.abs(curr - builder.rounded) < Math.abs(prev - builder.rounded) ? curr : prev,
     );
     setFu(String(Math.max(nearest, builder.rounded > 110 ? 110 : nearest)));
   };
@@ -121,20 +149,30 @@ export function MahjongCalculator() {
               <span className="text-sm font-medium text-text-secondary">符（fu）</span>
               <SelectWell value={fu} onChange={(e) => setFu(e.target.value)} className="text-lg">
                 {FU_OPTIONS.map((f) => (
-                  <option key={f} value={f}>{f}符</option>
+                  <option key={f} value={f}>
+                    {f}符
+                  </option>
                 ))}
               </SelectWell>
             </label>
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-text-secondary">親／子</span>
-              <SelectWell value={seat} onChange={(e) => setSeat(e.target.value as Seat)} className="text-lg">
+              <SelectWell
+                value={seat}
+                onChange={(e) => setSeat(e.target.value as Seat)}
+                className="text-lg"
+              >
                 <option value="dealer">親（Dealer）</option>
                 <option value="nondealer">子（Non-dealer）</option>
               </SelectWell>
             </label>
             <label className="block space-y-1.5">
               <span className="text-sm font-medium text-text-secondary">上がり方</span>
-              <SelectWell value={win} onChange={(e) => setWin(e.target.value as WinType)} className="text-lg">
+              <SelectWell
+                value={win}
+                onChange={(e) => setWin(e.target.value as WinType)}
+                className="text-lg"
+              >
                 <option value="ron">ロン</option>
                 <option value="tsumo">ツモ</option>
               </SelectWell>
@@ -176,7 +214,10 @@ export function MahjongCalculator() {
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <label className="block space-y-1.5">
                     <span className="font-medium text-text-secondary">上がり方（加符）</span>
-                    <SelectWell value={method} onChange={(e) => setMethod(e.target.value as WinMethod)}>
+                    <SelectWell
+                      value={method}
+                      onChange={(e) => setMethod(e.target.value as WinMethod)}
+                    >
                       <option value="menzenRon">門前ロン (+10)</option>
                       <option value="tsumo">ツモ (+2)</option>
                       <option value="openRon">鳴きロン (+0)</option>
@@ -203,11 +244,21 @@ export function MahjongCalculator() {
                   <div className="text-xs font-medium text-text-tertiary">面子（4つまで）</div>
                   {melds.map((m, i) => (
                     <div key={i} className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      <SelectWell value={m.tile} onChange={(e) => updateMeld(i, { tile: e.target.value as MeldInput["tile"] })}>
+                      <SelectWell
+                        value={m.tile}
+                        onChange={(e) =>
+                          updateMeld(i, { tile: e.target.value as MeldInput["tile"] })
+                        }
+                      >
                         <option value="simple">中張牌（2〜8）</option>
                         <option value="terminalHonor">么九・字牌</option>
                       </SelectWell>
-                      <SelectWell value={m.shape} onChange={(e) => updateMeld(i, { shape: e.target.value as MeldInput["shape"] })}>
+                      <SelectWell
+                        value={m.shape}
+                        onChange={(e) =>
+                          updateMeld(i, { shape: e.target.value as MeldInput["shape"] })
+                        }
+                      >
                         <option value="none">なし / 順子（+0）</option>
                         <option value="openTriplet">明刻</option>
                         <option value="closedTriplet">暗刻</option>

@@ -16,10 +16,7 @@ export const metadata = buildPageMetadata({
 });
 
 export default function UnitConverterPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.unitsPage.faqItems,
-    ja.unitsPage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.unitsPage.faqItems, ja.unitsPage.title);
 
   return (
     <>

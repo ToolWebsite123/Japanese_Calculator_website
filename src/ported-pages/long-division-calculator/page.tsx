@@ -18,7 +18,7 @@ export const metadata = buildPageMetadata({
 export default function LongDivisionPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
     ja.longDivisionPage.faqItems,
-    ja.longDivisionPage.title
+    ja.longDivisionPage.title,
   );
 
   return (

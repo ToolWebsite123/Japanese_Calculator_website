@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Display } from "@/components/calculator/Display";
-import { InlineHistoryTape } from "@/components/calculator/InlineHistoryTape";
 import { ButtonGrid, type ButtonConfig } from "@/components/calculator/ButtonGrid";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { HistoryPanel } from "@/components/calculator/HistoryPanel";
@@ -25,23 +24,31 @@ import {
   primeFactorize,
   formatPrimeFactors,
   detectRepeatingDecimal,
+  formatComplex,
   type AngleMode,
 } from "@/lib/calculators/scientific";
 import { formatDisplayNumber, parseNumericResult, CALCULATOR_ERROR_DISPLAY } from "@/lib/format";
 import { SCIENTIFIC_BUTTON_GUIDE } from "@/lib/calculator-guides/scientific";
 
-function toFraction(x: number, tolerance = 1.0E-6): string {
+function toFraction(x: number, tolerance = 1.0e-6): string {
   if (x === 0) return "0";
   if (!Number.isFinite(x) || Number.isNaN(x)) return String(x);
   const sign = x < 0 ? -1 : 1;
   x = Math.abs(x);
-  let h1 = 1, h2 = 0, k1 = 0, k2 = 1;
+  let h1 = 1,
+    h2 = 0,
+    k1 = 0,
+    k2 = 1;
   let b = x;
   do {
-      const a = Math.floor(b);
-      let aux = h1; h1 = a * h1 + h2; h2 = aux;
-      aux = k1; k1 = a * k1 + k2; k2 = aux;
-      b = 1 / (b - a);
+    const a = Math.floor(b);
+    let aux = h1;
+    h1 = a * h1 + h2;
+    h2 = aux;
+    aux = k1;
+    k1 = a * k1 + k2;
+    k2 = aux;
+    b = 1 / (b - a);
   } while (Math.abs(x - h1 / k1) > x * tolerance);
   return k1 === 1 ? String(sign * h1) : `${sign * h1}/${k1}`;
 }
@@ -61,6 +68,7 @@ export function ScientificCalculator() {
   const [display, setDisplay] = useState("0");
   const [expression, setExpression] = useState("");
   const [mode, setMode] = useState<AngleMode>("deg");
+  const [complexMode, setComplexMode] = useState(false);
   const [invMode, setInvMode] = useState(false);
   const [justEvaluated, setJustEvaluated] = useState(false);
   const [awaitingOperand, setAwaitingOperand] = useState(true);
@@ -107,7 +115,7 @@ export function ScientificCalculator() {
         return prev + digit;
       });
     },
-    [justEvaluated]
+    [justEvaluated],
   );
 
   const inputOperator = useCallback(
@@ -125,7 +133,7 @@ export function ScientificCalculator() {
       setDisplay("0");
       setAwaitingOperand(true);
     },
-    [display, error, justEvaluated, awaitingOperand]
+    [display, error, justEvaluated, awaitingOperand],
   );
 
   const handleEquals = useCallback(() => {
@@ -133,21 +141,22 @@ export function ScientificCalculator() {
     if (error) return;
     try {
       let full = buildEvalExpression(expression, display, awaitingOperand);
-      
+
       const openCount = (full.match(/\(/g) || []).length;
       const closeCount = (full.match(/\)/g) || []).length;
       if (openCount > closeCount) {
         full += ")".repeat(openCount - closeCount);
       }
 
-      const result = evaluateScientific(normalizeSciExpr(full), mode);
-      const formatted = formatDisplayNumber(result);
+      const result = evaluateScientific(normalizeSciExpr(full), mode, complexMode);
+      const formatted =
+        typeof result === "number" ? formatDisplayNumber(result) : formatComplex(result);
       setExpression(full);
       setDisplay(formatted);
       setJustEvaluated(true);
       setAwaitingOperand(true);
       setError(false);
-      
+
       addEntry({ expression: full, result: formatted, route: "/scientific-calculator" });
     } catch {
       setDisplay(CALCULATOR_ERROR_DISPLAY);
@@ -155,7 +164,7 @@ export function ScientificCalculator() {
       setJustEvaluated(true);
       setAwaitingOperand(true);
     }
-  }, [justEvaluated, expression, display, awaitingOperand, error, mode, addEntry]);
+  }, [justEvaluated, expression, display, awaitingOperand, error, mode, complexMode, addEntry]);
 
   const handleClear = useCallback(() => {
     setDisplay("0");
@@ -204,7 +213,7 @@ export function ScientificCalculator() {
         setAwaitingOperand(true);
       }
     },
-    [display, justEvaluated, awaitingOperand]
+    [display, justEvaluated, awaitingOperand],
   );
 
   const insertE = useCallback(() => {
@@ -253,7 +262,7 @@ export function ScientificCalculator() {
           break;
       }
     },
-    [display, memory, awaitingOperand]
+    [display, memory, awaitingOperand],
   );
 
   const handleVariable = useCallback(
@@ -271,7 +280,7 @@ export function ScientificCalculator() {
         setAwaitingOperand(false);
       }
     },
-    [stoMode, display, variables]
+    [stoMode, display, variables],
   );
 
   const applyFn = useCallback(
@@ -311,7 +320,7 @@ export function ScientificCalculator() {
       setDisplay("0");
       setAwaitingOperand(true);
     },
-    [display, justEvaluated, awaitingOperand]
+    [display, justEvaluated, awaitingOperand],
   );
 
   const insertPi = useCallback(() => {
@@ -320,14 +329,20 @@ export function ScientificCalculator() {
     setAwaitingOperand(false);
   }, []);
 
+  const toggleSign = useCallback(() => {
+    setDisplay((d) => {
+      if (d === "0" || d === CALCULATOR_ERROR_DISPLAY) return d;
+      setAwaitingOperand(false);
+      return d.startsWith("-") ? d.slice(1) : `-${d}`;
+    });
+  }, []);
+
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       const target = e.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      ) {
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
         return;
       }
 
@@ -375,89 +390,162 @@ export function ScientificCalculator() {
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [inputDigit, inputOperator, handleEquals, handleClear, handleBackspace, handlePercent, handleParen]);
+  }, [
+    inputDigit,
+    inputOperator,
+    handleEquals,
+    handleClear,
+    handleBackspace,
+    handlePercent,
+    handleParen,
+  ]);
 
-  const keypad: ButtonConfig[] = [
-    // Variable Row
-    { id: "sto", label: stoMode ? "STO" : "STO/RCL", variant: "function", active: stoMode, onClick: () => setStoMode((p) => !p) },
-    { id: "var_x", label: stoMode ? "→x" : "x", variant: "memory", onClick: () => handleVariable("x") },
-    { id: "var_y", label: stoMode ? "→y" : "y", variant: "memory", onClick: () => handleVariable("y") },
-    { id: "var_a", label: stoMode ? "→a" : "a", variant: "memory", onClick: () => handleVariable("a") },
-    { id: "var_b", label: stoMode ? "→b" : "b", variant: "memory", onClick: () => handleVariable("b") },
-    { id: "var_c", label: stoMode ? "→c" : "c", variant: "memory", onClick: () => handleVariable("c") },
-    { id: "var_d", label: stoMode ? "→d" : "d", variant: "memory", onClick: () => handleVariable("d") },
+  // Primary 6-column 8-row keypad
+  const primaryKeypad: ButtonConfig[] = [
+    // Row 1: sin, cos, tan, sin⁻¹, cos⁻¹, tan⁻¹
+    { id: "sin", label: "sin", variant: "function", onClick: () => applyFn("sin") },
+    { id: "cos", label: "cos", variant: "function", onClick: () => applyFn("cos") },
+    { id: "tan", label: "tan", variant: "function", onClick: () => applyFn("tan") },
+    { id: "asin", label: "sin⁻¹", variant: "function", onClick: () => applyFn("asin") },
+    { id: "acos", label: "cos⁻¹", variant: "function", onClick: () => applyFn("acos") },
+    { id: "atan", label: "tan⁻¹", variant: "function", onClick: () => applyFn("atan") },
 
-    // Row 1
-    { id: "m+", label: "M+", variant: "memory", onClick: () => handleMemory("M+") },
-    { id: "m-", label: "M−", variant: "memory", onClick: () => handleMemory("M-") },
-    { id: "mr", label: "MR", variant: "memory", onClick: () => handleMemory("MR") },
-    { id: "mc", label: "MC", variant: "memory", onClick: () => handleMemory("MC") },
-    { id: "abs", label: "Abs", variant: "function", onClick: () => applyFn("abs") },
-    { id: "pfact", label: "PFact", variant: "function", onClick: handlePFact },
-    { id: "sd", label: "S⇔D", variant: "function", onClick: () => setIsFraction((p) => !p) },
-
-    // Row 2
-    { id: "sinh", label: invMode ? "sinh⁻¹" : "sinh", variant: "function", onClick: () => applyFn(invMode ? "asinh" : "sinh") },
-    { id: "cosh", label: invMode ? "cosh⁻¹" : "cosh", variant: "function", onClick: () => applyFn(invMode ? "acosh" : "cosh") },
-    { id: "tanh", label: invMode ? "tanh⁻¹" : "tanh", variant: "function", onClick: () => applyFn(invMode ? "atanh" : "tanh") },
-    { id: "ncr", label: "nCr", variant: "function", onClick: () => inputOperator("nCr") },
-    { id: "npr", label: "nPr", variant: "function", onClick: () => inputOperator("nPr") },
-    { id: "gcd", label: "GCD", variant: "function", onClick: () => inputOperator("gcd") },
-    { id: "lcm", label: "LCM", variant: "function", onClick: () => inputOperator("lcm") },
-
-    // Row 3
+    // Row 2: π, e, xʸ, x², x³, eˣ
+    { id: "pi", label: "π", variant: "function", onClick: insertPi },
+    { id: "e", label: "e", variant: "function", onClick: insertE },
+    { id: "pow", label: "xʸ", variant: "function", onClick: () => inputOperator("^") },
     { id: "sq", label: "x²", variant: "function", onClick: () => applyFn("square") },
     { id: "cube", label: "x³", variant: "function", onClick: () => applyFn("cube") },
-    { id: "inv_x", label: "x⁻¹", variant: "function", onClick: () => applyFn("inv") },
-    { id: "cbrt", label: "∛", variant: "function", onClick: () => applyFn("cbrt") },
     { id: "ex", label: "eˣ", variant: "function", onClick: () => applyFn("exp") },
-    { id: "pow10", label: "10ˣ", variant: "function", onClick: () => applyFn("pow10") },
-    { id: "bs", label: "⌫", variant: "function", onClick: handleBackspace },
 
-    // Row 4
-    { id: "deg", label: "Deg", variant: "function", active: mode === "deg", onClick: () => setMode("deg") },
-    { id: "rad", label: "Rad", variant: "function", active: mode === "rad", onClick: () => setMode("rad") },
-    { id: "fact", label: "x!", variant: "function", onClick: () => applyFn("fact") },
+    // Row 3: 10ˣ, y√x, ∛, √, ln, log
+    { id: "pow10", label: "10ˣ", variant: "function", onClick: () => applyFn("pow10") },
+    { id: "y_root", label: "y√x", variant: "function", onClick: () => applyFn("cbrt") },
+    { id: "cbrt", label: "∛", variant: "function", onClick: () => applyFn("cbrt") },
+    { id: "sqrt", label: "√", variant: "function", onClick: () => applyFn("sqrt") },
+    { id: "ln", label: "ln", variant: "function", onClick: () => applyFn("ln") },
+    { id: "log", label: "log", variant: "function", onClick: () => applyFn("log") },
+
+    // Row 4: (, ), 1/x, %, x!, ⌫ (danger red Back)
     { id: "lp", label: "(", variant: "function", onClick: () => handleParen("(") },
     { id: "rp", label: ")", variant: "function", onClick: () => handleParen(")") },
+    { id: "inv_x", label: "1/x", variant: "function", onClick: () => applyFn("inv") },
     { id: "pct", label: "%", variant: "function", onClick: handlePercent },
-    { id: "ac", label: "AC", variant: "danger", onClick: handleClear },
+    { id: "fact", label: "x!", variant: "function", onClick: () => applyFn("fact") },
+    { id: "bs", label: "⌫", variant: "danger", onClick: handleBackspace },
 
-    // Row 5
-    { id: "inv", label: "Inv", variant: "function", active: invMode, onClick: () => setInvMode((prev) => !prev) },
-    { id: "sin", label: invMode ? "sin⁻¹" : "sin", variant: "function", onClick: () => applyFn(invMode ? "asin" : "sin") },
-    { id: "ln", label: "ln", variant: "function", onClick: () => applyFn("ln") },
+    // Row 5: 7, 8, 9, ÷, AC, ±
     { id: "7", label: "7", onClick: () => inputDigit("7") },
     { id: "8", label: "8", onClick: () => inputDigit("8") },
     { id: "9", label: "9", onClick: () => inputDigit("9") },
     { id: "div", label: "÷", variant: "operator", onClick: () => inputOperator("÷") },
+    { id: "ac", label: "AC", variant: "danger", onClick: handleClear },
+    { id: "pm", label: "±", variant: "function", onClick: toggleSign },
 
-    // Row 6
-    { id: "pi", label: "π", variant: "function", onClick: insertPi },
-    { id: "cos", label: invMode ? "cos⁻¹" : "cos", variant: "function", onClick: () => applyFn(invMode ? "acos" : "cos") },
-    { id: "log", label: "log", variant: "function", onClick: () => applyFn("log") },
+    // Row 6: 4, 5, 6, ×, M+, M-
     { id: "4", label: "4", onClick: () => inputDigit("4") },
     { id: "5", label: "5", onClick: () => inputDigit("5") },
     { id: "6", label: "6", onClick: () => inputDigit("6") },
     { id: "mul", label: "×", variant: "operator", onClick: () => inputOperator("×") },
+    { id: "m+", label: "M+", variant: "memory", onClick: () => handleMemory("M+") },
+    { id: "m-", label: "M−", variant: "memory", onClick: () => handleMemory("M-") },
 
-    // Row 7
-    { id: "e", label: "e", variant: "function", onClick: insertE },
-    { id: "tan", label: invMode ? "tan⁻¹" : "tan", variant: "function", onClick: () => applyFn(invMode ? "atan" : "tan") },
-    { id: "sqrt", label: "√", variant: "function", onClick: () => applyFn("sqrt") },
+    // Row 7: 1, 2, 3, −, MR, MC
     { id: "1", label: "1", onClick: () => inputDigit("1") },
     { id: "2", label: "2", onClick: () => inputDigit("2") },
     { id: "3", label: "3", onClick: () => inputDigit("3") },
     { id: "sub", label: "−", variant: "operator", onClick: () => inputOperator("−") },
+    { id: "mr", label: "MR", variant: "memory", onClick: () => handleMemory("MR") },
+    { id: "mc", label: "MC", variant: "memory", onClick: () => handleMemory("MC") },
 
-    // Row 8
-    { id: "ans", label: "Ans", variant: "function", onClick: handleAns },
-    { id: "exp_btn", label: "EXP", variant: "function", onClick: handleEXP },
-    { id: "pow", label: "xʸ", variant: "function", onClick: () => inputOperator("^") },
+    // Row 8: 0, ., Ans, +, = (spans 2)
     { id: "0", label: "0", onClick: () => inputDigit("0") },
     { id: "dot", label: ".", onClick: () => inputDigit(".") },
-    { id: "eq", label: "=", variant: "equals", onClick: handleEquals },
+    { id: "ans", label: "Ans", variant: "function", onClick: handleAns },
     { id: "add", label: "+", variant: "operator", onClick: () => inputOperator("+") },
+    { id: "eq", label: "=", variant: "equals", span: 2, onClick: handleEquals },
+  ];
+
+  // Secondary 6-column collapsible keypad (advanced tools)
+  const secondaryKeypad: ButtonConfig[] = [
+    {
+      id: "sto",
+      label: stoMode ? "STO" : "STO/RCL",
+      variant: "function",
+      active: stoMode,
+      onClick: () => setStoMode((p) => !p),
+    },
+    {
+      id: "var_x",
+      label: stoMode ? "→x" : "x",
+      variant: "memory",
+      onClick: () => handleVariable("x"),
+    },
+    {
+      id: "var_y",
+      label: stoMode ? "→y" : "y",
+      variant: "memory",
+      onClick: () => handleVariable("y"),
+    },
+    {
+      id: "var_a",
+      label: stoMode ? "→a" : "a",
+      variant: "memory",
+      onClick: () => handleVariable("a"),
+    },
+    {
+      id: "var_b",
+      label: stoMode ? "→b" : "b",
+      variant: "memory",
+      onClick: () => handleVariable("b"),
+    },
+    {
+      id: "var_c",
+      label: stoMode ? "→c" : "c",
+      variant: "memory",
+      onClick: () => handleVariable("c"),
+    },
+    {
+      id: "var_d",
+      label: stoMode ? "→d" : "d",
+      variant: "memory",
+      onClick: () => handleVariable("d"),
+    },
+    { id: "abs", label: "Abs", variant: "function", onClick: () => applyFn("abs") },
+    { id: "mod", label: "mod", variant: "function", onClick: () => inputOperator("mod") },
+    { id: "sd", label: "S⇔D", variant: "function", onClick: () => setIsFraction((p) => !p) },
+    { id: "pfact", label: "PFact", variant: "function", onClick: handlePFact },
+    {
+      id: "complex",
+      label: "Cplx",
+      variant: "function",
+      active: complexMode,
+      onClick: () => setComplexMode((p) => !p),
+    },
+    {
+      id: "sinh",
+      label: invMode ? "sinh⁻¹" : "sinh",
+      variant: "function",
+      onClick: () => applyFn(invMode ? "asinh" : "sinh"),
+    },
+    {
+      id: "cosh",
+      label: invMode ? "cosh⁻¹" : "cosh",
+      variant: "function",
+      onClick: () => applyFn(invMode ? "acosh" : "cosh"),
+    },
+    {
+      id: "tanh",
+      label: invMode ? "tanh⁻¹" : "tanh",
+      variant: "function",
+      onClick: () => applyFn(invMode ? "atanh" : "tanh"),
+    },
+    { id: "ncr", label: "nCr", variant: "function", onClick: () => inputOperator("nCr") },
+    { id: "npr", label: "nPr", variant: "function", onClick: () => inputOperator("nPr") },
+    { id: "gcd", label: "GCD", variant: "function", onClick: () => inputOperator("gcd") },
+    { id: "lcm", label: "LCM", variant: "function", onClick: () => inputOperator("lcm") },
+    { id: "i_btn", label: "i", variant: "function", onClick: () => inputDigit("i") },
+    { id: "exp_btn", label: "EXP", variant: "function", onClick: handleEXP },
   ];
 
   return (
@@ -465,64 +553,122 @@ export function ScientificCalculator() {
       <CalculatorCard
         title={t.scientificPage.title}
         description={t.scientificPage.description}
+        compact
+        wide
         actions={
           <div className="flex items-center gap-2">
-            <ChipButton onClick={() => setHistoryOpen(true)}>
-              {t.nav.history}
-            </ChipButton>
-            <CopyResultButton value={error ? "" : display} />
+            {/* Segmented Pill Toggle for Deg / Rad */}
+            <div className="inline-flex items-center rounded-full bg-surface-sunken p-0.5 border border-border">
+              <button
+                type="button"
+                onClick={() => setMode("deg")}
+                className={`rounded-full px-2.5 py-0.5 text-xs transition ${
+                  mode === "deg"
+                    ? "bg-brand text-white font-semibold shadow-sm"
+                    : "text-text-secondary hover:text-text-primary font-medium"
+                }`}
+              >
+                Deg
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("rad")}
+                className={`rounded-full px-2.5 py-0.5 text-xs transition ${
+                  mode === "rad"
+                    ? "bg-brand text-white font-semibold shadow-sm"
+                    : "text-text-secondary hover:text-text-primary font-medium"
+                }`}
+              >
+                Rad
+              </button>
+            </div>
+
+            {/* Circular Icon-Only History Button */}
+            <button
+              type="button"
+              onClick={() => setHistoryOpen(true)}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-sunken hover:bg-border text-text-secondary transition dark:hover:bg-zinc-700"
+              aria-label={t.nav.history}
+              title={t.nav.history}
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </button>
           </div>
         }
       >
-        <div className="space-y-4">
-          <InlineHistoryTape
-            route="/scientific-calculator"
-            onSelect={(expr, res) => {
-              setExpression(expr);
-              setDisplay(res);
-              setJustEvaluated(true);
-              setAwaitingOperand(true);
-              setError(false);
-            }}
-            onOpenFullHistory={() => setHistoryOpen(true)}
-          />
+        <div className="space-y-1.5 sm:space-y-2">
           <Display
+            compact
             expression={expression}
             value={
               isFraction && justEvaluated && display !== CALCULATOR_ERROR_DISPLAY
                 ? toFraction(parseFloat(display))
                 : display
             }
-            secondary={
-              (() => {
-                if (expression) {
-                  const match = expression.trim().match(/^(-?\d+)\s*[/÷]\s*(-?\d+)$/);
-                  if (match) {
-                    const num = parseInt(match[1], 10);
-                    const den = parseInt(match[2], 10);
-                    const rep = detectRepeatingDecimal(num, den);
-                    if (rep) return `循環小数: ${rep}`;
-                  }
+            secondary={(() => {
+              if (expression) {
+                const match = expression.trim().match(/^(-?\d+)\s*[/÷]\s*(-?\d+)$/);
+                if (match) {
+                  const num = parseInt(match[1], 10);
+                  const den = parseInt(match[2], 10);
+                  const rep = detectRepeatingDecimal(num, den);
+                  if (rep) return `循環小数: ${rep}`;
                 }
-                return mode === "deg" ? t.scientific.deg : t.scientific.rad;
-              })()
-            }
+              }
+              return mode === "deg" ? t.scientific.deg : t.scientific.rad;
+            })()}
             memoryActive={memory !== 0}
+            copyValue={error ? "" : display}
           />
           {pFactResult && (
-            <div className="rounded-lg border border-brand/20 bg-brand-muted/40 p-2 text-center text-xs font-semibold text-brand dark:border-brand/40 dark:text-[#d6ccf0]">
+            <div className="rounded-lg border border-brand/20 bg-brand-muted/40 p-1.5 text-center text-xs font-semibold text-brand dark:border-brand/40 dark:text-[#d6ccf0]">
               素因数分解: {pFactResult}
             </div>
           )}
-          <div className="-mx-1 overflow-x-auto px-1 pb-1">
-            <div className="min-w-[400px]">
-              <ButtonGrid
-                buttons={keypad}
-                columns={7}
-                separatorsBefore={[7, 14, 35]}
-              />
-            </div>
+
+          {/* Primary 6-Column Keypad */}
+          <ButtonGrid buttons={primaryKeypad} columns={6} compact />
+
+          {/* Collapsible Secondary Panel Toggle */}
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setAdvancedOpen((prev) => !prev)}
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-border/80 bg-surface-sunken/60 py-1 text-xs font-semibold text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition"
+            >
+              <span>{advancedOpen ? "簡易表示 (Simple)" : "詳細機能 (More functions)"}</span>
+              <svg
+                className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                  advancedOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           </div>
+
+          {/* Collapsible Secondary Keypad */}
+          {advancedOpen && (
+            <div className="pt-1.5 border-t border-border/60 animate-fade-in">
+              <ButtonGrid buttons={secondaryKeypad} columns={6} compact />
+            </div>
+          )}
         </div>
       </CalculatorCard>
 
@@ -539,21 +685,14 @@ export function ScientificCalculator() {
         }}
       />
 
-
-      <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mt-6 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.scientificPage.introParagraph} />
       </p>
 
-      <ButtonGuideTable
-        title={t.scientificPage.buttonGuideTitle}
-        rows={SCIENTIFIC_BUTTON_GUIDE}
-      />
+      <ButtonGuideTable title={t.scientificPage.buttonGuideTitle} rows={SCIENTIFIC_BUTTON_GUIDE} />
 
-      <CalculatorFaqSection
-        title={t.scientificPage.faqTitle}
-        items={t.scientificPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.scientificPage.faqTitle} items={t.scientificPage.faqItems} />
       <RelatedCalculators activeHref="/scientific-calculator" />
-        </>
+    </>
   );
 }

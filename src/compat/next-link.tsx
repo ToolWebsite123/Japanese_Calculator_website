@@ -24,7 +24,7 @@ export default function Link({ href, children, onClick, target, rel, ...props }:
     );
   }
 
-  const safeRel = target === "_blank" ? rel ?? "noopener noreferrer" : rel;
+  const safeRel = target === "_blank" ? (rel ?? "noopener noreferrer") : rel;
 
   return (
     <a href={href} target={target} rel={safeRel} onClick={onClick} {...props}>

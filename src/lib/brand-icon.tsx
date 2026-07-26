@@ -12,24 +12,22 @@ export function createBrandIconResponse({
   fontSize,
 }: BrandIconOptions) {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#231942",
-          borderRadius,
-          color: "white",
-          fontSize,
-          fontWeight: 700,
-        }}
-      >
-        電
-      </div>
-    ),
-    { width: size, height: size }
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#231942",
+        borderRadius,
+        color: "white",
+        fontSize,
+        fontWeight: 700,
+      }}
+    >
+      電
+    </div>,
+    { width: size, height: size },
   );
 }

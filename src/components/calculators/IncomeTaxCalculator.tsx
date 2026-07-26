@@ -20,21 +20,53 @@ const INTRO =
 const HOW_TO = {
   title: "所得税 計算の使い方",
   steps: [
-    { title: "年収（額面）を入力する", body: "年間の総支給額（額面）を円で入力します。個人事業主の方は経費を差し引いた所得を入力してください。" },
-    { title: "雇用形態を選ぶ", body: "会社員・パート／アルバイトの場合は「会社員」、個人事業主の方は「個人事業主」を選択します。" },
-    { title: "控除額を入力（任意）", body: "社会保険料控除額と、その他の所得控除（生命保険料控除・医療費控除等）があれば入力します。不明な場合は0のままで概算できます。" },
-    { title: "所得税額を計算する", body: "「計算する」を押すと、給与所得控除・給与所得・基礎控除・課税所得・所得税・復興特別所得税・納税額合計が表示されます。" },
+    {
+      title: "年収（額面）を入力する",
+      body: "年間の総支給額（額面）を円で入力します。個人事業主の方は経費を差し引いた所得を入力してください。",
+    },
+    {
+      title: "雇用形態を選ぶ",
+      body: "会社員・パート／アルバイトの場合は「会社員」、個人事業主の方は「個人事業主」を選択します。",
+    },
+    {
+      title: "控除額を入力（任意）",
+      body: "社会保険料控除額と、その他の所得控除（生命保険料控除・医療費控除等）があれば入力します。不明な場合は0のままで概算できます。",
+    },
+    {
+      title: "所得税額を計算する",
+      body: "「計算する」を押すと、給与所得控除・給与所得・基礎控除・課税所得・所得税・復興特別所得税・納税額合計が表示されます。",
+    },
   ],
 };
 
 export const FAQ = {
   title: "所得税の計算に関するよくある質問",
   items: [
-    { question: "給与所得控除とは？", answer: "会社員・パート・アルバイトなど給与所得者に一律で認められる控除です。年収に応じて計算式が変わり、2025年改正では最低額が65万円に引き上げられました。" },
-    { question: "基礎控除とは？", answer: "すべての納税者に認められる基本的な所得控除です。2025年以降は合計所得金額に応じて段階的に変動し、132万円以下では95万円、多くの給与所得者では58万円〜88万円となります。" },
-    { question: "所得控除と税額控除の違いは？", answer: "所得控除は課税所得を計算する前に所得から差し引くもの（基礎控除・社会保険料控除など）、税額控除は算出された税額から直接差し引くもの（住宅ローン控除など）です。本ツールでは所得控除のみ扱います。" },
-    { question: "復興特別所得税はなぜ加算されるの？", answer: "東日本大震災からの復興財源を確保するために、所得税額の2.1%が上乗せされる税金です。2013年から2037年までの各年分に適用されます。" },
-    { question: "計算結果は正確ですか？", answer: "本ツールは概算であり、扶養控除・医療費控除・住宅ローン控除など個別事情は反映されません。正確な税額は年末調整・確定申告や税理士にご確認ください。" },
+    {
+      question: "給与所得控除とは？",
+      answer:
+        "会社員・パート・アルバイトなど給与所得者に一律で認められる控除です。年収に応じて計算式が変わり、2025年改正では最低額が65万円に引き上げられました。",
+    },
+    {
+      question: "基礎控除とは？",
+      answer:
+        "すべての納税者に認められる基本的な所得控除です。2025年以降は合計所得金額に応じて段階的に変動し、132万円以下では95万円、多くの給与所得者では58万円〜88万円となります。",
+    },
+    {
+      question: "所得控除と税額控除の違いは？",
+      answer:
+        "所得控除は課税所得を計算する前に所得から差し引くもの（基礎控除・社会保険料控除など）、税額控除は算出された税額から直接差し引くもの（住宅ローン控除など）です。本ツールでは所得控除のみ扱います。",
+    },
+    {
+      question: "復興特別所得税はなぜ加算されるの？",
+      answer:
+        "東日本大震災からの復興財源を確保するために、所得税額の2.1%が上乗せされる税金です。2013年から2037年までの各年分に適用されます。",
+    },
+    {
+      question: "計算結果は正確ですか？",
+      answer:
+        "本ツールは概算であり、扶養控除・医療費控除・住宅ローン控除など個別事情は反映されません。正確な税額は年末調整・確定申告や税理士にご確認ください。",
+    },
   ],
 };
 
@@ -177,24 +209,39 @@ export function IncomeTaxCalculator() {
                 <SurfacePanel className="space-y-2 text-sm text-text-secondary">
                   {employmentType === "employee" && (
                     <>
-                      <p>1. 給与所得控除 = {formatYen(result.employmentDeduction)}（2025年改正の給与所得控除表より）</p>
-                      <p>2. 給与所得 = {formatYen(result.annualIncome)} − {formatYen(result.employmentDeduction)} = {formatYen(result.employmentIncome)}</p>
+                      <p>
+                        1. 給与所得控除 = {formatYen(result.employmentDeduction)}
+                        （2025年改正の給与所得控除表より）
+                      </p>
+                      <p>
+                        2. 給与所得 = {formatYen(result.annualIncome)} −{" "}
+                        {formatYen(result.employmentDeduction)} ={" "}
+                        {formatYen(result.employmentIncome)}
+                      </p>
                     </>
                   )}
                   <p>
-                    {employmentType === "employee" ? "3" : "1"}. 基礎控除 = {formatYen(result.basicDeduction)}（合計所得金額に応じて算定）
+                    {employmentType === "employee" ? "3" : "1"}. 基礎控除 ={" "}
+                    {formatYen(result.basicDeduction)}（合計所得金額に応じて算定）
                   </p>
                   <p>
-                    {employmentType === "employee" ? "4" : "2"}. 課税所得 = {formatYen(result.employmentIncome)} − {formatYen(result.basicDeduction)} − {formatYen(result.socialInsurance)} − {formatYen(result.otherDeductions)} = {formatYen(result.taxableIncome)}（1,000円未満切り捨て）
+                    {employmentType === "employee" ? "4" : "2"}. 課税所得 ={" "}
+                    {formatYen(result.employmentIncome)} − {formatYen(result.basicDeduction)} −{" "}
+                    {formatYen(result.socialInsurance)} − {formatYen(result.otherDeductions)} ={" "}
+                    {formatYen(result.taxableIncome)}（1,000円未満切り捨て）
                   </p>
                   <p>
-                    {employmentType === "employee" ? "5" : "3"}. 所得税 = 速算表より {formatYen(result.incomeTax)}
+                    {employmentType === "employee" ? "5" : "3"}. 所得税 = 速算表より{" "}
+                    {formatYen(result.incomeTax)}
                   </p>
                   <p>
-                    {employmentType === "employee" ? "6" : "4"}. 復興特別所得税 = {formatYen(result.incomeTax)} × 2.1％ = {formatYen(result.reconstructionTax)}
+                    {employmentType === "employee" ? "6" : "4"}. 復興特別所得税 ={" "}
+                    {formatYen(result.incomeTax)} × 2.1％ = {formatYen(result.reconstructionTax)}
                   </p>
                   <p>
-                    {employmentType === "employee" ? "7" : "5"}. 納税額合計 = {formatYen(result.incomeTax)} + {formatYen(result.reconstructionTax)} = {formatYen(result.totalTax)}
+                    {employmentType === "employee" ? "7" : "5"}. 納税額合計 ={" "}
+                    {formatYen(result.incomeTax)} + {formatYen(result.reconstructionTax)} ={" "}
+                    {formatYen(result.totalTax)}
                   </p>
                 </SurfacePanel>
               </Divider>
@@ -202,7 +249,8 @@ export function IncomeTaxCalculator() {
           )}
 
           <p className="text-xs leading-relaxed text-text-tertiary">
-            ※ 本ツールの結果は概算です。実際の税額は医療費控除・扶養控除・住宅ローン控除など個別の事情によって変わります。復興特別所得税は2037年までの各年分に適用されます。正確な金額は年末調整・確定申告、または税理士にご確認ください。
+            ※
+            本ツールの結果は概算です。実際の税額は医療費控除・扶養控除・住宅ローン控除など個別の事情によって変わります。復興特別所得税は2037年までの各年分に適用されます。正確な金額は年末調整・確定申告、または税理士にご確認ください。
           </p>
         </div>
       </CalculatorCard>

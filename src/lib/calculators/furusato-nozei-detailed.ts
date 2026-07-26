@@ -13,12 +13,7 @@ import { marginalIncomeTaxRate } from "./furusato-nozei";
 export type SpouseType = "none" | "under70" | "over70";
 
 export type DetailedDependentKey =
-  | "under16"
-  | "age16to18"
-  | "age19to22"
-  | "age23to69"
-  | "age70coliving"
-  | "age70separate";
+  "under16" | "age16to18" | "age19to22" | "age23to69" | "age70coliving" | "age70separate";
 
 export type DisabilityKey = "general" | "special" | "cohabitingSpecial";
 
@@ -102,17 +97,8 @@ const RES_BASIC = 430_000;
 // 給与収入103万円以下 (≒ 給与所得48万以下) をしきい値として判定する簡易実装。
 const SPOUSE_INCOME_LIMIT = 1_030_000;
 
-export function calcFurusatoNozeiDetailed(
-  input: FurusatoDetailedInput
-): FurusatoDetailedResult {
-  const {
-    annualIncome,
-    spouseType,
-    spouseIncome,
-    dependents,
-    disability,
-    singleParent,
-  } = input;
+export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): FurusatoDetailedResult {
+  const { annualIncome, spouseType, spouseIncome, dependents, disability, singleParent } = input;
 
   if (!Number.isFinite(annualIncome) || annualIncome < 0) {
     throw new Error("年収が無効です");
@@ -120,22 +106,15 @@ export function calcFurusatoNozeiDetailed(
 
   const socialInsurance = Math.max(Math.floor(input.socialInsurance || 0), 0);
   const lifeInsurance = Math.max(Math.floor(input.lifeInsurance || 0), 0);
-  const earthquakeInsurance = Math.max(
-    Math.floor(input.earthquakeInsurance || 0),
-    0
-  );
+  const earthquakeInsurance = Math.max(Math.floor(input.earthquakeInsurance || 0), 0);
   const medical = Math.max(Math.floor(input.medical || 0), 0);
-  const housingLoanCredit = Math.max(
-    Math.floor(input.housingLoanCredit || 0),
-    0
-  );
+  const housingLoanCredit = Math.max(Math.floor(input.housingLoanCredit || 0), 0);
 
   const employmentDeduction = calcEmploymentDeduction(annualIncome);
   const employmentIncome = Math.max(annualIncome - employmentDeduction, 0);
 
   // 配偶者控除（給与収入103万円以下のときのみ適用）
-  const spouseEligible =
-    spouseType !== "none" && (spouseIncome || 0) <= SPOUSE_INCOME_LIMIT;
+  const spouseEligible = spouseType !== "none" && (spouseIncome || 0) <= SPOUSE_INCOME_LIMIT;
   const spouseDeductionResidence = spouseEligible
     ? spouseType === "over70"
       ? RES_SPOUSE_OVER70
@@ -191,28 +170,20 @@ export function calcFurusatoNozeiDetailed(
     disabilityDeductionIncomeTax +
     singleParentDeductionIncomeTax;
 
-  const taxableIncomeResidence = Math.max(
-    employmentIncome - totalDeductionResidence,
-    0
-  );
+  const taxableIncomeResidence = Math.max(employmentIncome - totalDeductionResidence, 0);
   const taxableIncomeIncomeTax = Math.max(
     Math.floor((employmentIncome - totalDeductionIncomeTax) / 1000) * 1000,
-    0
+    0,
   );
 
   const rawResidencePortion = Math.floor(taxableIncomeResidence * 0.1);
   // 住宅ローン控除は住民税所得割からも一部控除される (簡易的に差し引く)
-  const residenceTaxIncomePortion = Math.max(
-    rawResidencePortion - housingLoanCredit,
-    0
-  );
+  const residenceTaxIncomePortion = Math.max(rawResidencePortion - housingLoanCredit, 0);
 
   const rate = marginalIncomeTaxRate(taxableIncomeIncomeTax);
   const denom = 0.9 - rate * 1.021;
   const donationLimit =
-    denom > 0
-      ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000
-      : 0;
+    denom > 0 ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000 : 0;
 
   return {
     annualIncome,

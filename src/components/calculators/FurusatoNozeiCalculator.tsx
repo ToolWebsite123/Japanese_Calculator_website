@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import {
-  SurfacePanel,
-  Divider,
-  PrimaryButton,
-} from "@/components/ui/primitives";
+import { SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -25,21 +21,53 @@ const HOW_TO = {
   title: "ふるさと納税 控除上限額の計算手順",
   steps: [
     { title: "世帯の年収を入力する", body: "年間の総支給額（額面）を円で入力します。" },
-    { title: "配偶者控除の有無を選ぶ", body: "配偶者控除の対象となる配偶者がいる場合はチェックします。" },
-    { title: "扶養している家族の人数を入力", body: "簡易計算では扶養親族を16歳未満／16〜18歳／19〜22歳（特定扶養）／23歳以上／70歳以上の5区分でまとめて数えます。区分ごとの人数だけで上限額の目安が出せます。" },
-    { title: "社会保険料控除額（任意）", body: "源泉徴収票の社会保険料等の金額を入力します。未入力の場合は年収×15％で自動見積もりします。" },
-    { title: "控除上限額を計算する", body: "給与所得・住民税所得割額・所得税率・控除上限額（寄付上限の目安）が表示されます。" },
+    {
+      title: "配偶者控除の有無を選ぶ",
+      body: "配偶者控除の対象となる配偶者がいる場合はチェックします。",
+    },
+    {
+      title: "扶養している家族の人数を入力",
+      body: "簡易計算では扶養親族を16歳未満／16〜18歳／19〜22歳（特定扶養）／23歳以上／70歳以上の5区分でまとめて数えます。区分ごとの人数だけで上限額の目安が出せます。",
+    },
+    {
+      title: "社会保険料控除額（任意）",
+      body: "源泉徴収票の社会保険料等の金額を入力します。未入力の場合は年収×15％で自動見積もりします。",
+    },
+    {
+      title: "控除上限額を計算する",
+      body: "給与所得・住民税所得割額・所得税率・控除上限額（寄付上限の目安）が表示されます。",
+    },
   ],
 };
 
 export const FAQ = {
   title: "ふるさと納税に関するよくある質問",
   items: [
-    { question: "ふるさと納税とは？", answer: "自分が選んだ自治体に寄付を行うと、寄付額のうち自己負担2,000円を除いた金額が所得税・住民税から控除される制度です。返礼品を受け取れる自治体も多く、実質2,000円で地域の特産品などを楽しめる仕組みです。" },
-    { question: "なぜ自己負担2,000円がかかるの？", answer: "制度上、寄付金控除の対象は「寄付額 − 2,000円」と定められています。この2,000円は寄付者自身が必ず負担する金額で、上限内であれば寄付額に関わらず一定です。" },
-    { question: "控除上限額を超えて寄付するとどうなる？", answer: "上限を超えた分は控除されず、自己負担が2,000円以上になります。上限額はあくまで目安であり、医療費控除や住宅ローン控除の適用状況によって変動します。" },
-    { question: "ワンストップ特例と確定申告の違いは？", answer: "ワンストップ特例は、確定申告が不要な会社員などが寄付先5自治体以内の場合に利用できる簡易手続きです。全額が住民税から控除されます。確定申告を行う場合は、所得税と住民税の両方から控除されます。" },
-    { question: "この計算結果は正確ですか？", answer: "本ツールは総務省の公式計算式に基づく概算です。医療費控除・iDeCo・住宅ローン控除など、本ツールでカバーしない控除がある場合は上限額が変わります。正確な金額はお住まいの自治体または税理士にご確認ください。" },
+    {
+      question: "ふるさと納税とは？",
+      answer:
+        "自分が選んだ自治体に寄付を行うと、寄付額のうち自己負担2,000円を除いた金額が所得税・住民税から控除される制度です。返礼品を受け取れる自治体も多く、実質2,000円で地域の特産品などを楽しめる仕組みです。",
+    },
+    {
+      question: "なぜ自己負担2,000円がかかるの？",
+      answer:
+        "制度上、寄付金控除の対象は「寄付額 − 2,000円」と定められています。この2,000円は寄付者自身が必ず負担する金額で、上限内であれば寄付額に関わらず一定です。",
+    },
+    {
+      question: "控除上限額を超えて寄付するとどうなる？",
+      answer:
+        "上限を超えた分は控除されず、自己負担が2,000円以上になります。上限額はあくまで目安であり、医療費控除や住宅ローン控除の適用状況によって変動します。",
+    },
+    {
+      question: "ワンストップ特例と確定申告の違いは？",
+      answer:
+        "ワンストップ特例は、確定申告が不要な会社員などが寄付先5自治体以内の場合に利用できる簡易手続きです。全額が住民税から控除されます。確定申告を行う場合は、所得税と住民税の両方から控除されます。",
+    },
+    {
+      question: "この計算結果は正確ですか？",
+      answer:
+        "本ツールは総務省の公式計算式に基づく概算です。医療費控除・iDeCo・住宅ローン控除など、本ツールでカバーしない控除がある場合は上限額が変わります。正確な金額はお住まいの自治体または税理士にご確認ください。",
+    },
   ],
 };
 
@@ -72,7 +100,7 @@ export function FurusatoNozeiCalculator() {
         (Object.keys(deps) as DependentCategory[]).map((k) => [
           k,
           Math.max(parseInt(deps[k], 10) || 0, 0),
-        ])
+        ]),
       ) as Record<DependentCategory, number>;
       const r = calcFurusatoNozei({
         annualIncome: parseFloat(annualIncome) || 0,
@@ -125,9 +153,7 @@ export function FurusatoNozeiCalculator() {
                   type="number"
                   min={0}
                   value={deps[key]}
-                  onChange={(e) =>
-                    setDeps((prev) => ({ ...prev, [key]: e.target.value }))
-                  }
+                  onChange={(e) => setDeps((prev) => ({ ...prev, [key]: e.target.value }))}
                 />
               ))}
             </div>
@@ -188,19 +214,42 @@ export function FurusatoNozeiCalculator() {
                 <h2 className="mb-4 text-xl font-semibold text-text-primary">計算の内訳</h2>
                 <SurfacePanel className="space-y-2 text-sm text-text-secondary">
                   <p>1. 給与所得控除 = {formatYen(result.employmentDeduction)}</p>
-                  <p>2. 給与所得 = {formatYen(result.annualIncome)} − {formatYen(result.employmentDeduction)} = {formatYen(result.employmentIncome)}</p>
-                  <p>3. 所得控除合計（住民税用） = 基礎控除43万円 + 社会保険料{formatYen(result.socialInsurance)} + 配偶者控除{formatYen(result.spouseDeductionResidence)} + 扶養控除{formatYen(result.dependentsDeductionResidence)} = {formatYen(result.totalDeductionResidence)}</p>
-                  <p>4. 住民税課税所得 = {formatYen(result.employmentIncome)} − {formatYen(result.totalDeductionResidence)} = {formatYen(result.taxableIncomeResidence)}</p>
-                  <p>5. 住民税所得割額 = {formatYen(result.taxableIncomeResidence)} × 10% = {formatYen(result.residenceTaxIncomePortion)}</p>
-                  <p>6. 所得税の限界税率 = {(result.incomeTaxRate * 100).toFixed(0)}%（速算表より）</p>
-                  <p>7. 控除上限額 = {formatYen(result.residenceTaxIncomePortion)} × 20% ÷ (90% − {(result.incomeTaxRate * 100).toFixed(0)}% × 1.021) + 2,000円 = {formatYen(result.donationLimit)}</p>
+                  <p>
+                    2. 給与所得 = {formatYen(result.annualIncome)} −{" "}
+                    {formatYen(result.employmentDeduction)} = {formatYen(result.employmentIncome)}
+                  </p>
+                  <p>
+                    3. 所得控除合計（住民税用） = 基礎控除43万円 + 社会保険料
+                    {formatYen(result.socialInsurance)} + 配偶者控除
+                    {formatYen(result.spouseDeductionResidence)} + 扶養控除
+                    {formatYen(result.dependentsDeductionResidence)} ={" "}
+                    {formatYen(result.totalDeductionResidence)}
+                  </p>
+                  <p>
+                    4. 住民税課税所得 = {formatYen(result.employmentIncome)} −{" "}
+                    {formatYen(result.totalDeductionResidence)} ={" "}
+                    {formatYen(result.taxableIncomeResidence)}
+                  </p>
+                  <p>
+                    5. 住民税所得割額 = {formatYen(result.taxableIncomeResidence)} × 10% ={" "}
+                    {formatYen(result.residenceTaxIncomePortion)}
+                  </p>
+                  <p>
+                    6. 所得税の限界税率 = {(result.incomeTaxRate * 100).toFixed(0)}%（速算表より）
+                  </p>
+                  <p>
+                    7. 控除上限額 = {formatYen(result.residenceTaxIncomePortion)} × 20% ÷ (90% −{" "}
+                    {(result.incomeTaxRate * 100).toFixed(0)}% × 1.021) + 2,000円 ={" "}
+                    {formatYen(result.donationLimit)}
+                  </p>
                 </SurfacePanel>
               </Divider>
             </div>
           )}
 
           <p className="text-xs leading-relaxed text-text-tertiary">
-            ※ 自己負担は常に2,000円です。上限額を超えて寄付するとその超過分は自己負担となり、実質負担が増えます。実際の控除上限額は医療費控除・住宅ローン控除・iDeCoなど本ツールで扱わない控除により変動します。正確な金額はお住まいの自治体または税理士にご確認ください。
+            ※
+            自己負担は常に2,000円です。上限額を超えて寄付するとその超過分は自己負担となり、実質負担が増えます。実際の控除上限額は医療費控除・住宅ローン控除・iDeCoなど本ツールで扱わない控除により変動します。正確な金額はお住まいの自治体または税理士にご確認ください。
           </p>
         </div>
       </CalculatorCard>
@@ -211,8 +260,15 @@ export function FurusatoNozeiCalculator() {
 
       <section className="mt-8 space-y-3 text-sm leading-relaxed text-text-secondary sm:text-base">
         <h2 className="text-xl font-semibold text-text-primary">ふるさと納税の仕組み</h2>
-        <p>ふるさと納税は、応援したい自治体に寄付をすると、自己負担2,000円を除いた寄付額が所得税と住民税から控除される制度です。控除上限額の範囲内であれば、寄付先の返礼品を実質2,000円で受け取れるため、多くの給与所得者に利用されています。</p>
-        <p>会社員などで確定申告が不要な方は、寄付先が5自治体以内であれば<strong>ワンストップ特例制度</strong>を利用でき、全額が翌年度の住民税から控除されます。医療費控除などで確定申告を行う方や6自治体以上に寄付した方は<strong>確定申告</strong>が必要となり、所得税からの還付＋住民税からの控除で調整されます。</p>
+        <p>
+          ふるさと納税は、応援したい自治体に寄付をすると、自己負担2,000円を除いた寄付額が所得税と住民税から控除される制度です。控除上限額の範囲内であれば、寄付先の返礼品を実質2,000円で受け取れるため、多くの給与所得者に利用されています。
+        </p>
+        <p>
+          会社員などで確定申告が不要な方は、寄付先が5自治体以内であれば
+          <strong>ワンストップ特例制度</strong>
+          を利用でき、全額が翌年度の住民税から控除されます。医療費控除などで確定申告を行う方や6自治体以上に寄付した方は
+          <strong>確定申告</strong>が必要となり、所得税からの還付＋住民税からの控除で調整されます。
+        </p>
       </section>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />

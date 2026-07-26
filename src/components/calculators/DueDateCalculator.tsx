@@ -24,10 +24,22 @@ const INTRO =
 const HOW_TO = {
   title: "出産予定日 計算の使い方",
   steps: [
-    { title: "計算モードを選ぶ", body: "「最終月経日から」「性交日/排卵日から」「希望日から逆算」の3種類から選択します。" },
-    { title: "日付と条件を入力", body: "モード1では最終月経開始日（LMP）と生理周期（既定28日、21〜40日で調整可）を入力します。モード2は性交日または排卵日、モード3は希望する出産予定日を入力します。" },
-    { title: "出産予定日を計算する", body: "「計算する」を押すと、出産予定日と個別カレンダー（今日の妊娠週数、妊娠初期/中期/後期の開始日、正期産の期間）が表示されます。" },
-    { title: "医師に確認", body: "本ツールの結果は目安です。妊娠8〜11週頃の超音波検査（CRL計測）で医師に正式な出産予定日を確定してもらいましょう。" },
+    {
+      title: "計算モードを選ぶ",
+      body: "「最終月経日から」「性交日/排卵日から」「希望日から逆算」の3種類から選択します。",
+    },
+    {
+      title: "日付と条件を入力",
+      body: "モード1では最終月経開始日（LMP）と生理周期（既定28日、21〜40日で調整可）を入力します。モード2は性交日または排卵日、モード3は希望する出産予定日を入力します。",
+    },
+    {
+      title: "出産予定日を計算する",
+      body: "「計算する」を押すと、出産予定日と個別カレンダー（今日の妊娠週数、妊娠初期/中期/後期の開始日、正期産の期間）が表示されます。",
+    },
+    {
+      title: "医師に確認",
+      body: "本ツールの結果は目安です。妊娠8〜11週頃の超音波検査（CRL計測）で医師に正式な出産予定日を確定してもらいましょう。",
+    },
   ],
 };
 
@@ -36,23 +48,28 @@ export const FAQ = {
   items: [
     {
       question: "最終月経日（LMP）からの計算はなぜズレることがありますか？",
-      answer: "LMPからの計算は生理周期28日・排卵はLMPから14日目という仮定に基づく推定です。実際の生理周期には個人差があり、排卵日が前後するとその分だけ予定日もズレます。本ツールでは生理周期を21〜40日で調整でき、周期差を反映した予定日を算出します。",
+      answer:
+        "LMPからの計算は生理周期28日・排卵はLMPから14日目という仮定に基づく推定です。実際の生理周期には個人差があり、排卵日が前後するとその分だけ予定日もズレます。本ツールでは生理周期を21〜40日で調整でき、周期差を反映した予定日を算出します。",
     },
     {
       question: "超音波検査で予定日を確認すべき理由は？",
-      answer: "妊娠8〜11週頃の初期超音波検査で胎児のCRL（頭殿長）を計測すると、この時期は胎児の成長速度に個人差が少なく、±3〜5日程度の高い精度で出産予定日を確定できます。LMPが不明瞭な方や生理不順の方では特に、超音波による確定が推奨されます。",
+      answer:
+        "妊娠8〜11週頃の初期超音波検査で胎児のCRL（頭殿長）を計測すると、この時期は胎児の成長速度に個人差が少なく、±3〜5日程度の高い精度で出産予定日を確定できます。LMPが不明瞭な方や生理不順の方では特に、超音波による確定が推奨されます。",
     },
     {
       question: "妊娠初期・中期・後期の違いは？",
-      answer: "妊娠初期は0週0日〜13週6日で、器官形成の重要な時期です。妊娠中期は14週0日〜27週6日で、体調が安定しやすく胎動を感じ始めます。妊娠後期は28週0日〜出産までで、赤ちゃんの体重が急増し出産準備が進みます。",
+      answer:
+        "妊娠初期は0週0日〜13週6日で、器官形成の重要な時期です。妊娠中期は14週0日〜27週6日で、体調が安定しやすく胎動を感じ始めます。妊娠後期は28週0日〜出産までで、赤ちゃんの体重が急増し出産準備が進みます。",
     },
     {
       question: "「正期産」とは何ですか？",
-      answer: "正期産は妊娠37週0日〜41週6日の間に生まれることを指し、赤ちゃんが十分に成熟して生まれてくる安全な期間とされます。予定日（40週0日）ちょうどに生まれる方は約5%で、多くはこの正期産の期間内に出産します。",
+      answer:
+        "正期産は妊娠37週0日〜41週6日の間に生まれることを指し、赤ちゃんが十分に成熟して生まれてくる安全な期間とされます。予定日（40週0日）ちょうどに生まれる方は約5%で、多くはこの正期産の期間内に出産します。",
     },
     {
       question: "性交日と排卵日、どちらを入力すればよいですか？",
-      answer: "排卵日が分かる場合は排卵日を入力してください（精度が高くなります）。性交日しか分からない場合は、精子が数日生存することから±数日の誤差が生じる可能性があります。いずれもモード2の266日加算で予定日を算出します。",
+      answer:
+        "排卵日が分かる場合は排卵日を入力してください（精度が高くなります）。性交日しか分からない場合は、精子が数日生存することから±数日の誤差が生じる可能性があります。いずれもモード2の266日加算で予定日を算出します。",
     },
   ],
 };
@@ -113,7 +130,11 @@ export function DueDateCalculator() {
         <div className="space-y-6">
           <label className="block space-y-1.5">
             <span className="text-sm font-medium text-text-secondary">計算モード</span>
-            <SelectWell value={mode} onChange={(e) => setMode(e.target.value as DueDateMode)} className="text-lg">
+            <SelectWell
+              value={mode}
+              onChange={(e) => setMode(e.target.value as DueDateMode)}
+              className="text-lg"
+            >
               <option value="lmp">最終月経日から計算</option>
               <option value="conception">性交日/排卵日から計算</option>
               <option value="reverse">逆算（出産希望日から）</option>
@@ -208,17 +229,28 @@ export function DueDateCalculator() {
                 <SurfacePanel className="space-y-3 text-sm text-text-secondary">
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div>
-                      <div className="text-xs font-medium text-text-tertiary">最終月経開始日（0週0日）</div>
-                      <div className="mt-0.5 font-semibold text-text-primary">{formatDate(result.lmp)}</div>
+                      <div className="text-xs font-medium text-text-tertiary">
+                        最終月経開始日（0週0日）
+                      </div>
+                      <div className="mt-0.5 font-semibold text-text-primary">
+                        {formatDate(result.lmp)}
+                      </div>
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-text-tertiary">受精想定日（2週0日）</div>
-                      <div className="mt-0.5 font-semibold text-text-primary">{formatDate(result.conceptionDate)}</div>
+                      <div className="text-xs font-medium text-text-tertiary">
+                        受精想定日（2週0日）
+                      </div>
+                      <div className="mt-0.5 font-semibold text-text-primary">
+                        {formatDate(result.conceptionDate)}
+                      </div>
                     </div>
                   </div>
                   <div className="border-t border-border pt-3 space-y-2">
                     {result.trimesters.map((t) => (
-                      <div key={t.name} className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                      <div
+                        key={t.name}
+                        className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1"
+                      >
                         <div>
                           <span className="font-semibold text-text-primary">{t.name}</span>
                           <span className="ml-2 text-xs text-text-tertiary">{t.rangeLabel}</span>
@@ -230,7 +262,9 @@ export function DueDateCalculator() {
                     ))}
                   </div>
                   <div className="border-t border-border pt-3">
-                    <div className="text-xs font-medium text-text-tertiary">正期産（安全な出産期間・37週0日〜41週6日）</div>
+                    <div className="text-xs font-medium text-text-tertiary">
+                      正期産（安全な出産期間・37週0日〜41週6日）
+                    </div>
                     <div className="mt-0.5 font-semibold text-text-primary">
                       {formatDate(result.safeWindowStart)} 〜 {formatDate(result.safeWindowEnd)}
                     </div>

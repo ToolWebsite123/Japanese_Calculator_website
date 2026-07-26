@@ -18,11 +18,7 @@ function isPerfectRoot(value: number, n: number): number | null {
   return null;
 }
 
-export function calculateRoot(
-  radicand: number,
-  index: number,
-  mode: RootMode
-): RootResult {
+export function calculateRoot(radicand: number, index: number, mode: RootMode): RootResult {
   if (!Number.isFinite(radicand)) throw new Error("無効な被開方数です");
 
   const n = mode === "square" ? 2 : index;
@@ -36,9 +32,7 @@ export function calculateRoot(
 
   const perfect = isPerfectRoot(radicand, n);
   const value =
-    radicand < 0 && n % 2 === 1
-      ? -Math.pow(Math.abs(radicand), 1 / n)
-      : Math.pow(radicand, 1 / n);
+    radicand < 0 && n % 2 === 1 ? -Math.pow(Math.abs(radicand), 1 / n) : Math.pow(radicand, 1 / n);
 
   let exactText: string | undefined;
   if (perfect !== null) {

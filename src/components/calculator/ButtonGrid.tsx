@@ -41,8 +41,8 @@ export function ButtonGrid({
   return (
     <div
       className={[
-        "grid gap-2 sm:gap-2.5",
-        compact ? "md:gap-1.5" : "",
+        "grid",
+        compact ? "gap-1 sm:gap-1.5" : "gap-2 sm:gap-2.5",
         colClasses[columns],
         className,
       ].join(" ")}

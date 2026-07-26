@@ -51,9 +51,7 @@ export function UnitConverterWorkedExamples({
 
       <div className="mt-8">
         <SurfacePanel className="space-y-2">
-          <h3 className="text-lg font-bold text-text-primary">
-            {page.exampleTitle}
-          </h3>
+          <h3 className="text-lg font-bold text-text-primary">{page.exampleTitle}</h3>
 
           <div>
             <h4 className="font-bold text-text-primary">{page.inputLabel}</h4>
@@ -75,9 +73,13 @@ export function UnitConverterWorkedExamples({
             title={page.step1Title}
             math={
               <>
-                <span>{value} {fromLabel}</span>
+                <span>
+                  {value} {fromLabel}
+                </span>
                 <MathOp op="=" />
-                <span>{result} {toLabel}</span>
+                <span>
+                  {result} {toLabel}
+                </span>
               </>
             }
           />

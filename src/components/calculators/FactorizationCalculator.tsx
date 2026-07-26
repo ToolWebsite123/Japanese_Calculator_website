@@ -107,7 +107,6 @@ export function FactorizationCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.factorizationPage.introParagraph} />
       </p>
@@ -122,6 +121,6 @@ export function FactorizationCalculator() {
         items={t.factorizationPage.faqItems}
       />
       <RelatedCalculators activeHref="/factorization-calculator" />
-        </>
+    </>
   );
 }

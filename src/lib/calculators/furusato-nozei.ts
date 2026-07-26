@@ -78,9 +78,9 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
     Math.floor(
       input.socialInsurance != null && input.socialInsurance > 0
         ? input.socialInsurance
-        : annualIncome * 0.15
+        : annualIncome * 0.15,
     ),
-    0
+    0,
   );
 
   const employmentDeduction = calcEmploymentDeduction(annualIncome);
@@ -98,10 +98,7 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
     socialInsurance +
     spouseDeductionResidence +
     dependentsDeductionResidence;
-  const taxableIncomeResidence = Math.max(
-    employmentIncome - totalDeductionResidence,
-    0
-  );
+  const taxableIncomeResidence = Math.max(employmentIncome - totalDeductionResidence, 0);
   const residenceTaxIncomePortion = Math.floor(taxableIncomeResidence * 0.1);
 
   // ---- 所得税側（限界税率を求めるための課税所得） ----
@@ -113,13 +110,10 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
     dependentsDeductionIncomeTax += n * INCOME_TAX_DEP_DEDUCTION[k];
   });
   const totalDeductionIncomeTax =
-    incomeTaxBasic +
-    socialInsurance +
-    spouseDeductionIncomeTax +
-    dependentsDeductionIncomeTax;
+    incomeTaxBasic + socialInsurance + spouseDeductionIncomeTax + dependentsDeductionIncomeTax;
   const taxableIncomeIncomeTax = Math.max(
     Math.floor((employmentIncome - totalDeductionIncomeTax) / 1000) * 1000,
-    0
+    0,
   );
   const rate = marginalIncomeTaxRate(taxableIncomeIncomeTax);
 
@@ -127,9 +121,7 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
   // = 住民税所得割額 × 20% ÷ (90% − 所得税率×1.021) + 2,000
   const denom = 0.9 - rate * 1.021;
   const donationLimit =
-    denom > 0
-      ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000
-      : 0;
+    denom > 0 ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000 : 0;
 
   return {
     annualIncome,

@@ -87,10 +87,7 @@ export function PercentageCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title={t.percentagePage.title}
-        description={t.percentagePage.description}
-      >
+      <CalculatorCard title={t.percentagePage.title} description={t.percentagePage.description}>
         <div className="space-y-8">
           <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
             <InputWell
@@ -182,7 +179,6 @@ export function PercentageCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.percentagePage.introParagraph} />
       </p>
@@ -192,13 +188,8 @@ export function PercentageCalculator() {
         steps={t.percentagePage.howToSteps}
       />
 
-
-
-      <CalculatorFaqSection
-        title={t.percentagePage.faqTitle}
-        items={t.percentagePage.faqItems}
-      />
+      <CalculatorFaqSection title={t.percentagePage.faqTitle} items={t.percentagePage.faqItems} />
       <RelatedCalculators activeHref="/percentage-calculator" />
-        </>
+    </>
   );
 }

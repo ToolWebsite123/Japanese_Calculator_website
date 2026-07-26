@@ -4,26 +4,52 @@ import type { ReactElement } from "react";
 import AboutPage, { metadata as aboutMetadata } from "@/ported-pages/about/page";
 import AlgebraPage, { metadata as algebraMetadata } from "@/ported-pages/algebra-calculator/page";
 import BmiPage, { metadata as bmiMetadata } from "@/ported-pages/bmi-calculator/page";
-import CompoundInterestPage, { metadata as compoundInterestMetadata } from "@/ported-pages/compound-interest-calculator/page";
+import CompoundInterestPage, {
+  metadata as compoundInterestMetadata,
+} from "@/ported-pages/compound-interest-calculator/page";
 import ContactPage, { metadata as contactMetadata } from "@/ported-pages/contact/page";
 import DisclaimerPage, { metadata as disclaimerMetadata } from "@/ported-pages/disclaimer/page";
 import EraPage, { metadata as eraMetadata } from "@/ported-pages/era-converter/page";
-import FactorizationPage, { metadata as factorizationMetadata } from "@/ported-pages/factorization-calculator/page";
-import FinancialPage, { metadata as financialMetadata } from "@/ported-pages/financial-calculator/page";
-import FractionPage, { metadata as fractionMetadata } from "@/ported-pages/fraction-calculator/page";
-import InterestPage, { metadata as interestMetadata } from "@/ported-pages/interest-calculator/page";
-import LongDivisionPage, { metadata as longDivisionMetadata } from "@/ported-pages/long-division-calculator/page";
-import PercentagePage, { metadata as percentageMetadata } from "@/ported-pages/percentage-calculator/page";
-import PrivacyPolicyPage, { metadata as privacyPolicyMetadata } from "@/ported-pages/privacy-policy/page";
+import FactorizationPage, {
+  metadata as factorizationMetadata,
+} from "@/ported-pages/factorization-calculator/page";
+import FinancialPage, {
+  metadata as financialMetadata,
+} from "@/ported-pages/financial-calculator/page";
+import FractionPage, {
+  metadata as fractionMetadata,
+} from "@/ported-pages/fraction-calculator/page";
+import InterestPage, {
+  metadata as interestMetadata,
+} from "@/ported-pages/interest-calculator/page";
+import LongDivisionPage, {
+  metadata as longDivisionMetadata,
+} from "@/ported-pages/long-division-calculator/page";
+import PercentagePage, {
+  metadata as percentageMetadata,
+} from "@/ported-pages/percentage-calculator/page";
+import PrivacyPolicyPage, {
+  metadata as privacyPolicyMetadata,
+} from "@/ported-pages/privacy-policy/page";
 import RootRedirectPage from "@/ported-pages/root-calculator/page";
 import RootPage, { metadata as rootMetadata } from "@/ported-pages/squareroot-calculator/page";
-import ScientificPage, { metadata as scientificMetadata } from "@/ported-pages/scientific-calculator/page";
-import SimultaneousEquationsPage, { metadata as simultaneousEquationsMetadata } from "@/ported-pages/simultaneous-equations-calculator/page";
-import SocialInsurancePage, { metadata as socialInsuranceMetadata } from "@/ported-pages/social-insurance-calculator/page";
+import ScientificPage, {
+  metadata as scientificMetadata,
+} from "@/ported-pages/scientific-calculator/page";
+import SimultaneousEquationsPage, {
+  metadata as simultaneousEquationsMetadata,
+} from "@/ported-pages/simultaneous-equations-calculator/page";
+import SocialInsurancePage, {
+  metadata as socialInsuranceMetadata,
+} from "@/ported-pages/social-insurance-calculator/page";
 import TermsPage, { metadata as termsMetadata } from "@/ported-pages/terms/page";
 import TimePage, { metadata as timeMetadata } from "@/ported-pages/time-calculator/page";
-import UnitConverterPage, { metadata as unitConverterMetadata } from "@/ported-pages/unit-converter/page";
-import WebCalculatorPage, { metadata as webCalculatorMetadata } from "@/ported-pages/web-calculator/page";
+import UnitConverterPage, {
+  metadata as unitConverterMetadata,
+} from "@/ported-pages/unit-converter/page";
+import WebCalculatorPage, {
+  metadata as webCalculatorMetadata,
+} from "@/ported-pages/web-calculator/page";
 import type { Metadata } from "@/lib/seo/metadata";
 
 type Head = {
@@ -61,7 +87,7 @@ const metadataByPath: Record<string, Metadata> = {
 };
 
 const routeHeads: Record<string, Head> = Object.fromEntries(
-  Object.entries(metadataByPath).map(([path, metadata]) => [path, metadataToHead(metadata, path)])
+  Object.entries(metadataByPath).map(([path, metadata]) => [path, metadataToHead(metadata, path)]),
 );
 
 // Aliases (short paths) point to the same head as their canonical route.
@@ -215,7 +241,10 @@ const pages: Record<string, () => ReactElement> = {
 };
 
 function CatchAllPage() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname }).replace(/\/$/, "");
+  const pathname = useRouterState({ select: (state) => state.location.pathname }).replace(
+    /\/$/,
+    "",
+  );
   const Component = pages[pathname];
 
   if (Component) {
@@ -226,7 +255,10 @@ function CatchAllPage() {
     <main className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6">
       <h1 className="text-4xl font-bold text-brand">404</h1>
       <p className="mt-3 text-text-secondary">ページが見つかりません。</p>
-      <a className="mt-6 inline-flex rounded-[var(--radius-md)] bg-brand px-4 py-2 text-white" href="/">
+      <a
+        className="mt-6 inline-flex rounded-[var(--radius-md)] bg-brand px-4 py-2 text-white"
+        href="/"
+      >
         ホームへ戻る
       </a>
     </main>

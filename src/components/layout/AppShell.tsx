@@ -33,11 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-dvh bg-surface">
       <div className="flex min-h-dvh min-w-0 flex-1 flex-col">
-        <Navbar
-          onMenuOpen={() => setMenuOpen(true)}
-          menuOpen={menuOpen}
-          menuId={menuId}
-        />
+        <Navbar onMenuOpen={() => setMenuOpen(true)} menuOpen={menuOpen} menuId={menuId} />
         {isHomePage ? (
           <main className="flex-1 overflow-x-hidden">
             <PageTransition>{children}</PageTransition>
@@ -47,11 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         )}
         <Footer />
       </div>
-      <MobileNav
-        menuOpen={menuOpen}
-        onMenuClose={() => setMenuOpen(false)}
-        menuId={menuId}
-      />
+      <MobileNav menuOpen={menuOpen} onMenuClose={() => setMenuOpen(false)} menuId={menuId} />
     </div>
   );
 }

@@ -30,7 +30,7 @@ export function SearchInput({
   const trimmedQuery = query.trim();
   const results = useMemo(
     () => (trimmedQuery ? searchCalculators(trimmedQuery) : []),
-    [trimmedQuery]
+    [trimmedQuery],
   );
 
   function handleQueryChange(value: string) {
@@ -49,10 +49,7 @@ export function SearchInput({
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
     }
@@ -66,7 +63,7 @@ export function SearchInput({
       setOpen(false);
       router.push(href);
     },
-    [router]
+    [router],
   );
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -165,9 +162,7 @@ export function SearchInput({
           style={{ boxShadow: "var(--shadow-card)" }}
         >
           {results.length === 0 ? (
-            <li className="px-4 py-3 text-sm text-text-tertiary">
-              {t.home.searchNoResults}
-            </li>
+            <li className="px-4 py-3 text-sm text-text-tertiary">{t.home.searchNoResults}</li>
           ) : (
             results.map((item, index) => (
               <li
@@ -191,9 +186,7 @@ export function SearchInput({
                     <CalculatorIcon className="h-4 w-4" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium">
-                      {item.label}
-                    </span>
+                    <span className="block truncate text-sm font-medium">{item.label}</span>
                     {item.description && (
                       <span className="block truncate text-xs text-text-tertiary">
                         {item.description}

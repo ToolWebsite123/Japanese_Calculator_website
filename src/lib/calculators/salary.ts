@@ -78,8 +78,7 @@ export function calculateSalary(grossMonthly: number): SalaryResult {
   const healthInsurance = calcHealthInsurance(grossMonthly);
   const pension = calcPension(grossMonthly);
   const employmentInsurance = calcEmploymentInsurance(grossMonthly);
-  const socialInsuranceTotal =
-    healthInsurance + pension + employmentInsurance;
+  const socialInsuranceTotal = healthInsurance + pension + employmentInsurance;
 
   const annualSocial = socialInsuranceTotal * 12;
   // Rough basic deduction + social insurance deduction
@@ -91,8 +90,7 @@ export function calculateSalary(grossMonthly: number): SalaryResult {
   const incomeTax = Math.floor(incomeTaxAnnual / 12);
   const residentTax = Math.floor(residentTaxAnnual / 12);
 
-  const totalDeductions =
-    socialInsuranceTotal + incomeTax + residentTax;
+  const totalDeductions = socialInsuranceTotal + incomeTax + residentTax;
   const netMonthly = grossMonthly - totalDeductions;
 
   return {

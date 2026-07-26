@@ -25,21 +25,53 @@ const INTRO =
 const HOW_TO = {
   title: "割引 計算の使い方",
   steps: [
-    { title: "計算方向を選ぶ", body: "「定価から割引後の価格を計算」または「割引後の価格から元の定価を逆算」を選びます。" },
-    { title: "金額と割引を入力", body: "金額と割引の値を入力し、単位（％・割・円）を選びます。1割＝10％、3割＝30％です。" },
-    { title: "税と端数を設定", body: "税抜価格を入力した場合は消費税率（8％または10％）を選択。端数は切り捨て・四捨五入・切り上げから選べます。" },
-    { title: "割引後価格を計算する", body: "「計算する」を押すと、割引額・割引後価格・（税抜時は）消費税・支払総額が表示されます。" },
+    {
+      title: "計算方向を選ぶ",
+      body: "「定価から割引後の価格を計算」または「割引後の価格から元の定価を逆算」を選びます。",
+    },
+    {
+      title: "金額と割引を入力",
+      body: "金額と割引の値を入力し、単位（％・割・円）を選びます。1割＝10％、3割＝30％です。",
+    },
+    {
+      title: "税と端数を設定",
+      body: "税抜価格を入力した場合は消費税率（8％または10％）を選択。端数は切り捨て・四捨五入・切り上げから選べます。",
+    },
+    {
+      title: "割引後価格を計算する",
+      body: "「計算する」を押すと、割引額・割引後価格・（税抜時は）消費税・支払総額が表示されます。",
+    },
   ],
 };
 
 export const FAQ = {
   title: "割引価格の計算に関するよくある質問",
   items: [
-    { question: "「割」と「％」の違いは？", answer: "「割（わり）」は日本独自の割合単位で、1割＝10％、3割＝30％、5割＝50％です。本ツールではどちらの単位で入力しても同じ結果になります。" },
-    { question: "税抜と税込の違いは？", answer: "「税抜価格を入力」の場合、まず割引を適用してから消費税を加算し支払総額を算出します。「税込価格を入力」の場合はその金額に直接割引を適用します。" },
-    { question: "逆算とは何ですか？", answer: "セール後の価格と割引率から元の定価を求める計算です。例：セール価格700円で30％割引の商品なら、定価は700÷（1−0.3）＝1,000円です。" },
-    { question: "端数はどう処理されますか？", answer: "日本の小売の慣例に合わせ、既定は切り捨て（1円未満を切り捨て）です。必要に応じて四捨五入・切り上げに変更できます。" },
-    { question: "円単位の値引きも計算できますか？", answer: "通常計算では単位を「円」に切り替えると「500円引き」のような固定額の値引きも計算できます。" },
+    {
+      question: "「割」と「％」の違いは？",
+      answer:
+        "「割（わり）」は日本独自の割合単位で、1割＝10％、3割＝30％、5割＝50％です。本ツールではどちらの単位で入力しても同じ結果になります。",
+    },
+    {
+      question: "税抜と税込の違いは？",
+      answer:
+        "「税抜価格を入力」の場合、まず割引を適用してから消費税を加算し支払総額を算出します。「税込価格を入力」の場合はその金額に直接割引を適用します。",
+    },
+    {
+      question: "逆算とは何ですか？",
+      answer:
+        "セール後の価格と割引率から元の定価を求める計算です。例：セール価格700円で30％割引の商品なら、定価は700÷（1−0.3）＝1,000円です。",
+    },
+    {
+      question: "端数はどう処理されますか？",
+      answer:
+        "日本の小売の慣例に合わせ、既定は切り捨て（1円未満を切り捨て）です。必要に応じて四捨五入・切り上げに変更できます。",
+    },
+    {
+      question: "円単位の値引きも計算できますか？",
+      answer:
+        "通常計算では単位を「円」に切り替えると「500円引き」のような固定額の値引きも計算できます。",
+    },
   ],
 };
 
@@ -99,8 +131,10 @@ export function DiscountCalculator() {
   };
 
   const wariNote = useMemo(() => {
-    if (mode === "forward" && fwdUnit === "wari") return `${fwdDiscount}割 = ${(parseFloat(fwdDiscount) || 0) * 10}％`;
-    if (mode === "reverse" && revUnit === "wari") return `${revDiscount}割 = ${(parseFloat(revDiscount) || 0) * 10}％`;
+    if (mode === "forward" && fwdUnit === "wari")
+      return `${fwdDiscount}割 = ${(parseFloat(fwdDiscount) || 0) * 10}％`;
+    if (mode === "reverse" && revUnit === "wari")
+      return `${revDiscount}割 = ${(parseFloat(revDiscount) || 0) * 10}％`;
     return null;
   }, [mode, fwdUnit, revUnit, fwdDiscount, revDiscount]);
 
@@ -113,7 +147,11 @@ export function DiscountCalculator() {
         <div className="space-y-6">
           <label className="block space-y-1.5">
             <span className="text-sm font-medium text-text-secondary">計算方向</span>
-            <SelectWell value={mode} onChange={(e) => setMode(e.target.value as Mode)} className="text-lg">
+            <SelectWell
+              value={mode}
+              onChange={(e) => setMode(e.target.value as Mode)}
+              className="text-lg"
+            >
               <option value="forward">定価 → 割引後の価格</option>
               <option value="reverse">割引後の価格 → 元の定価（逆算）</option>
             </SelectWell>
@@ -156,7 +194,11 @@ export function DiscountCalculator() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <label className="block space-y-1.5">
                   <span className="text-sm font-medium text-text-secondary">税の扱い</span>
-                  <SelectWell value={taxMode} onChange={(e) => setTaxMode(e.target.value as TaxMode)} className="text-lg">
+                  <SelectWell
+                    value={taxMode}
+                    onChange={(e) => setTaxMode(e.target.value as TaxMode)}
+                    className="text-lg"
+                  >
                     <option value="excluded">税抜価格を入力（税を加算）</option>
                     <option value="included">税込価格を入力</option>
                     <option value="none">税を計算しない</option>
@@ -165,7 +207,11 @@ export function DiscountCalculator() {
                 {taxMode === "excluded" && (
                   <label className="block space-y-1.5">
                     <span className="text-sm font-medium text-text-secondary">消費税率</span>
-                    <SelectWell value={taxRate} onChange={(e) => setTaxRate(e.target.value)} className="text-lg">
+                    <SelectWell
+                      value={taxRate}
+                      onChange={(e) => setTaxRate(e.target.value)}
+                      className="text-lg"
+                    >
                       <option value="0.10">10％</option>
                       <option value="0.08">8％（軽減税率）</option>
                     </SelectWell>
@@ -211,7 +257,11 @@ export function DiscountCalculator() {
 
           <label className="block space-y-1.5">
             <span className="text-sm font-medium text-text-secondary">端数処理</span>
-            <SelectWell value={round} onChange={(e) => setRound(e.target.value as RoundMode)} className="text-lg">
+            <SelectWell
+              value={round}
+              onChange={(e) => setRound(e.target.value as RoundMode)}
+              className="text-lg"
+            >
               <option value="floor">切り捨て（既定・日本の小売慣例）</option>
               <option value="round">四捨五入</option>
               <option value="ceil">切り上げ</option>
@@ -272,12 +322,27 @@ export function DiscountCalculator() {
                   <Divider>
                     <h2 className="mb-4 text-xl font-semibold text-text-primary">計算の内訳</h2>
                     <SurfacePanel className="space-y-2 text-sm text-text-secondary">
-                      <p>1. 割引額 = {formatYen(fwdResult.original)} × {(fwdResult.discountRate * 100).toFixed(2)}％ = {formatYen(fwdResult.discountAmount)}</p>
-                      <p>2. 割引後の価格 = {formatYen(fwdResult.original)} − {formatYen(fwdResult.discountAmount)} = {formatYen(fwdResult.discountedBase)}</p>
+                      <p>
+                        1. 割引額 = {formatYen(fwdResult.original)} ×{" "}
+                        {(fwdResult.discountRate * 100).toFixed(2)}％ ={" "}
+                        {formatYen(fwdResult.discountAmount)}
+                      </p>
+                      <p>
+                        2. 割引後の価格 = {formatYen(fwdResult.original)} −{" "}
+                        {formatYen(fwdResult.discountAmount)} ={" "}
+                        {formatYen(fwdResult.discountedBase)}
+                      </p>
                       {taxMode === "excluded" && (
                         <>
-                          <p>3. 消費税 = {formatYen(fwdResult.discountedBase)} × {(parseFloat(taxRate) * 100).toFixed(0)}％ = {formatYen(fwdResult.taxAmount)}</p>
-                          <p>4. 支払総額 = {formatYen(fwdResult.discountedBase)} + {formatYen(fwdResult.taxAmount)} = {formatYen(fwdResult.finalPrice)}</p>
+                          <p>
+                            3. 消費税 = {formatYen(fwdResult.discountedBase)} ×{" "}
+                            {(parseFloat(taxRate) * 100).toFixed(0)}％ ={" "}
+                            {formatYen(fwdResult.taxAmount)}
+                          </p>
+                          <p>
+                            4. 支払総額 = {formatYen(fwdResult.discountedBase)} +{" "}
+                            {formatYen(fwdResult.taxAmount)} = {formatYen(fwdResult.finalPrice)}
+                          </p>
                         </>
                       )}
                     </SurfacePanel>
@@ -312,8 +377,16 @@ export function DiscountCalculator() {
                     <h2 className="mb-4 text-xl font-semibold text-text-primary">計算の内訳</h2>
                     <SurfacePanel className="space-y-2 text-sm text-text-secondary">
                       <p>1. 定価 = 割引後価格 ÷ (1 − 割引率)</p>
-                      <p>2. {formatYen(revResult.discountedPrice)} ÷ (1 − {(revResult.discountRate * 100).toFixed(2)}％) = {formatYen(revResult.originalPrice)}</p>
-                      <p>3. 割引額 = {formatYen(revResult.originalPrice)} − {formatYen(revResult.discountedPrice)} = {formatYen(revResult.discountAmount)}</p>
+                      <p>
+                        2. {formatYen(revResult.discountedPrice)} ÷ (1 −{" "}
+                        {(revResult.discountRate * 100).toFixed(2)}％) ={" "}
+                        {formatYen(revResult.originalPrice)}
+                      </p>
+                      <p>
+                        3. 割引額 = {formatYen(revResult.originalPrice)} −{" "}
+                        {formatYen(revResult.discountedPrice)} ={" "}
+                        {formatYen(revResult.discountAmount)}
+                      </p>
                     </SurfacePanel>
                   </Divider>
                 </>

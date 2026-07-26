@@ -18,7 +18,7 @@ export const metadata = buildPageMetadata({
 export default function InterestPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
     ja.interestMethodPage.faqItems,
-    ja.interestMethodPage.title
+    ja.interestMethodPage.title,
   );
 
   return (

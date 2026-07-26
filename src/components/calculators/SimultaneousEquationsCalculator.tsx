@@ -38,9 +38,7 @@ function EquationRow({
 }) {
   return (
     <SurfacePanel>
-      <div className="mb-3 block text-sm font-semibold text-text-primary">
-        {label}
-      </div>
+      <div className="mb-3 block text-sm font-semibold text-text-primary">{label}</div>
       <div className="flex items-center gap-2">
         <InputWell
           type="number"
@@ -84,7 +82,17 @@ export function SimultaneousEquationsCalculator() {
     x: string;
     y: string;
     status: "success" | "infinite" | "no_solution" | "invalid";
-    stepsData?: { a: number; b: number; c: number; d: number; e: number; f: number; D: number; Dx: number; Dy: number; };
+    stepsData?: {
+      a: number;
+      b: number;
+      c: number;
+      d: number;
+      e: number;
+      f: number;
+      D: number;
+      Dx: number;
+      Dy: number;
+    };
   } | null>(null);
 
   const handleCalculate = () => {
@@ -170,13 +178,17 @@ export function SimultaneousEquationsCalculator() {
                       <div className="text-sm font-medium text-text-tertiary">
                         {t.simultaneousEquations.resultX}
                       </div>
-                      <div className="tabular-display mt-2 text-3xl font-bold text-brand">{result.x}</div>
+                      <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                        {result.x}
+                      </div>
                     </div>
                     <div>
                       <div className="text-sm font-medium text-text-tertiary">
                         {t.simultaneousEquations.resultY}
                       </div>
-                      <div className="tabular-display mt-2 text-3xl font-bold text-brand">{result.y}</div>
+                      <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                        {result.y}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -186,9 +198,7 @@ export function SimultaneousEquationsCalculator() {
                 {result.status === "no_solution" && (
                   <ErrorMessage message={t.simultaneousEquations.noSolution} />
                 )}
-                {result.status === "invalid" && (
-                  <ErrorMessage message={t.common.invalidInput} />
-                )}
+                {result.status === "invalid" && <ErrorMessage message={t.common.invalidInput} />}
               </SurfacePanel>
 
               {result.status === "success" && result.stepsData && (
@@ -200,40 +210,76 @@ export function SimultaneousEquationsCalculator() {
                     <div>
                       <p className="font-semibold text-text-primary mb-2">1. 方程式:</p>
                       <div className="ml-4 tabular-nums text-lg text-text-secondary space-y-1">
-                        <p>{result.stepsData.a}x {result.stepsData.b >= 0 ? "+" : "−"} {Math.abs(result.stepsData.b)}y = {result.stepsData.c}</p>
-                        <p>{result.stepsData.d}x {result.stepsData.e >= 0 ? "+" : "−"} {Math.abs(result.stepsData.e)}y = {result.stepsData.f}</p>
+                        <p>
+                          {result.stepsData.a}x {result.stepsData.b >= 0 ? "+" : "−"}{" "}
+                          {Math.abs(result.stepsData.b)}y = {result.stepsData.c}
+                        </p>
+                        <p>
+                          {result.stepsData.d}x {result.stepsData.e >= 0 ? "+" : "−"}{" "}
+                          {Math.abs(result.stepsData.e)}y = {result.stepsData.f}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="font-semibold text-text-primary mb-2">2. 行列式 D を計算する (D = a₁b₂ − a₂b₁):</p>
+                      <p className="font-semibold text-text-primary mb-2">
+                        2. 行列式 D を計算する (D = a₁b₂ − a₂b₁):
+                      </p>
                       <div className="ml-4 tabular-nums text-lg text-text-secondary space-y-1">
-                        <p>D = ({result.stepsData.a}) × ({result.stepsData.e}) − ({result.stepsData.d}) × ({result.stepsData.b})</p>
-                        <p>D = {result.stepsData.a * result.stepsData.e} − ({result.stepsData.d * result.stepsData.b}) = {result.stepsData.D}</p>
+                        <p>
+                          D = ({result.stepsData.a}) × ({result.stepsData.e}) − (
+                          {result.stepsData.d}) × ({result.stepsData.b})
+                        </p>
+                        <p>
+                          D = {result.stepsData.a * result.stepsData.e} − (
+                          {result.stepsData.d * result.stepsData.b}) = {result.stepsData.D}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="font-semibold text-text-primary mb-2">3. Dx を計算する (Dx = c₁b₂ − c₂b₁):</p>
+                      <p className="font-semibold text-text-primary mb-2">
+                        3. Dx を計算する (Dx = c₁b₂ − c₂b₁):
+                      </p>
                       <div className="ml-4 tabular-nums text-lg text-text-secondary space-y-1">
-                        <p>Dx = ({result.stepsData.c}) × ({result.stepsData.e}) − ({result.stepsData.f}) × ({result.stepsData.b})</p>
-                        <p>Dx = {result.stepsData.c * result.stepsData.e} − ({result.stepsData.f * result.stepsData.b}) = {result.stepsData.Dx}</p>
+                        <p>
+                          Dx = ({result.stepsData.c}) × ({result.stepsData.e}) − (
+                          {result.stepsData.f}) × ({result.stepsData.b})
+                        </p>
+                        <p>
+                          Dx = {result.stepsData.c * result.stepsData.e} − (
+                          {result.stepsData.f * result.stepsData.b}) = {result.stepsData.Dx}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="font-semibold text-text-primary mb-2">4. Dy を計算する (Dy = a₁c₂ − a₂c₁):</p>
+                      <p className="font-semibold text-text-primary mb-2">
+                        4. Dy を計算する (Dy = a₁c₂ − a₂c₁):
+                      </p>
                       <div className="ml-4 tabular-nums text-lg text-text-secondary space-y-1">
-                        <p>Dy = ({result.stepsData.a}) × ({result.stepsData.f}) − ({result.stepsData.d}) × ({result.stepsData.c})</p>
-                        <p>Dy = {result.stepsData.a * result.stepsData.f} − ({result.stepsData.d * result.stepsData.c}) = {result.stepsData.Dy}</p>
+                        <p>
+                          Dy = ({result.stepsData.a}) × ({result.stepsData.f}) − (
+                          {result.stepsData.d}) × ({result.stepsData.c})
+                        </p>
+                        <p>
+                          Dy = {result.stepsData.a * result.stepsData.f} − (
+                          {result.stepsData.d * result.stepsData.c}) = {result.stepsData.Dy}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="font-semibold text-text-primary mb-2">5. x と y の値を求める:</p>
+                      <p className="font-semibold text-text-primary mb-2">
+                        5. x と y の値を求める:
+                      </p>
                       <div className="ml-4 tabular-nums text-lg text-text-secondary space-y-1">
-                        <p>x = Dx ÷ D = {result.stepsData.Dx} ÷ {result.stepsData.D} = {result.x}</p>
-                        <p>y = Dy ÷ D = {result.stepsData.Dy} ÷ {result.stepsData.D} = {result.y}</p>
+                        <p>
+                          x = Dx ÷ D = {result.stepsData.Dx} ÷ {result.stepsData.D} = {result.x}
+                        </p>
+                        <p>
+                          y = Dy ÷ D = {result.stepsData.Dy} ÷ {result.stepsData.D} = {result.y}
+                        </p>
                       </div>
                     </div>
                   </SurfacePanel>
@@ -243,7 +289,6 @@ export function SimultaneousEquationsCalculator() {
           )}
         </div>
       </CalculatorCard>
-
 
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.simultaneousEquationsPage.introParagraph} />
@@ -259,6 +304,6 @@ export function SimultaneousEquationsCalculator() {
         items={t.simultaneousEquationsPage.faqItems}
       />
       <RelatedCalculators activeHref="/simultaneous-equations-calculator" />
-        </>
+    </>
   );
 }

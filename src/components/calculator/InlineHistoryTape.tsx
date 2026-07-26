@@ -49,9 +49,7 @@ export function InlineHistoryTape({
             onClick={onOpenFullHistory}
             className="text-[11px] font-medium text-brand hover:underline dark:text-[#d6ccf0]"
           >
-            {allHistory.length > 0
-              ? `すべて表示 (${allHistory.length})`
-              : "履歴一覧"}
+            {allHistory.length > 0 ? `すべて表示 (${allHistory.length})` : "履歴一覧"}
           </button>
         )}
       </div>

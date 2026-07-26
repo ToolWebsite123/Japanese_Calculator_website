@@ -81,9 +81,7 @@ export function HistoryPanel({ open, onClose, onSelect, route }: HistoryPanelPro
 
         <div className="flex-1 overflow-y-auto p-4">
           {displayedHistory.length === 0 ? (
-            <p className="py-8 text-center text-sm text-text-tertiary">
-              {t.common.historyEmpty}
-            </p>
+            <p className="py-8 text-center text-sm text-text-tertiary">{t.common.historyEmpty}</p>
           ) : (
             <ul className="space-y-2">
               {displayedHistory.map((entry) => (
@@ -96,15 +94,12 @@ export function HistoryPanel({ open, onClose, onSelect, route }: HistoryPanelPro
                       onClose();
                     }}
                   >
-                    <div className="truncate text-xs text-text-tertiary">
-                      {entry.expression}
-                    </div>
+                    <div className="truncate text-xs text-text-tertiary">{entry.expression}</div>
                     <div className="tabular-display mt-0.5 font-semibold text-text-primary">
                       = {entry.result}
                     </div>
                     <div className="mt-1 text-[10px] text-text-tertiary">
-                      {entry.route} ·{" "}
-                      {new Date(entry.timestamp).toLocaleString()}
+                      {entry.route} · {new Date(entry.timestamp).toLocaleString()}
                     </div>
                   </button>
                 </li>
@@ -115,11 +110,7 @@ export function HistoryPanel({ open, onClose, onSelect, route }: HistoryPanelPro
 
         {allHistory.length > 0 && (
           <div className="border-t border-border p-4">
-            <SecondaryButton
-              fullWidth
-              onClick={clearHistory}
-              className="text-brand"
-            >
+            <SecondaryButton fullWidth onClick={clearHistory} className="text-brand">
               {t.common.historyClear}
             </SecondaryButton>
           </div>

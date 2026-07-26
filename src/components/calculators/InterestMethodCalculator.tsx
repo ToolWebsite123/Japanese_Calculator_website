@@ -43,7 +43,7 @@ export function InterestMethodCalculator() {
           ),
         };
       }),
-    [page]
+    [page],
   );
 
   const [principal, setPrincipal] = useState<string>("1000000");
@@ -64,7 +64,13 @@ export function InterestMethodCalculator() {
     const y = parseFloat(years);
 
     if (isNaN(p) || isNaN(r) || isNaN(y) || p < 0 || y < 0) {
-      setResult({ error: t.common.invalidInput as string | null, simple: null, compound: null, diff: null, submitted: null });
+      setResult({
+        error: t.common.invalidInput as string | null,
+        simple: null,
+        compound: null,
+        diff: null,
+        submitted: null,
+      });
       return;
     }
 
@@ -82,10 +88,7 @@ export function InterestMethodCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title={page.title}
-        description={page.description}
-      >
+      <CalculatorCard title={page.title} description={page.description}>
         <div className="space-y-5">
           <FormField
             label={t.interestMethod.principal}
@@ -115,53 +118,49 @@ export function InterestMethodCalculator() {
             />
           </div>
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate}
-          </PrimaryButton>
+          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
           {result?.error && <ErrorMessage message={result.error} />}
 
-          {!result?.error && result?.simple !== null && result?.compound !== null && result?.diff !== null && result?.submitted && (
-            <>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <ResultCard label={t.interestMethod.simpleInterest} value={formatYen(result.simple)} />
-                <ResultCard
-                  label={t.interestMethod.compoundInterest}
-                  value={formatYen(result.compound)}
-                  highlight
-                />
-                <ResultCard label="差額" value={`+${formatYen(result.diff)}`} />
-              </div>
+          {!result?.error &&
+            result?.simple !== null &&
+            result?.compound !== null &&
+            result?.diff !== null &&
+            result?.submitted && (
+              <>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <ResultCard
+                    label={t.interestMethod.simpleInterest}
+                    value={formatYen(result.simple)}
+                  />
+                  <ResultCard
+                    label={t.interestMethod.compoundInterest}
+                    value={formatYen(result.compound)}
+                    highlight
+                  />
+                  <ResultCard label="差額" value={`+${formatYen(result.diff)}`} />
+                </div>
 
-              <Divider>
-                <InterestMethodWorkedExamples
-                  principal={result.submitted.p}
-                  rate={result.submitted.r}
-                  years={result.submitted.y}
-                />
-              </Divider>
-            </>
-          )}
+                <Divider>
+                  <InterestMethodWorkedExamples
+                    principal={result.submitted.p}
+                    rate={result.submitted.r}
+                    years={result.submitted.y}
+                  />
+                </Divider>
+              </>
+            )}
         </div>
       </CalculatorCard>
-
 
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={page.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={page.howToTitle}
-        steps={page.howToSteps}
-      />
+      <CalculatorHowToSection title={page.howToTitle} steps={page.howToSteps} />
 
-
-
-      <CalculatorFaqSection
-        title={page.faqTitle}
-        items={faqItems}
-      />
+      <CalculatorFaqSection title={page.faqTitle} items={faqItems} />
       <RelatedCalculators activeHref="/interest-calculator" />
-        </>
+    </>
   );
 }

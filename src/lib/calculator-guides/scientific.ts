@@ -39,4 +39,13 @@ export const SCIENTIFIC_BUTTON_GUIDE: ButtonGuideRow[] = [
   { button: "Ans", description: "直前の計算結果を挿入します。" },
   { button: "EXP", description: "科学記数法の指数部を入力します。" },
   { button: "xʸ", description: "指数計算を行います（例：2^3 = 8）。" },
+  {
+    button: "STO/RCL",
+    description: "変数への保存（STO）と呼び出し（RCL）のモードを切り替えます。",
+  },
+  {
+    button: "x / y / a / b / c / d",
+    description:
+      "STOモードで押すと現在の数値をその変数に保存、RCLモードで押すと保存した値を呼び出します。",
+  },
 ];

@@ -3,10 +3,7 @@ type FaqItem = {
   answer: string;
 };
 
-export function buildCalculatorFaqJsonLd(
-  faqItems: FaqItem[],
-  pageTitle: string
-) {
+export function buildCalculatorFaqJsonLd(faqItems: FaqItem[], pageTitle: string) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",

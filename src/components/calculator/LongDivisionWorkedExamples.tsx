@@ -44,22 +44,14 @@ export function LongDivisionWorkedExamples() {
 
       <div className="mt-8">
         <SurfacePanel className="space-y-2">
-          <h3 className="text-lg font-bold text-text-primary">
-            {page.exampleTitle}
-          </h3>
+          <h3 className="text-lg font-bold text-text-primary">{page.exampleTitle}</h3>
 
           <div>
             <h4 className="font-bold text-text-primary">{page.inputLabel}</h4>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-text-secondary sm:text-base">
-              <li>
-                {page.dividendLabel}: 100
-              </li>
-              <li>
-                {page.divisorLabel}: 3
-              </li>
-              <li>
-                {page.decimalPlacesLabel}: 4
-              </li>
+              <li>{page.dividendLabel}: 100</li>
+              <li>{page.divisorLabel}: 3</li>
+              <li>{page.decimalPlacesLabel}: 4</li>
             </ul>
           </div>
 

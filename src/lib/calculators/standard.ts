@@ -14,11 +14,11 @@ const PRECEDENCE: Record<string, number> = {
   "÷": 2,
   "*": 2,
   "/": 2,
-  "mod": 2,
-  "nCr": 2,
-  "nPr": 2,
-  "gcd": 2,
-  "lcm": 2,
+  mod: 2,
+  nCr: 2,
+  nPr: 2,
+  gcd: 2,
+  lcm: 2,
   "^": 3,
   "u-": 4,
 };
@@ -48,12 +48,14 @@ function factFunc(n: number): number {
 }
 
 function nPrFunc(n: number, r: number): number {
-  if (n < 0 || r < 0 || r > n || !Number.isInteger(n) || !Number.isInteger(r)) throw new Error("Invalid nPr");
+  if (n < 0 || r < 0 || r > n || !Number.isInteger(n) || !Number.isInteger(r))
+    throw new Error("Invalid nPr");
   return factFunc(n) / factFunc(n - r);
 }
 
 function nCrFunc(n: number, r: number): number {
-  if (n < 0 || r < 0 || r > n || !Number.isInteger(n) || !Number.isInteger(r)) throw new Error("Invalid nCr");
+  if (n < 0 || r < 0 || r > n || !Number.isInteger(n) || !Number.isInteger(r))
+    throw new Error("Invalid nCr");
   return nPrFunc(n, r) / factFunc(r);
 }
 
@@ -67,7 +69,7 @@ function tokenize(input: string): Token[] {
   while (i < s.length) {
     const ch = s[i];
 
-    if (ch >= "0" && ch <= "9" || ch === ".") {
+    if ((ch >= "0" && ch <= "9") || ch === ".") {
       let num = "";
       while (i < s.length && ((s[i] >= "0" && s[i] <= "9") || s[i] === ".")) {
         num += s[i++];
@@ -133,11 +135,7 @@ function tokenize(input: string): Token[] {
 
     if ("+-*/^".includes(ch)) {
       const prev = tokens[tokens.length - 1];
-      const isUnary =
-        ch === "-" &&
-        (!prev ||
-          prev.type === "op" ||
-          prev.type === "lparen");
+      const isUnary = ch === "-" && (!prev || prev.type === "op" || prev.type === "lparen");
 
       tokens.push({ type: "op", value: isUnary ? "u-" : ch });
       i++;
@@ -165,10 +163,7 @@ function toRpn(tokens: Token[]): Token[] {
         if (top.type !== "op") break;
         const pTop = PRECEDENCE[top.value] ?? 0;
         const pCur = PRECEDENCE[token.value] ?? 0;
-        const shouldPop =
-          RIGHT_ASSOC.has(token.value)
-            ? pTop > pCur
-            : pTop >= pCur;
+        const shouldPop = RIGHT_ASSOC.has(token.value) ? pTop > pCur : pTop >= pCur;
         if (!shouldPop) break;
         output.push(ops.pop()!);
       }

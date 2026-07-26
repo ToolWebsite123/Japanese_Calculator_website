@@ -18,12 +18,8 @@ export function ButtonGuideTable({ title, rows }: ButtonGuideTableProps) {
         <table className="w-full min-w-[320px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-border bg-surface-sunken">
-              <th className="px-3 py-2.5 text-left font-semibold text-text-primary">
-                ボタン
-              </th>
-              <th className="px-3 py-2.5 text-left font-semibold text-text-primary">
-                機能説明
-              </th>
+              <th className="px-3 py-2.5 text-left font-semibold text-text-primary">ボタン</th>
+              <th className="px-3 py-2.5 text-left font-semibold text-text-primary">機能説明</th>
             </tr>
           </thead>
           <tbody>
@@ -32,9 +28,7 @@ export function ButtonGuideTable({ title, rows }: ButtonGuideTableProps) {
                 <td className="px-3 py-2.5 whitespace-nowrap font-medium text-text-primary">
                   {row.button}
                 </td>
-                <td className="px-3 py-2.5 text-text-secondary">
-                  {row.description}
-                </td>
+                <td className="px-3 py-2.5 text-text-secondary">{row.description}</td>
               </tr>
             ))}
           </tbody>

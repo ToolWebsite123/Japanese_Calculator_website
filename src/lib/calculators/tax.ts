@@ -8,11 +8,7 @@ export type TaxResult = {
 };
 
 /** Calculate consumption tax for Japan (8% or 10%). */
-export function calculateTax(
-  price: number,
-  rate: number,
-  mode: TaxMode
-): TaxResult {
+export function calculateTax(price: number, rate: number, mode: TaxMode): TaxResult {
   if (!Number.isFinite(price) || price < 0) {
     throw new Error("金額が無効です");
   }

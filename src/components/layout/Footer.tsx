@@ -48,8 +48,7 @@ export function Footer() {
     { href: "/web-calculator", label: t.nav.webCalculator },
   ];
 
-  const linkClass =
-    "text-sm text-black transition hover:opacity-80 dark:text-foreground";
+  const linkClass = "text-sm text-black transition hover:opacity-80 dark:text-foreground";
 
   return (
     <footer className="border-t border-border/20 px-4 py-12 sm:px-6 sm:py-16">
@@ -102,9 +101,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-border/20 pt-6">
-          <p className="text-xs text-black/70 dark:text-foreground/70">
-            {t.home.footerCopyright}
-          </p>
+          <p className="text-xs text-black/70 dark:text-foreground/70">{t.home.footerCopyright}</p>
         </div>
       </div>
     </footer>

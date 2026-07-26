@@ -60,13 +60,9 @@ const LINK_MAP: Array<{ text: string; href: string }> = [
   { text: "ふるさと納税", href: "/furusato-nozei-calculation" },
 ];
 
-const LINK_CLASS =
-  "text-brand underline underline-offset-2 hover:text-brand/80";
+const LINK_CLASS = "text-brand underline underline-offset-2 hover:text-brand/80";
 
-export function linkify(
-  text: string,
-  activeHref?: string | null
-): React.ReactNode {
+export function linkify(text: string, activeHref?: string | null): React.ReactNode {
   if (!text) return text;
   const parts: React.ReactNode[] = [];
   const linkedHrefs = new Set<string>();
@@ -80,11 +76,7 @@ export function linkify(
       if (linkedHrefs.has(m.href)) continue;
       const idx = remaining.indexOf(m.text);
       if (idx === -1) continue;
-      if (
-        !best ||
-        idx < best.index ||
-        (idx === best.index && m.text.length > best.text.length)
-      ) {
+      if (!best || idx < best.index || (idx === best.index && m.text.length > best.text.length)) {
         best = { text: m.text, href: m.href, index: idx };
       }
     }
@@ -96,7 +88,7 @@ export function linkify(
     parts.push(
       <Link key={`lt-${key++}`} href={best.href} className={LINK_CLASS}>
         {best.text}
-      </Link>
+      </Link>,
     );
     linkedHrefs.add(best.href);
     remaining = remaining.slice(best.index + best.text.length);
@@ -105,13 +97,7 @@ export function linkify(
   return <>{parts}</>;
 }
 
-export function LinkedText({
-  text,
-  activeHref,
-}: {
-  text: string;
-  activeHref?: string | null;
-}) {
+export function LinkedText({ text, activeHref }: { text: string; activeHref?: string | null }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const active = activeHref ?? pathname;
   return <>{linkify(text, active)}</>;

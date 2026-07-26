@@ -162,11 +162,7 @@ export function ChipButton({
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
-  return (
-    <div className="mb-1.5 text-sm font-medium text-text-secondary">
-      {children}
-    </div>
-  );
+  return <div className="mb-1.5 text-sm font-medium text-text-secondary">{children}</div>;
 }
 
 export function InputWell({
@@ -232,9 +228,5 @@ export function Divider({
   children?: ReactNode;
   className?: string;
 }) {
-  return (
-    <div className={["border-t border-border pt-6", className].join(" ")}>
-      {children}
-    </div>
-  );
+  return <div className={["border-t border-border pt-6", className].join(" ")}>{children}</div>;
 }

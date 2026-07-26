@@ -33,7 +33,12 @@ export function CompoundInterestCalculator() {
     const n = frequency;
 
     if (isNaN(p) || isNaN(r) || isNaN(y) || p < 0 || y < 0) {
-      setResult({ error: t.common.invalidInput as string | null, futureValue: null, totalInterest: null, submitted: null });
+      setResult({
+        error: t.common.invalidInput as string | null,
+        futureValue: null,
+        totalInterest: null,
+        submitted: null,
+      });
       return;
     }
 
@@ -98,39 +103,39 @@ export function CompoundInterestCalculator() {
             </SelectWell>
           </label>
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate}
-          </PrimaryButton>
+          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
           {result?.error && <ErrorMessage message={result.error} />}
 
-          {!result?.error && result?.futureValue !== null && result?.totalInterest !== null && result?.submitted && (
-            <>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <ResultCard
-                  label={t.compoundInterest.futureValue}
-                  value={formatYen(result.futureValue)}
-                  highlight
-                />
-                <ResultCard
-                  label={t.compoundInterest.totalInterest}
-                  value={`+${formatYen(result.totalInterest)}`}
-                />
-              </div>
+          {!result?.error &&
+            result?.futureValue !== null &&
+            result?.totalInterest !== null &&
+            result?.submitted && (
+              <>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <ResultCard
+                    label={t.compoundInterest.futureValue}
+                    value={formatYen(result.futureValue)}
+                    highlight
+                  />
+                  <ResultCard
+                    label={t.compoundInterest.totalInterest}
+                    value={`+${formatYen(result.totalInterest)}`}
+                  />
+                </div>
 
-              <div className="mt-8">
-                <CompoundInterestWorkedExamples
-                  principal={result.submitted.p}
-                  rate={result.submitted.r}
-                  years={result.submitted.y}
-                  frequency={result.submitted.f}
-                />
-              </div>
-            </>
-          )}
+                <div className="mt-8">
+                  <CompoundInterestWorkedExamples
+                    principal={result.submitted.p}
+                    rate={result.submitted.r}
+                    years={result.submitted.y}
+                    frequency={result.submitted.f}
+                  />
+                </div>
+              </>
+            )}
         </div>
       </CalculatorCard>
-
 
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.compoundInterestPage.introParagraph} />
@@ -141,13 +146,11 @@ export function CompoundInterestCalculator() {
         steps={t.compoundInterestPage.howToSteps}
       />
 
-
-
       <CalculatorFaqSection
         title={t.compoundInterestPage.faqTitle}
         items={t.compoundInterestPage.faqItems}
       />
       <RelatedCalculators activeHref="/compound-interest-calculator" />
-        </>
+    </>
   );
 }

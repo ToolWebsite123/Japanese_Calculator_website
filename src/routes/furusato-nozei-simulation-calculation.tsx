@@ -6,10 +6,9 @@ import FurusatoNozeiSimulationCalculationPage, {
 const title =
   typeof pageMetadata.title === "string"
     ? pageMetadata.title
-    : pageMetadata.title?.absolute ?? "ふるさと納税 シミュレーション";
+    : (pageMetadata.title?.absolute ?? "ふるさと納税 シミュレーション");
 const description = pageMetadata.description ?? "";
-const canonical =
-  pageMetadata.alternates?.canonical ?? "/furusato-nozei-simulation-calculation";
+const canonical = pageMetadata.alternates?.canonical ?? "/furusato-nozei-simulation-calculation";
 const keywords = pageMetadata.keywords ?? [];
 const og = (pageMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (pageMetadata.twitter ?? {}) as Record<string, unknown>;

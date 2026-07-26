@@ -21,7 +21,7 @@ export function RelatedCalculators({
   if (!current) return null;
 
   const sameCategory = getCalculatorsByCategory(current.category).filter(
-    (i) => i.href !== current.href
+    (i) => i.href !== current.href,
   );
 
   const picked: NavItem[] = [...sameCategory];

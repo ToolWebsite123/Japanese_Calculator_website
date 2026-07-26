@@ -25,7 +25,7 @@ export function simplify(num: number, den: number): Fraction {
   const g = gcd(num, den);
   return {
     num: (num / g) * sign,
-    den: (Math.abs(den) / g),
+    den: Math.abs(den) / g,
   };
 }
 
@@ -54,11 +54,7 @@ export function formatFraction(f: Fraction): string {
   return `${s.num}/${s.den}`;
 }
 
-export function operateFractions(
-  a: Fraction,
-  b: Fraction,
-  op: FractionOp
-): Fraction {
+export function operateFractions(a: Fraction, b: Fraction, op: FractionOp): Fraction {
   const A = toImproper(a);
   const B = toImproper(b);
 
@@ -95,12 +91,8 @@ export function fractionToDecimal(f: Fraction): number {
   return imp.num / imp.den;
 }
 
-export function parseFractionInput(
-  whole: string,
-  num: string,
-  den: string
-): Fraction {
-const w = whole.trim() ? parseInt(whole, 10) : 0;
+export function parseFractionInput(whole: string, num: string, den: string): Fraction {
+  const w = whole.trim() ? parseInt(whole, 10) : 0;
   const n = parseInt(num, 10);
   const d = parseInt(den, 10);
 
@@ -141,7 +133,7 @@ export type FractionStep =
 export function getFractionSteps(
   a: Fraction,
   b: Fraction,
-  op: FractionOp
+  op: FractionOp,
 ): { steps: FractionStep[]; formulaSteps?: FractionStep[]; finalResult: Fraction } {
   const steps: FractionStep[] = [];
   const A = toImproper(a);
@@ -154,28 +146,34 @@ export function getFractionSteps(
     const commonDenom = lcm(A.den, B.den);
     const m1 = commonDenom / A.den;
     const m2 = commonDenom / B.den;
-    
+
     if (A.den !== B.den) {
       steps.push({ type: "text", textId: "lcd_intro", args: [A.den, B.den, commonDenom] });
       steps.push({
         type: "equation",
         items: [
-          { f: A }, "×", { f: { num: m1, den: m1 } }, op, { f: B }, "×", { f: { num: m2, den: m2 } }
-        ]
+          { f: A },
+          "×",
+          { f: { num: m1, den: m1 } },
+          op,
+          { f: B },
+          "×",
+          { f: { num: m2, den: m2 } },
+        ],
       });
       steps.push({ type: "text", textId: "lcd_multiplied" });
     }
 
     const newA = { num: A.num * m1, den: commonDenom };
     const newB = { num: B.num * m2, den: commonDenom };
-    
+
     steps.push({
       type: "equation",
-      items: [{ f: newA }, op, { f: newB }]
+      items: [{ f: newA }, op, { f: newB }],
     });
 
     steps.push({ type: "text", textId: "add_numerators" });
-    
+
     if (op === "+") {
       resultNum = newA.num + newB.num;
     } else {
@@ -188,8 +186,8 @@ export function getFractionSteps(
       items: [
         { combined: { num1: newA.num, num2: newB.num, op, den: commonDenom } },
         "=",
-        { f: { num: resultNum, den: resultDen } }
-      ]
+        { f: { num: resultNum, den: resultDen } },
+      ],
     });
   } else if (op === "*") {
     steps.push({ type: "text", textId: "multiply_intro" });
@@ -198,8 +196,8 @@ export function getFractionSteps(
       items: [
         { combined: { num1: A.num, num2: B.num, op, den1: A.den, den2: B.den } },
         "=",
-        { f: { num: A.num * B.num, den: A.den * B.den } }
-      ]
+        { f: { num: A.num * B.num, den: A.den * B.den } },
+      ],
     });
     resultNum = A.num * B.num;
     resultDen = A.den * B.den;
@@ -209,17 +207,17 @@ export function getFractionSteps(
     const flippedB = { num: B.den * Math.sign(B.num), den: Math.abs(B.num) };
     steps.push({
       type: "equation",
-      items: [{ f: A }, "×", { f: flippedB }]
+      items: [{ f: A }, "×", { f: flippedB }],
     });
-    
+
     steps.push({ type: "text", textId: "multiply_intro" });
     steps.push({
       type: "equation",
       items: [
         { combined: { num1: A.num, num2: flippedB.num, op: "*", den1: A.den, den2: flippedB.den } },
         "=",
-        { f: { num: A.num * flippedB.num, den: A.den * flippedB.den } }
-      ]
+        { f: { num: A.num * flippedB.num, den: A.den * flippedB.den } },
+      ],
     });
     resultNum = A.num * flippedB.num;
     resultDen = A.den * flippedB.den;
@@ -231,11 +229,7 @@ export function getFractionSteps(
     steps.push({ type: "text", textId: "reduce_intro", args: [g] });
     steps.push({
       type: "equation",
-      items: [
-        { f: { num: resultNum, den: resultDen } },
-        "=",
-        { f: reduced }
-      ]
+      items: [{ f: { num: resultNum, den: resultDen } }, "=", { f: reduced }],
     });
   } else {
     steps.push({ type: "text", textId: "cannot_reduce" });
@@ -244,14 +238,14 @@ export function getFractionSteps(
   if (Math.abs(reduced.num) > reduced.den && reduced.den !== 1) {
     const whole = Math.trunc(reduced.num / reduced.den);
     const rem = Math.abs(reduced.num % reduced.den);
-    steps.push({ type: "text", textId: "mixed_intro", args: [reduced.num, reduced.den, whole, rem] });
+    steps.push({
+      type: "text",
+      textId: "mixed_intro",
+      args: [reduced.num, reduced.den, whole, rem],
+    });
     steps.push({
       type: "equation",
-      items: [
-        { f: reduced },
-        "=",
-        { f: { whole: whole, num: rem, den: reduced.den } }
-      ]
+      items: [{ f: reduced }, "=", { f: { whole: whole, num: rem, den: reduced.den } }],
     });
   }
 
@@ -270,19 +264,19 @@ export function getFractionSteps(
         "=",
         { combined: { num1: crossNum1, num2: crossNum2, op, den: crossDen } },
         "=",
-        { f: { num: crossNum1 + (op === '+' ? crossNum2 : -crossNum2), den: crossDen } }
-      ]
+        { f: { num: crossNum1 + (op === "+" ? crossNum2 : -crossNum2), den: crossDen } },
+      ],
     });
-    if (gcd(crossNum1 + (op === '+' ? crossNum2 : -crossNum2), crossDen) > 1) {
-        formulaSteps.push({ type: "text", textId: "reduce_intro_short" });
-        formulaSteps.push({
-            type: "equation",
-            items: [
-                { f: { num: crossNum1 + (op === '+' ? crossNum2 : -crossNum2), den: crossDen } },
-                "=",
-                { f: reduced }
-            ]
-        });
+    if (gcd(crossNum1 + (op === "+" ? crossNum2 : -crossNum2), crossDen) > 1) {
+      formulaSteps.push({ type: "text", textId: "reduce_intro_short" });
+      formulaSteps.push({
+        type: "equation",
+        items: [
+          { f: { num: crossNum1 + (op === "+" ? crossNum2 : -crossNum2), den: crossDen } },
+          "=",
+          { f: reduced },
+        ],
+      });
     }
   }
 

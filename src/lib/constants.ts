@@ -1,10 +1,5 @@
 export type CalculatorCategory =
-  | "basic"
-  | "scientific"
-  | "finance"
-  | "health"
-  | "conversion"
-  | "more";
+  "basic" | "scientific" | "finance" | "health" | "conversion" | "more";
 
 export type NavItem = {
   href: string;
@@ -156,19 +151,65 @@ export const SECONDARY_NAV_ITEMS: NavItem[] = [
     descriptionKey: "socialInsurance.description",
     secondary: true,
   },
-  { href: "/unemployment-insurance-calculation", labelKey: "失業保険 計算", icon: "失", category: "finance", descriptionKey: "unemploymentInsurance.description", secondary: true },
-  { href: "/discount-calculation", labelKey: "割引 計算", icon: "割", category: "basic", descriptionKey: "discountCalc.description", secondary: true },
-  { href: "/due-date-calculation", labelKey: "出産予定日 計算", icon: "産", category: "health", descriptionKey: "dueDate.description", secondary: true },
-  { href: "/mahjong-score-calculation", labelKey: "麻雀 点数 計算", icon: "麻", category: "more", descriptionKey: "mahjong.description", secondary: true },
-  { href: "/income-tax-calculation", labelKey: "所得税 計算", icon: "税", category: "finance", descriptionKey: "incomeTax.description", secondary: true },
-  { href: "/furusato-nozei-calculation", labelKey: "ふるさと納税", icon: "納", category: "finance", descriptionKey: "furusatoNozei.description", secondary: true },
-  { href: "/furusato-nozei-simulation-calculation", labelKey: "ふるさと納税 シミュレーション", icon: "詳", category: "finance", descriptionKey: "furusatoNozei.description", secondary: true },
+  {
+    href: "/unemployment-insurance-calculation",
+    labelKey: "失業保険 計算",
+    icon: "失",
+    category: "finance",
+    descriptionKey: "unemploymentInsurance.description",
+    secondary: true,
+  },
+  {
+    href: "/discount-calculation",
+    labelKey: "割引 計算",
+    icon: "割",
+    category: "basic",
+    descriptionKey: "discountCalc.description",
+    secondary: true,
+  },
+  {
+    href: "/due-date-calculation",
+    labelKey: "出産予定日 計算",
+    icon: "産",
+    category: "health",
+    descriptionKey: "dueDate.description",
+    secondary: true,
+  },
+  {
+    href: "/mahjong-score-calculation",
+    labelKey: "麻雀 点数 計算",
+    icon: "麻",
+    category: "more",
+    descriptionKey: "mahjong.description",
+    secondary: true,
+  },
+  {
+    href: "/income-tax-calculation",
+    labelKey: "所得税 計算",
+    icon: "税",
+    category: "finance",
+    descriptionKey: "incomeTax.description",
+    secondary: true,
+  },
+  {
+    href: "/furusato-nozei-calculation",
+    labelKey: "ふるさと納税",
+    icon: "納",
+    category: "finance",
+    descriptionKey: "furusatoNozei.description",
+    secondary: true,
+  },
+  {
+    href: "/furusato-nozei-simulation-calculation",
+    labelKey: "ふるさと納税 シミュレーション",
+    icon: "詳",
+    category: "finance",
+    descriptionKey: "furusatoNozei.description",
+    secondary: true,
+  },
 ];
 
-export const NAV_ITEMS: NavItem[] = [
-  ...PRIMARY_NAV_ITEMS,
-  ...SECONDARY_NAV_ITEMS,
-];
+export const NAV_ITEMS: NavItem[] = [...PRIMARY_NAV_ITEMS, ...SECONDARY_NAV_ITEMS];
 
 export const HISTORY_MAX = 50;
 export const HISTORY_STORAGE_KEY = "dentaku-pro-history";

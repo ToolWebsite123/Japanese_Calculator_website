@@ -7,10 +7,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { formatDisplayNumber } from "@/lib/format";
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce(
-    (text, value, index) => text.replace(`{${index}}`, value),
-    template
-  );
+  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
 }
 
 function formatAmount(value: number): string {
@@ -35,15 +32,7 @@ function Var({ children }: { children: ReactNode }) {
   return <span className="italic">{children}</span>;
 }
 
-function ExampleStep({
-  title,
-  math,
-  stepId,
-}: {
-  title: string;
-  math: ReactNode;
-  stepId: string;
-}) {
+function ExampleStep({ title, math, stepId }: { title: string; math: ReactNode; stepId: string }) {
   return (
     <div className="mt-2">
       <p className="font-semibold text-text-primary">{title}</p>
@@ -96,11 +85,7 @@ function DiscountExample({
           <div>
             <h4 className="font-bold text-text-primary">{page.scenarioTitle}</h4>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary sm:text-base">
-              {formatTemplate(
-                page.scenarioText,
-                formatAmount(y),
-                formatDisplayNumber(x)
-              )}
+              {formatTemplate(page.scenarioText, formatAmount(y), formatDisplayNumber(x))}
             </p>
           </div>
 
@@ -120,8 +105,8 @@ function DiscountExample({
             <div>
               <h4 className="font-bold text-text-primary">{page.formulaTitle}</h4>
               <MathEq>
-                割引額 <MathOp op="=" /> <Var>Y</Var> <MathOp op="×" /> (
-                <Var>X</Var> <MathOp op="/" /> 100)
+                割引額 <MathOp op="=" /> <Var>Y</Var> <MathOp op="×" /> (<Var>X</Var>{" "}
+                <MathOp op="/" /> 100)
               </MathEq>
             </div>
 
@@ -130,8 +115,8 @@ function DiscountExample({
               title={page.step1Title}
               math={
                 <>
-                  <MathFraction num={formatDisplayNumber(x)} den={100} />{" "}
-                  <MathOp op="=" /> <Num>{formatDisplayNumber(decimal, 8)}</Num>
+                  <MathFraction num={formatDisplayNumber(x)} den={100} /> <MathOp op="=" />{" "}
+                  <Num>{formatDisplayNumber(decimal, 8)}</Num>
                 </>
               }
             />
@@ -151,11 +136,7 @@ function DiscountExample({
             <ExampleStep
               stepId="pct-d3"
               title={page.step3Title}
-              math={
-                <>
-                  {formatTemplate(page.step3MathLabel, formatAmount(discount))}
-                </>
-              }
+              math={<>{formatTemplate(page.step3MathLabel, formatAmount(discount))}</>}
             />
 
             <ExampleStep
@@ -163,20 +144,15 @@ function DiscountExample({
               title={page.step4Title}
               math={
                 <>
-                  <Num>{formatAmount(y)}</Num> <MathOp op="−" />{" "}
-                  <Num>{formatAmount(discount)}</Num> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(finalPrice)}</Num>
+                  <Num>{formatAmount(y)}</Num> <MathOp op="−" /> <Num>{formatAmount(discount)}</Num>{" "}
+                  <MathOp op="=" /> <Num>{formatAmount(finalPrice)}</Num>
                 </>
               }
             />
 
             <p className="mt-4 text-sm font-semibold text-text-primary sm:text-base">
               {page.resultLabel}:{" "}
-              {formatTemplate(
-                page.resultText,
-                formatAmount(discount),
-                formatAmount(finalPrice)
-              )}
+              {formatTemplate(page.resultText, formatAmount(discount), formatAmount(finalPrice))}
             </p>
           </div>
         </>
@@ -221,9 +197,7 @@ function ProportionExample({
 
   return (
     <SurfacePanel className="space-y-2">
-      <h3 className="text-lg font-bold text-text-primary">
-        {page.exampleTitleProportion}
-      </h3>
+      <h3 className="text-lg font-bold text-text-primary">{page.exampleTitleProportion}</h3>
 
       {!isValid ? (
         <p className="text-sm text-text-secondary sm:text-base">{invalidInput}</p>
@@ -232,11 +206,7 @@ function ProportionExample({
           <div>
             <h4 className="font-bold text-text-primary">{page.scenarioTitle}</h4>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary sm:text-base">
-              {formatTemplate(
-                page.scenarioTextProportion,
-                formatAmount(y),
-                formatAmount(x)
-              )}
+              {formatTemplate(page.scenarioTextProportion, formatAmount(y), formatAmount(x))}
             </p>
           </div>
 
@@ -256,8 +226,8 @@ function ProportionExample({
             <div>
               <h4 className="font-bold text-text-primary">{page.formulaTitle}</h4>
               <MathEq>
-                {page.formulaProportion} <MathOp op="=" /> (<Var>X</Var>{" "}
-                <MathOp op="/" /> <Var>Y</Var>) <MathOp op="×" /> 100
+                {page.formulaProportion} <MathOp op="=" /> (<Var>X</Var> <MathOp op="/" />{" "}
+                <Var>Y</Var>) <MathOp op="×" /> 100
               </MathEq>
             </div>
 
@@ -267,9 +237,8 @@ function ProportionExample({
               math={
                 <>
                   <Var>X</Var> <MathOp op="/" /> <Var>Y</Var> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(x)}</Num> <MathOp op="/" />{" "}
-                  <Num>{formatAmount(y)}</Num> <MathOp op="=" />{" "}
-                  <Num>{formatDisplayNumber(ratio, 8)}</Num>
+                  <Num>{formatAmount(x)}</Num> <MathOp op="/" /> <Num>{formatAmount(y)}</Num>{" "}
+                  <MathOp op="=" /> <Num>{formatDisplayNumber(ratio, 8)}</Num>
                 </>
               }
             />
@@ -279,8 +248,8 @@ function ProportionExample({
               title={page.proportionStep2Title}
               math={
                 <>
-                  <Num>{formatDisplayNumber(ratio, 8)}</Num> <MathOp op="×" /> 100{" "}
-                  <MathOp op="=" /> <Num>{percentDisplay}</Num>
+                  <Num>{formatDisplayNumber(ratio, 8)}</Num> <MathOp op="×" /> 100 <MathOp op="=" />{" "}
+                  <Num>{percentDisplay}</Num>
                 </>
               }
             />
@@ -296,8 +265,7 @@ function ProportionExample({
             />
 
             <p className="mt-4 text-sm font-semibold text-text-primary sm:text-base">
-              {page.resultLabel}:{" "}
-              {formatTemplate(page.resultTextProportion, percentDisplay)}
+              {page.resultLabel}: {formatTemplate(page.resultTextProportion, percentDisplay)}
             </p>
           </div>
         </>
@@ -345,9 +313,7 @@ function ChangeExample({
 
   return (
     <SurfacePanel className="space-y-2">
-      <h3 className="text-lg font-bold text-text-primary">
-        {page.exampleTitleChange}
-      </h3>
+      <h3 className="text-lg font-bold text-text-primary">{page.exampleTitleChange}</h3>
 
       {!isValid ? (
         <p className="text-sm text-text-secondary sm:text-base">{invalidInput}</p>
@@ -356,11 +322,7 @@ function ChangeExample({
           <div>
             <h4 className="font-bold text-text-primary">{page.scenarioTitle}</h4>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary sm:text-base">
-              {formatTemplate(
-                page.scenarioTextChange,
-                formatAmount(x),
-                formatAmount(y)
-              )}
+              {formatTemplate(page.scenarioTextChange, formatAmount(x), formatAmount(y))}
             </p>
           </div>
 
@@ -380,8 +342,8 @@ function ChangeExample({
             <div>
               <h4 className="font-bold text-text-primary">{page.formulaTitle}</h4>
               <MathEq>
-                {page.formulaChange} <MathOp op="=" /> ((<Var>Y</Var>{" "}
-                <MathOp op="−" /> <Var>X</Var>) <MathOp op="/" /> |<Var>X</Var>
+                {page.formulaChange} <MathOp op="=" /> ((<Var>Y</Var> <MathOp op="−" /> <Var>X</Var>
+                ) <MathOp op="/" /> |<Var>X</Var>
                 |) <MathOp op="×" /> 100
               </MathEq>
             </div>
@@ -392,9 +354,8 @@ function ChangeExample({
               math={
                 <>
                   <Var>Y</Var> <MathOp op="−" /> <Var>X</Var> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(y)}</Num> <MathOp op="−" />{" "}
-                  <Num>{formatAmount(x)}</Num> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(diff)}</Num>
+                  <Num>{formatAmount(y)}</Num> <MathOp op="−" /> <Num>{formatAmount(x)}</Num>{" "}
+                  <MathOp op="=" /> <Num>{formatAmount(diff)}</Num>
                 </>
               }
             />
@@ -404,9 +365,8 @@ function ChangeExample({
               title={page.changeStep2Title}
               math={
                 <>
-                  <Num>{formatAmount(diff)}</Num> <MathOp op="/" />{" "}
-                  <Num>{formatAmount(absX)}</Num> <MathOp op="=" />{" "}
-                  <Num>{formatDisplayNumber(quotient, 8)}</Num>
+                  <Num>{formatAmount(diff)}</Num> <MathOp op="/" /> <Num>{formatAmount(absX)}</Num>{" "}
+                  <MathOp op="=" /> <Num>{formatDisplayNumber(quotient, 8)}</Num>
                 </>
               }
             />
@@ -416,9 +376,8 @@ function ChangeExample({
               title={page.changeStep3Title}
               math={
                 <>
-                  <Num>{formatDisplayNumber(quotient, 8)}</Num> <MathOp op="×" />{" "}
-                  100 <MathOp op="=" />{" "}
-                  <Num>{formatDisplayNumber(Number(rate.toFixed(2)), 8)}</Num>
+                  <Num>{formatDisplayNumber(quotient, 8)}</Num> <MathOp op="×" /> 100{" "}
+                  <MathOp op="=" /> <Num>{formatDisplayNumber(Number(rate.toFixed(2)), 8)}</Num>
                 </>
               }
             />
@@ -434,8 +393,7 @@ function ChangeExample({
             />
 
             <p className="mt-4 text-sm font-semibold text-text-primary sm:text-base">
-              {page.resultLabel}:{" "}
-              {formatTemplate(page.resultTextChange, rateDisplay)}
+              {page.resultLabel}: {formatTemplate(page.resultTextChange, rateDisplay)}
             </p>
           </div>
         </>
@@ -464,24 +422,24 @@ export function PercentageWorkedExamples({
 
   return (
     <div className="mt-6 space-y-8">
-        <DiscountExample
-          originalPrice={originalPrice}
-          discountPercent={discountPercent}
-          page={page}
-          invalidInput={t.common.invalidInput}
-        />
-        <ProportionExample
-          proportionPart={proportionPart}
-          proportionWhole={proportionWhole}
-          page={page}
-          invalidInput={t.common.invalidInput}
-        />
-        <ChangeExample
-          changeFrom={changeFrom}
-          changeTo={changeTo}
-          page={page}
-          invalidInput={t.common.invalidInput}
-        />
+      <DiscountExample
+        originalPrice={originalPrice}
+        discountPercent={discountPercent}
+        page={page}
+        invalidInput={t.common.invalidInput}
+      />
+      <ProportionExample
+        proportionPart={proportionPart}
+        proportionWhole={proportionWhole}
+        page={page}
+        invalidInput={t.common.invalidInput}
+      />
+      <ChangeExample
+        changeFrom={changeFrom}
+        changeTo={changeTo}
+        page={page}
+        invalidInput={t.common.invalidInput}
+      />
     </div>
   );
 }

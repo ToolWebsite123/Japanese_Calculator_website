@@ -45,22 +45,19 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
   const history = useSyncExternalStore(
     subscribeHistory,
     getHistorySnapshot,
-    getServerHistorySnapshot
+    getServerHistorySnapshot,
   );
 
-  const addEntry = useCallback(
-    (entry: Omit<HistoryEntry, "id" | "timestamp">) => {
-      const next: HistoryEntry = {
-        ...entry,
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-        timestamp: Date.now(),
-      };
-      const current = readHistoryFromStorage();
-      writeHistoryToStorage([next, ...current].slice(0, HISTORY_MAX));
-      emitHistoryChange();
-    },
-    []
-  );
+  const addEntry = useCallback((entry: Omit<HistoryEntry, "id" | "timestamp">) => {
+    const next: HistoryEntry = {
+      ...entry,
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      timestamp: Date.now(),
+    };
+    const current = readHistoryFromStorage();
+    writeHistoryToStorage([next, ...current].slice(0, HISTORY_MAX));
+    emitHistoryChange();
+  }, []);
 
   const clearHistory = useCallback(() => {
     writeHistoryToStorage([]);
@@ -79,9 +76,7 @@ export function HistoryProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <HistoryContext.Provider
-      value={{ history, addEntry, clearHistory }}
-    >
+    <HistoryContext.Provider value={{ history, addEntry, clearHistory }}>
       {children}
     </HistoryContext.Provider>
   );

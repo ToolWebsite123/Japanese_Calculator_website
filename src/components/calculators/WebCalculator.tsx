@@ -17,7 +17,6 @@ export function WebCalculator() {
         description={t.webCalculatorPage.description}
       />
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.webCalculatorPage.introParagraph} />
       </p>
@@ -32,6 +31,6 @@ export function WebCalculator() {
         items={t.webCalculatorPage.faqItems}
       />
       <RelatedCalculators activeHref="/web-calculator" />
-        </>
+    </>
   );
 }

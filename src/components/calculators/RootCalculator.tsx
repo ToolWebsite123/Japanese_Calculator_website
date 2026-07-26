@@ -17,12 +17,7 @@ import {
   SegmentedControl,
   SurfacePanel,
 } from "@/components/ui/primitives";
-import {
-  MathEq,
-  MathOp,
-  MathPower,
-  MathRadical,
-} from "@/components/ui/MathDisplay";
+import { MathEq, MathOp, MathPower, MathRadical } from "@/components/ui/MathDisplay";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import {
@@ -35,25 +30,14 @@ import { formatDisplayNumber } from "@/lib/format";
 import { ROOT_BUTTON_GUIDE } from "@/lib/calculator-guides/root";
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce(
-    (text, value, index) => text.replace(`{${index}}`, value),
-    template
-  );
+  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
 }
 
 function Num({ children }: { children: ReactNode }) {
   return <span>{children}</span>;
 }
 
-function ExampleStep({
-  title,
-  math,
-  stepId,
-}: {
-  title: string;
-  math: ReactNode;
-  stepId: string;
-}) {
+function ExampleStep({ title, math, stepId }: { title: string; math: ReactNode; stepId: string }) {
   return (
     <div className="mt-2">
       <p className="font-semibold text-text-primary">{title}</p>
@@ -74,7 +58,7 @@ function productTerms(root: string, n: number): ReactNode {
 function tryCalculateNthRoot(
   radicand: number,
   index: number,
-  invalidInput: string
+  invalidInput: string,
 ): { result: RootResult | null; error: string | null } {
   try {
     return { result: calculateRoot(radicand, index, "nth"), error: null };
@@ -106,16 +90,13 @@ function RootStepsPanel({
   inputLabel: string;
 }) {
   const displayR = formatDisplayNumber(result.radicand);
-  const exactRoot =
-    result.isExact && result.exactText ? result.exactText : null;
+  const exactRoot = result.isExact && result.exactText ? result.exactText : null;
   const approxRoot = formatDisplayNumber(result.value, 8);
   const index = result.index;
 
   return (
     <SurfacePanel className="space-y-2">
-      {title && (
-        <h3 className="text-lg font-bold text-text-primary">{title}</h3>
-      )}
+      {title && <h3 className="text-lg font-bold text-text-primary">{title}</h3>}
       <p className="font-semibold text-text-primary">{inputLabel}</p>
       <MathEq>
         <MathRadical index={index}>{displayR}</MathRadical>
@@ -130,8 +111,7 @@ function RootStepsPanel({
             title={step1Title}
             math={
               <>
-                {productTerms(exactRoot, index)} <MathOp op="=" />{" "}
-                <Num>{displayR}</Num>
+                {productTerms(exactRoot, index)} <MathOp op="=" /> <Num>{displayR}</Num>
               </>
             }
           />
@@ -150,10 +130,7 @@ function RootStepsPanel({
             title={step3Title}
             math={
               <>
-                <MathPower
-                  base={displayR}
-                  exponent={{ num: 1, den: index }}
-                />
+                <MathPower base={displayR} exponent={{ num: 1, den: index }} />
                 <MathOp op="=" />
                 <MathPower
                   base={<MathPower base={exactRoot} exponent={index} />}
@@ -189,8 +166,7 @@ function RootStepsPanel({
             title={step5Title}
             math={
               <>
-                <MathPower base={exactRoot} exponent={1} />{" "}
-                <MathOp op="=" /> <Num>{exactRoot}</Num>
+                <MathPower base={exactRoot} exponent={1} /> <MathOp op="=" /> <Num>{exactRoot}</Num>
               </>
             }
           />
@@ -202,8 +178,8 @@ function RootStepsPanel({
             title={step1Title}
             math={
               <>
-                <MathRadical index={index}>{displayR}</MathRadical>{" "}
-                <MathOp op="≈" /> <Num>{approxRoot}</Num>
+                <MathRadical index={index}>{displayR}</MathRadical> <MathOp op="≈" />{" "}
+                <Num>{approxRoot}</Num>
               </>
             }
           />
@@ -212,11 +188,8 @@ function RootStepsPanel({
             title={step2Title}
             math={
               <>
-                <MathPower
-                  base={displayR}
-                  exponent={{ num: 1, den: index }}
-                />{" "}
-                <MathOp op="≈" /> <Num>{approxRoot}</Num>
+                <MathPower base={displayR} exponent={{ num: 1, den: index }} /> <MathOp op="≈" />{" "}
+                <Num>{approxRoot}</Num>
               </>
             }
           />
@@ -225,8 +198,8 @@ function RootStepsPanel({
             title={step3Title}
             math={
               <>
-                <MathPower base={approxRoot} exponent={index} />{" "}
-                <MathOp op="≈" /> <Num>{displayR}</Num>
+                <MathPower base={approxRoot} exponent={index} /> <MathOp op="≈" />{" "}
+                <Num>{displayR}</Num>
               </>
             }
           />
@@ -235,8 +208,8 @@ function RootStepsPanel({
             title={step4Title}
             math={
               <>
-                <MathRadical index={index}>{displayR}</MathRadical>{" "}
-                <MathOp op="≈" /> <Num>{approxRoot}</Num>
+                <MathRadical index={index}>{displayR}</MathRadical> <MathOp op="≈" />{" "}
+                <Num>{approxRoot}</Num>
               </>
             }
           />
@@ -245,8 +218,8 @@ function RootStepsPanel({
             title={step5Title}
             math={
               <>
-                <MathRadical index={index}>{displayR}</MathRadical>{" "}
-                <MathOp op="≈" /> <Num>{approxRoot}</Num>
+                <MathRadical index={index}>{displayR}</MathRadical> <MathOp op="≈" />{" "}
+                <Num>{approxRoot}</Num>
               </>
             }
           />
@@ -278,8 +251,7 @@ export function RootCalculator() {
       setResult(res);
       setError(null);
       addEntry({
-        expression:
-          res.index === 2 ? `√${res.radicand}` : `${res.index}√${res.radicand}`,
+        expression: res.index === 2 ? `√${res.radicand}` : `${res.index}√${res.radicand}`,
         result: formatDisplayNumber(res.value, 8),
         route: "/squareroot-calculator",
       });
@@ -335,9 +307,7 @@ export function RootCalculator() {
         title={t.rootPage.title}
         description={t.rootPage.description}
         actions={
-          result ? (
-            <CopyResultButton value={formatDisplayNumber(result.value, 8)} />
-          ) : undefined
+          result ? <CopyResultButton value={formatDisplayNumber(result.value, 8)} /> : undefined
         }
       >
         <div className="space-y-4">
@@ -373,10 +343,7 @@ export function RootCalculator() {
             <SectionLabel>{t.root.presets}</SectionLabel>
             <div className="flex flex-wrap gap-2">
               {ROOT_PRESETS.map((p) => (
-                <ChipButton
-                  key={p.label}
-                  onClick={() => applyPreset(p.radicand, p.index)}
-                >
+                <ChipButton key={p.label} onClick={() => applyPreset(p.radicand, p.index)}>
                   {p.label}
                 </ChipButton>
               ))}
@@ -387,11 +354,7 @@ export function RootCalculator() {
             <SecondaryButton fullWidth onClick={handleClear} className="flex-1">
               {t.common.clear}
             </SecondaryButton>
-            <PrimaryButton
-              onClick={handleCalculate}
-              fullWidth
-              className="flex-[2]"
-            >
+            <PrimaryButton onClick={handleCalculate} fullWidth className="flex-[2]">
               {t.common.calculate}
             </PrimaryButton>
           </div>
@@ -425,11 +388,7 @@ export function RootCalculator() {
                 </h3>
                 <RootStepsPanel
                   result={result}
-                  inputLabel={formatTemplate(
-                    page.rootInput,
-                    displayR,
-                    String(result.index)
-                  )}
+                  inputLabel={formatTemplate(page.rootInput, displayR, String(result.index))}
                   step1Title={formatTemplate(page.step1Title, displayR)}
                   step2Title={page.step2Title}
                   step3Title={page.step3Title}
@@ -439,70 +398,55 @@ export function RootCalculator() {
               </Divider>
 
               {mode === "nth" && cubePanel && fourthPanel && nthStepProps && (
-                  <div className="grid items-start gap-6 sm:grid-cols-2">
-                    {cubePanel.result ? (
-                      <RootStepsPanel
-                        result={cubePanel.result}
-                        title={page.cubeRootTitle}
-                        inputLabel={formatTemplate(
-                          page.cubeRootInput,
-                          displayR
-                        )}
-                        {...nthStepProps}
-                      />
-                    ) : (
-                      <SurfacePanel className="space-y-2">
-                        <h3 className="text-lg font-bold text-text-primary">
-                          {page.cubeRootTitle}
-                        </h3>
-                        <p className="text-sm text-text-secondary sm:text-base">
-                          {cubePanel.error ?? t.common.invalidInput}
-                        </p>
-                      </SurfacePanel>
-                    )}
+                <div className="grid items-start gap-6 sm:grid-cols-2">
+                  {cubePanel.result ? (
+                    <RootStepsPanel
+                      result={cubePanel.result}
+                      title={page.cubeRootTitle}
+                      inputLabel={formatTemplate(page.cubeRootInput, displayR)}
+                      {...nthStepProps}
+                    />
+                  ) : (
+                    <SurfacePanel className="space-y-2">
+                      <h3 className="text-lg font-bold text-text-primary">{page.cubeRootTitle}</h3>
+                      <p className="text-sm text-text-secondary sm:text-base">
+                        {cubePanel.error ?? t.common.invalidInput}
+                      </p>
+                    </SurfacePanel>
+                  )}
 
-                    {fourthPanel.result ? (
-                      <RootStepsPanel
-                        result={fourthPanel.result}
-                        title={page.fourthRootTitle}
-                        inputLabel={formatTemplate(
-                          page.fourthRootInput,
-                          displayR
-                        )}
-                        {...nthStepProps}
-                      />
-                    ) : (
-                      <SurfacePanel className="space-y-2">
-                        <h3 className="text-lg font-bold text-text-primary">
-                          {page.fourthRootTitle}
-                        </h3>
-                        <p className="text-sm text-text-secondary sm:text-base">
-                          {fourthPanel.error ?? t.common.invalidInput}
-                        </p>
-                      </SurfacePanel>
-                    )}
-                  </div>
-                )}
+                  {fourthPanel.result ? (
+                    <RootStepsPanel
+                      result={fourthPanel.result}
+                      title={page.fourthRootTitle}
+                      inputLabel={formatTemplate(page.fourthRootInput, displayR)}
+                      {...nthStepProps}
+                    />
+                  ) : (
+                    <SurfacePanel className="space-y-2">
+                      <h3 className="text-lg font-bold text-text-primary">
+                        {page.fourthRootTitle}
+                      </h3>
+                      <p className="text-sm text-text-secondary sm:text-base">
+                        {fourthPanel.error ?? t.common.invalidInput}
+                      </p>
+                    </SurfacePanel>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.rootPage.introParagraph} />
       </p>
 
-      <ButtonGuideTable
-        title={t.rootPage.buttonGuideTitle}
-        rows={ROOT_BUTTON_GUIDE}
-      />
+      <ButtonGuideTable title={t.rootPage.buttonGuideTitle} rows={ROOT_BUTTON_GUIDE} />
 
-      <CalculatorFaqSection
-        title={t.rootPage.faqTitle}
-        items={t.rootPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.rootPage.faqTitle} items={t.rootPage.faqItems} />
       <RelatedCalculators activeHref="/squareroot-calculator" />
-        </>
+    </>
   );
 }

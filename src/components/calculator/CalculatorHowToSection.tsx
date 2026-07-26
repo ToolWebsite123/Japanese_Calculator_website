@@ -11,10 +11,7 @@ type CalculatorHowToSectionProps = {
   steps: HowToStep[];
 };
 
-export function CalculatorHowToSection({
-  title,
-  steps,
-}: CalculatorHowToSectionProps) {
+export function CalculatorHowToSection({ title, steps }: CalculatorHowToSectionProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <section

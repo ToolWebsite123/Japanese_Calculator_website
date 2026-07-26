@@ -15,9 +15,5 @@ function getServerMountedSnapshot() {
 }
 
 export function useIsMounted() {
-  return useSyncExternalStore(
-    subscribeNoop,
-    getClientMountedSnapshot,
-    getServerMountedSnapshot
-  );
+  return useSyncExternalStore(subscribeNoop, getClientMountedSnapshot, getServerMountedSnapshot);
 }

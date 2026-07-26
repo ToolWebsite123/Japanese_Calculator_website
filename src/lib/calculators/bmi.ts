@@ -1,10 +1,4 @@
-export type BmiCategory =
-  | "underweight"
-  | "normal"
-  | "obese1"
-  | "obese2"
-  | "obese3"
-  | "obese4";
+export type BmiCategory = "underweight" | "normal" | "obese1" | "obese2" | "obese3" | "obese4";
 
 export type BmiResult = {
   bmi: number;

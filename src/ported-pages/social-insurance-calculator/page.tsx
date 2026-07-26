@@ -16,7 +16,10 @@ export const metadata = buildPageMetadata({
 });
 
 export default function SocialInsurancePage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.socialInsurancePage.faqItems, ja.socialInsurancePage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(
+    ja.socialInsurancePage.faqItems,
+    ja.socialInsurancePage.title,
+  );
 
   return (
     <>

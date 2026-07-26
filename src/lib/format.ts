@@ -44,8 +44,7 @@ export function formatDisplayNumber(value: number, maxDecimals = 10): string {
     return value.toExponential(6);
   }
 
-  const rounded =
-    Math.round(value * Math.pow(10, maxDecimals)) / Math.pow(10, maxDecimals);
+  const rounded = Math.round(value * Math.pow(10, maxDecimals)) / Math.pow(10, maxDecimals);
   const str = String(rounded);
   if (str.includes("e") || str.includes("E")) return value.toPrecision(10);
 
@@ -64,7 +63,8 @@ export function formatPercent(value: number, digits = 1): string {
 /** Parse a history/result string into a finite number for Ans recall. */
 export function parseNumericResult(result: string): number | null {
   const cleaned = result.replace(/,/g, "").replace(/¥/g, "").trim();
-  if (!cleaned || cleaned === "Error" || cleaned === CALCULATOR_ERROR_DISPLAY || cleaned === "—") return null;
+  if (!cleaned || cleaned === "Error" || cleaned === CALCULATOR_ERROR_DISPLAY || cleaned === "—")
+    return null;
 
   const direct = Number(cleaned);
   if (Number.isFinite(direct)) return direct;

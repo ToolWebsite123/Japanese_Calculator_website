@@ -12,21 +12,11 @@ export const metadata = buildPageMetadata({
   title: metaTitle,
   description: metaDescription,
   path: "/algebra-calculator",
-  keywords: [
-    "文字式計算機",
-    "計算式",
-    "文字式の計算方法",
-    "一次方程式",
-    "代数式",
-    "文字式",
-  ],
+  keywords: ["文字式計算機", "計算式", "文字式の計算方法", "一次方程式", "代数式", "文字式"],
 });
 
 export default function AlgebraPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.algebraPage.faqItems,
-    ja.algebraPage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.algebraPage.faqItems, ja.algebraPage.title);
 
   return (
     <>

@@ -16,10 +16,7 @@ export const metadata = buildPageMetadata({
 });
 
 export default function BmiPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.bmiPage.faqItems,
-    ja.bmiPage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.bmiPage.faqItems, ja.bmiPage.title);
 
   return (
     <>

@@ -18,7 +18,7 @@ export const metadata = buildPageMetadata({
 export default function FactorizationPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
     ja.factorizationPage.faqItems,
-    ja.factorizationPage.title
+    ja.factorizationPage.title,
   );
 
   return (

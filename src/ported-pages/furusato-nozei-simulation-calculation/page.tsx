@@ -23,7 +23,10 @@ export const metadata = buildPageMetadata({
 });
 
 export default function FurusatoNozeiSimulationCalculationPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(FurusatoNozeiSimulatorFaq.items, "ふるさと納税 シミュレーション｜詳細版 控除上限額");
+  const faqJsonLd = buildCalculatorFaqJsonLd(
+    FurusatoNozeiSimulatorFaq.items,
+    "ふるさと納税 シミュレーション｜詳細版 控除上限額",
+  );
 
   return (
     <>

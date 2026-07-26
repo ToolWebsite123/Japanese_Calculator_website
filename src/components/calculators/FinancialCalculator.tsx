@@ -15,12 +15,7 @@ import {
   SegmentedControl,
   SurfacePanel,
 } from "@/components/ui/primitives";
-import {
-  MathEq,
-  MathFraction,
-  MathOp,
-  MathPower,
-} from "@/components/ui/MathDisplay";
+import { MathEq, MathFraction, MathOp, MathPower } from "@/components/ui/MathDisplay";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import {
@@ -44,10 +39,7 @@ function formatTvmValue(target: TvmSolveTarget, value: number): string {
 }
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce(
-    (text, value, index) => text.replace(`{${index}}`, value),
-    template
-  );
+  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
 }
 
 function formatAmount(value: number): string {
@@ -193,9 +185,8 @@ function RateGrowthSteps({
         title={page.stepRateTitle}
         math={
           <>
-            <Var>i</Var> <MathOp op="=" />{" "}
-            <MathFraction num={fmt(rate)} den={100} /> <MathOp op="=" />{" "}
-            <Num>{fmt(i)}</Num>
+            <Var>i</Var> <MathOp op="=" /> <MathFraction num={fmt(rate)} den={100} />{" "}
+            <MathOp op="=" /> <Num>{fmt(i)}</Num>
           </>
         }
       />
@@ -204,8 +195,7 @@ function RateGrowthSteps({
         title={page.stepAddOneTitle}
         math={
           <>
-            1 <MathOp op="+" /> <Num>{fmt(i)}</Num> <MathOp op="=" />{" "}
-            <Num>{fmt(base)}</Num>
+            1 <MathOp op="+" /> <Num>{fmt(i)}</Num> <MathOp op="=" /> <Num>{fmt(base)}</Num>
           </>
         }
       />
@@ -214,8 +204,8 @@ function RateGrowthSteps({
         title={page.stepPowerTitle}
         math={
           <>
-            <MathPower base={fmt(base)} exponent={fmt(periods, 4)} />{" "}
-            <MathOp op="=" /> <Num>{fmt(growth, 5)}</Num>
+            <MathPower base={fmt(base)} exponent={fmt(periods, 4)} /> <MathOp op="=" />{" "}
+            <Num>{fmt(growth, 5)}</Num>
           </>
         }
       />
@@ -278,8 +268,7 @@ function FinancialStepsPanel({
   const i = rate / 100;
   const base = 1 + i;
   const growth = Math.abs(i) < 1e-12 ? 1 : Math.pow(base, periods);
-  const annuity =
-    Math.abs(i) < 1e-12 ? periods : (Math.pow(base, periods) - 1) / i;
+  const annuity = Math.abs(i) < 1e-12 ? periods : (Math.pow(base, periods) - 1) / i;
   const pmtNearZero = Math.abs(pmt) < 1e-12;
 
   let iyMid1 = 0;
@@ -303,7 +292,7 @@ function FinancialStepsPanel({
           formatAmount(pv),
           formatAmount(pmt),
           fmt(rate),
-          fmt(periods, 4)
+          fmt(periods, 4),
         );
       case "PV":
         return formatTemplate(
@@ -311,7 +300,7 @@ function FinancialStepsPanel({
           formatAmount(fv),
           formatAmount(pmt),
           fmt(rate),
-          fmt(periods, 4)
+          fmt(periods, 4),
         );
       case "PMT":
         return formatTemplate(
@@ -319,7 +308,7 @@ function FinancialStepsPanel({
           formatAmount(pv),
           formatAmount(fv),
           fmt(rate),
-          fmt(periods, 4)
+          fmt(periods, 4),
         );
       case "IY":
         return formatTemplate(
@@ -327,7 +316,7 @@ function FinancialStepsPanel({
           formatAmount(pv),
           formatAmount(fv),
           formatAmount(pmt),
-          fmt(periods, 4)
+          fmt(periods, 4),
         );
       case "N":
         return formatTemplate(
@@ -335,7 +324,7 @@ function FinancialStepsPanel({
           formatAmount(pv),
           formatAmount(fv),
           formatAmount(pmt),
-          fmt(rate)
+          fmt(rate),
         );
     }
   })();
@@ -344,9 +333,7 @@ function FinancialStepsPanel({
     <SurfacePanel className="space-y-2">
       <div>
         <h3 className="font-bold text-text-primary">{page.scenarioTitle}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-text-secondary sm:text-base">
-          {scenario}
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-text-secondary sm:text-base">{scenario}</p>
       </div>
 
       <GivenList
@@ -365,21 +352,21 @@ function FinancialStepsPanel({
           <MathEq>
             {pmtNearZero ? (
               <>
-                <Var>FV</Var> <MathOp op="=" /> <Var>PV</Var>{" "}
-                <MathOp op="×" /> (1 <MathOp op="+" /> <Var>i</Var>)
+                <Var>FV</Var> <MathOp op="=" /> <Var>PV</Var> <MathOp op="×" /> (1 <MathOp op="+" />{" "}
+                <Var>i</Var>)
                 <sup className="ml-0.5 text-[0.65em] font-medium">
                   <Var>n</Var>
                 </sup>
               </>
             ) : (
               <>
-                <Var>FV</Var> <MathOp op="=" /> <Var>PV</Var>{" "}
-                <MathOp op="×" /> (1 <MathOp op="+" /> <Var>i</Var>)
+                <Var>FV</Var> <MathOp op="=" /> <Var>PV</Var> <MathOp op="×" /> (1 <MathOp op="+" />{" "}
+                <Var>i</Var>)
                 <sup className="ml-0.5 text-[0.65em] font-medium">
                   <Var>n</Var>
                 </sup>{" "}
-                <MathOp op="+" /> <Var>PMT</Var> <MathOp op="×" /> ((1{" "}
-                <MathOp op="+" /> <Var>i</Var>)
+                <MathOp op="+" /> <Var>PMT</Var> <MathOp op="×" /> ((1 <MathOp op="+" />{" "}
+                <Var>i</Var>)
                 <sup className="ml-0.5 text-[0.65em] font-medium">
                   <Var>n</Var>
                 </sup>{" "}
@@ -392,17 +379,16 @@ function FinancialStepsPanel({
           <MathEq>
             {pmtNearZero ? (
               <>
-                <Var>PV</Var> <MathOp op="=" /> <Var>FV</Var>{" "}
-                <MathOp op="/" /> (1 <MathOp op="+" /> <Var>i</Var>)
+                <Var>PV</Var> <MathOp op="=" /> <Var>FV</Var> <MathOp op="/" /> (1 <MathOp op="+" />{" "}
+                <Var>i</Var>)
                 <sup className="ml-0.5 text-[0.65em] font-medium">
                   <Var>n</Var>
                 </sup>
               </>
             ) : (
               <>
-                <Var>PV</Var> <MathOp op="=" /> (<Var>FV</Var>{" "}
-                <MathOp op="−" /> <Var>PMT</Var> <MathOp op="×" /> af){" "}
-                <MathOp op="/" /> (1 <MathOp op="+" /> <Var>i</Var>)
+                <Var>PV</Var> <MathOp op="=" /> (<Var>FV</Var> <MathOp op="−" /> <Var>PMT</Var>{" "}
+                <MathOp op="×" /> af) <MathOp op="/" /> (1 <MathOp op="+" /> <Var>i</Var>)
                 <sup className="ml-0.5 text-[0.65em] font-medium">
                   <Var>n</Var>
                 </sup>
@@ -412,9 +398,8 @@ function FinancialStepsPanel({
         )}
         {solveFor === "PMT" && (
           <MathEq>
-            <Var>PMT</Var> <MathOp op="=" /> (<Var>FV</Var>{" "}
-            <MathOp op="−" /> <Var>PV</Var> <MathOp op="×" /> (1{" "}
-            <MathOp op="+" /> <Var>i</Var>)
+            <Var>PMT</Var> <MathOp op="=" /> (<Var>FV</Var> <MathOp op="−" /> <Var>PV</Var>{" "}
+            <MathOp op="×" /> (1 <MathOp op="+" /> <Var>i</Var>)
             <sup className="ml-0.5 text-[0.65em] font-medium">
               <Var>n</Var>
             </sup>
@@ -427,27 +412,24 @@ function FinancialStepsPanel({
         )}
         {solveFor === "IY" && (
           <MathEq>
-            <Var>FV</Var> <MathOp op="=" /> <Var>PV</Var>{" "}
-            <MathOp op="×" /> (1 <MathOp op="+" /> <Var>i</Var>)
+            <Var>FV</Var> <MathOp op="=" /> <Var>PV</Var> <MathOp op="×" /> (1 <MathOp op="+" />{" "}
+            <Var>i</Var>)
             <sup className="ml-0.5 text-[0.65em] font-medium">
               <Var>n</Var>
             </sup>{" "}
-            <MathOp op="+" /> <Var>PMT</Var> <MathOp op="×" /> af →{" "}
-            <Var>i</Var> を二分法で逆算
+            <MathOp op="+" /> <Var>PMT</Var> <MathOp op="×" /> af → <Var>i</Var> を二分法で逆算
           </MathEq>
         )}
         {solveFor === "N" && (
           <MathEq>
             {pmtNearZero ? (
               <>
-                <Var>N</Var> <MathOp op="=" /> log(<Var>FV</Var>{" "}
-                <MathOp op="/" /> <Var>PV</Var>) <MathOp op="/" /> log(1{" "}
-                <MathOp op="+" /> <Var>i</Var>)
+                <Var>N</Var> <MathOp op="=" /> log(<Var>FV</Var> <MathOp op="/" /> <Var>PV</Var>){" "}
+                <MathOp op="/" /> log(1 <MathOp op="+" /> <Var>i</Var>)
               </>
             ) : (
               <>
-                <Var>FV</Var> <MathOp op="=" /> f(<Var>N</Var>) →{" "}
-                <Var>N</Var> を二分法で逆算
+                <Var>FV</Var> <MathOp op="=" /> f(<Var>N</Var>) → <Var>N</Var> を二分法で逆算
               </>
             )}
           </MathEq>
@@ -465,23 +447,22 @@ function FinancialStepsPanel({
         />
       )}
 
-      {(solveFor === "FV" || solveFor === "PV" || solveFor === "PMT") &&
-        !pmtNearZero && (
-          <ExampleStep
-            stepId="fin-af"
-            title={page.stepAnnuityTitle}
-            math={
-              <>
-                ((1 <MathOp op="+" /> <Var>i</Var>)
-                <sup className="ml-0.5 text-[0.65em] font-medium">
-                  <Var>n</Var>
-                </sup>{" "}
-                <MathOp op="−" /> 1) <MathOp op="/" /> <Var>i</Var>{" "}
-                <MathOp op="=" /> <Num>{fmt(annuity, 5)}</Num>
-              </>
-            }
-          />
-        )}
+      {(solveFor === "FV" || solveFor === "PV" || solveFor === "PMT") && !pmtNearZero && (
+        <ExampleStep
+          stepId="fin-af"
+          title={page.stepAnnuityTitle}
+          math={
+            <>
+              ((1 <MathOp op="+" /> <Var>i</Var>)
+              <sup className="ml-0.5 text-[0.65em] font-medium">
+                <Var>n</Var>
+              </sup>{" "}
+              <MathOp op="−" /> 1) <MathOp op="/" /> <Var>i</Var> <MathOp op="=" />{" "}
+              <Num>{fmt(annuity, 5)}</Num>
+            </>
+          }
+        />
+      )}
 
       {solveFor === "FV" && (
         <>
@@ -491,17 +472,14 @@ function FinancialStepsPanel({
             math={
               pmtNearZero ? (
                 <>
-                  <Var>FV</Var> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(pv)}</Num> <MathOp op="×" />{" "}
+                  <Var>FV</Var> <MathOp op="=" /> <Num>{formatAmount(pv)}</Num> <MathOp op="×" />{" "}
                   <Num>{fmt(growth, 5)}</Num>
                 </>
               ) : (
                 <>
-                  <Var>FV</Var> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(pv)}</Num> <MathOp op="×" />{" "}
-                  <Num>{fmt(growth, 5)}</Num> <MathOp op="+" />{" "}
-                  <Num>{formatAmount(pmt)}</Num> <MathOp op="×" />{" "}
-                  <Num>{fmt(annuity, 5)}</Num>
+                  <Var>FV</Var> <MathOp op="=" /> <Num>{formatAmount(pv)}</Num> <MathOp op="×" />{" "}
+                  <Num>{fmt(growth, 5)}</Num> <MathOp op="+" /> <Num>{formatAmount(pmt)}</Num>{" "}
+                  <MathOp op="×" /> <Num>{fmt(annuity, 5)}</Num>
                 </>
               )
             }
@@ -511,14 +489,12 @@ function FinancialStepsPanel({
             title={page.stepFvResultTitle}
             math={
               <>
-                <Var>FV</Var> <MathOp op="=" />{" "}
-                <Num>{formatAmount(solved)}</Num>
+                <Var>FV</Var> <MathOp op="=" /> <Num>{formatAmount(solved)}</Num>
               </>
             }
           />
           <p className="mt-2 text-sm font-semibold text-text-primary sm:text-base">
-            {page.resultLabel}:{" "}
-            {formatTemplate(page.resultFv, `${formatAmount(solved)}円`)}
+            {page.resultLabel}: {formatTemplate(page.resultFv, `${formatAmount(solved)}円`)}
           </p>
         </>
       )}
@@ -531,17 +507,14 @@ function FinancialStepsPanel({
             math={
               pmtNearZero ? (
                 <>
-                  <Var>PV</Var> <MathOp op="=" />{" "}
-                  <Num>{formatAmount(fv)}</Num> <MathOp op="/" />{" "}
+                  <Var>PV</Var> <MathOp op="=" /> <Num>{formatAmount(fv)}</Num> <MathOp op="/" />{" "}
                   <Num>{fmt(growth, 5)}</Num>
                 </>
               ) : (
                 <>
-                  <Var>PV</Var> <MathOp op="=" /> (
-                  <Num>{formatAmount(fv)}</Num> <MathOp op="−" />{" "}
-                  <Num>{formatAmount(pmt)}</Num> <MathOp op="×" />{" "}
-                  <Num>{fmt(annuity, 5)}</Num>) <MathOp op="/" />{" "}
-                  <Num>{fmt(growth, 5)}</Num>
+                  <Var>PV</Var> <MathOp op="=" /> (<Num>{formatAmount(fv)}</Num> <MathOp op="−" />{" "}
+                  <Num>{formatAmount(pmt)}</Num> <MathOp op="×" /> <Num>{fmt(annuity, 5)}</Num>){" "}
+                  <MathOp op="/" /> <Num>{fmt(growth, 5)}</Num>
                 </>
               )
             }
@@ -551,14 +524,12 @@ function FinancialStepsPanel({
             title={page.stepPvResultTitle}
             math={
               <>
-                <Var>PV</Var> <MathOp op="=" />{" "}
-                <Num>{formatAmount(solved)}</Num>
+                <Var>PV</Var> <MathOp op="=" /> <Num>{formatAmount(solved)}</Num>
               </>
             }
           />
           <p className="mt-2 text-sm font-semibold text-text-primary sm:text-base">
-            {page.resultLabel}:{" "}
-            {formatTemplate(page.resultPv, `${formatAmount(solved)}円`)}
+            {page.resultLabel}: {formatTemplate(page.resultPv, `${formatAmount(solved)}円`)}
           </p>
         </>
       )}
@@ -570,9 +541,8 @@ function FinancialStepsPanel({
             title={page.stepPmtNumTitle}
             math={
               <>
-                <Num>{formatAmount(fv)}</Num> <MathOp op="−" />{" "}
-                <Num>{formatAmount(pv)}</Num> <MathOp op="×" />{" "}
-                <Num>{fmt(growth, 5)}</Num> <MathOp op="=" />{" "}
+                <Num>{formatAmount(fv)}</Num> <MathOp op="−" /> <Num>{formatAmount(pv)}</Num>{" "}
+                <MathOp op="×" /> <Num>{fmt(growth, 5)}</Num> <MathOp op="=" />{" "}
                 <Num>{formatAmount(fv - pv * growth)}</Num>
               </>
             }
@@ -582,8 +552,7 @@ function FinancialStepsPanel({
             title={page.stepPmtDivideTitle}
             math={
               <>
-                <Var>PMT</Var> <MathOp op="=" />{" "}
-                <Num>{formatAmount(fv - pv * growth)}</Num>{" "}
+                <Var>PMT</Var> <MathOp op="=" /> <Num>{formatAmount(fv - pv * growth)}</Num>{" "}
                 <MathOp op="/" /> <Num>{fmt(annuity, 5)}</Num>
               </>
             }
@@ -593,14 +562,12 @@ function FinancialStepsPanel({
             title={page.stepPmtResultTitle}
             math={
               <>
-                <Var>PMT</Var> <MathOp op="=" />{" "}
-                <Num>{formatAmount(solved)}</Num>
+                <Var>PMT</Var> <MathOp op="=" /> <Num>{formatAmount(solved)}</Num>
               </>
             }
           />
           <p className="mt-2 text-sm font-semibold text-text-primary sm:text-base">
-            {page.resultLabel}:{" "}
-            {formatTemplate(page.resultPmt, `${formatAmount(solved)}円`)}
+            {page.resultLabel}: {formatTemplate(page.resultPmt, `${formatAmount(solved)}円`)}
           </p>
         </>
       )}
@@ -621,15 +588,12 @@ function FinancialStepsPanel({
             title={page.stepIyMidTitle}
             math={[
               <>
-                mid <MathOp op="=" /> (lo <MathOp op="+" /> hi){" "}
-                <MathOp op="/" /> 2 <MathOp op="≈" />{" "}
-                <Num>{fmt(iyMid1, 4)}</Num>%
+                mid <MathOp op="=" /> (lo <MathOp op="+" /> hi) <MathOp op="/" /> 2{" "}
+                <MathOp op="≈" /> <Num>{fmt(iyMid1, 4)}</Num>%
               </>,
               <>
                 FV(mid) <MathOp op="≈" />{" "}
-                <Num>
-                  {Number.isFinite(iyFv1) ? formatAmount(iyFv1) : "—"}
-                </Num>
+                <Num>{Number.isFinite(iyFv1) ? formatAmount(iyFv1) : "—"}</Num>
                 、目標 FV <MathOp op="=" /> <Num>{formatAmount(fv)}</Num>
               </>,
             ]}
@@ -639,8 +603,7 @@ function FinancialStepsPanel({
             title={page.stepIyConvergeTitle}
             math={
               <>
-                |FV(mid) <MathOp op="−" /> FV| が十分小さくなるまで mid
-                を更新
+                |FV(mid) <MathOp op="−" /> FV| が十分小さくなるまで mid を更新
               </>
             }
           />
@@ -668,10 +631,9 @@ function FinancialStepsPanel({
               math={
                 <>
                   <Var>N</Var> <MathOp op="=" /> log(
-                  <Num>{formatAmount(fv)}</Num> <MathOp op="/" />{" "}
-                  <Num>{formatAmount(pv)}</Num>) <MathOp op="/" /> log(
-                  <Num>{fmt(base)}</Num>) <MathOp op="=" />{" "}
-                  <Num>{fmt(solved, 4)}</Num>
+                  <Num>{formatAmount(fv)}</Num> <MathOp op="/" /> <Num>{formatAmount(pv)}</Num>){" "}
+                  <MathOp op="/" /> log(
+                  <Num>{fmt(base)}</Num>) <MathOp op="=" /> <Num>{fmt(solved, 4)}</Num>
                 </>
               }
             />
@@ -681,8 +643,7 @@ function FinancialStepsPanel({
               title={page.stepNBisectionTitle}
               math={
                 <>
-                  FV(N) <MathOp op="=" /> 目標 <Num>{formatAmount(fv)}</Num>{" "}
-                  になる N を二分法で探索
+                  FV(N) <MathOp op="=" /> 目標 <Num>{formatAmount(fv)}</Num> になる N を二分法で探索
                 </>
               }
             />
@@ -792,9 +753,7 @@ export function FinancialCalculator() {
         description={tPage.description}
         actions={
           result ? (
-            <CopyResultButton
-              value={formatTvmValue(solveFor, result.solvedValue)}
-            />
+            <CopyResultButton value={formatTvmValue(solveFor, result.solvedValue)} />
           ) : undefined
         }
       >
@@ -832,11 +791,7 @@ export function FinancialCalculator() {
             <SecondaryButton fullWidth onClick={handleClear} className="flex-1">
               {t.common.clear}
             </SecondaryButton>
-            <PrimaryButton
-              onClick={handleCalculate}
-              fullWidth
-              className="flex-[2]"
-            >
+            <PrimaryButton onClick={handleCalculate} fullWidth className="flex-[2]">
               {t.common.calculate}
             </PrimaryButton>
           </div>
@@ -852,10 +807,7 @@ export function FinancialCalculator() {
                   highlight
                 />
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <ResultCard
-                    label={tFin.totalPayments}
-                    value={formatYen(result.totalPayments)}
-                  />
+                  <ResultCard label={tFin.totalPayments} value={formatYen(result.totalPayments)} />
                   <ResultCard
                     label={tFin.interestDifference}
                     value={formatYen(result.interestDifference)}
@@ -871,9 +823,7 @@ export function FinancialCalculator() {
                   <MathEq>
                     <Var>{solveFor === "IY" ? "I/Y" : solveFor}</Var>
                     <MathOp op="=" />
-                    <span>
-                      {formatTvmValue(solveFor, result.solvedValue)}
-                    </span>
+                    <span>{formatTvmValue(solveFor, result.solvedValue)}</span>
                   </MathEq>
                 </SurfacePanel>
               </Divider>
@@ -897,9 +847,7 @@ export function FinancialCalculator() {
           )}
 
           <SurfacePanel className="mt-4">
-            <h3 className="text-sm font-semibold text-text-primary">
-              {tFin.explanationTitle}
-            </h3>
+            <h3 className="text-sm font-semibold text-text-primary">{tFin.explanationTitle}</h3>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">
               {tFin.explanationText}
             </p>
@@ -907,21 +855,14 @@ export function FinancialCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={tPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={tPage.howToTitle}
-        steps={tPage.howToSteps}
-      />
+      <CalculatorHowToSection title={tPage.howToTitle} steps={tPage.howToSteps} />
 
-      <CalculatorFaqSection
-        title={tPage.faqTitle}
-        items={tPage.faqItems}
-      />
+      <CalculatorFaqSection title={tPage.faqTitle} items={tPage.faqItems} />
       <RelatedCalculators activeHref="/financial-calculator" />
-        </>
+    </>
   );
 }

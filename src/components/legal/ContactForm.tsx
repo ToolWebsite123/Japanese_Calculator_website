@@ -38,10 +38,7 @@ export function ContactForm() {
       }}
     >
       <div className="space-y-2">
-        <label
-          htmlFor="contact-name"
-          className="text-sm font-medium text-text-secondary"
-        >
+        <label htmlFor="contact-name" className="text-sm font-medium text-text-secondary">
           お名前
         </label>
         <input
@@ -59,10 +56,7 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <label
-          htmlFor="contact-email"
-          className="text-sm font-medium text-text-secondary"
-        >
+        <label htmlFor="contact-email" className="text-sm font-medium text-text-secondary">
           メールアドレス
         </label>
         <input
@@ -81,10 +75,7 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <label
-          htmlFor="contact-message"
-          className="text-sm font-medium text-text-secondary"
-        >
+        <label htmlFor="contact-message" className="text-sm font-medium text-text-secondary">
           お問い合わせ内容
         </label>
         <textarea
@@ -113,9 +104,7 @@ export function ContactForm() {
       </button>
 
       <SurfacePanel className="space-y-2 text-sm leading-6 text-text-secondary">
-        <p>
-          現在、このフォームにはメール送信や外部フォーム連携は設定されていません。
-        </p>
+        <p>現在、このフォームにはメール送信や外部フォーム連携は設定されていません。</p>
         <p>
           送信ボタンは画面上の入力動作を確認するためのもので、実際のメッセージ送信処理は今後の実装対象です。
         </p>

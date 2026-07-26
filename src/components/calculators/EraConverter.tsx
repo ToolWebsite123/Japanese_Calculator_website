@@ -8,19 +8,10 @@ import { RelatedCalculators } from "@/components/calculators/RelatedCalculators"
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
-import {
-  PrimaryButton,
-  SegmentedControl,
-  SelectWell,
-} from "@/components/ui/primitives";
+import { PrimaryButton, SegmentedControl, SelectWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
-import {
-  ERAS,
-  eraToWestern,
-  westernToEra,
-  type EraId,
-} from "@/lib/calculators/era";
+import { ERAS, eraToWestern, westernToEra, type EraId } from "@/lib/calculators/era";
 
 export function EraConverter() {
   const { t } = useLocale();
@@ -127,13 +118,8 @@ export function EraConverter() {
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block space-y-1.5">
-                <span className="text-sm font-medium text-text-secondary">
-                  {t.era.era}
-                </span>
-                <SelectWell
-                  value={eraId}
-                  onChange={(e) => setEraId(e.target.value as EraId)}
-                >
+                <span className="text-sm font-medium text-text-secondary">{t.era.era}</span>
+                <SelectWell value={eraId} onChange={(e) => setEraId(e.target.value as EraId)}>
                   {ERAS.map((era) => (
                     <option key={era.id} value={era.id}>
                       {era.nameJa}
@@ -152,9 +138,7 @@ export function EraConverter() {
             </div>
           )}
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate}
-          </PrimaryButton>
+          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
           {error && <ErrorMessage message={error} />}
 
@@ -167,30 +151,19 @@ export function EraConverter() {
           )}
 
           {direction === "toWestern" && westernResult !== null && (
-            <ResultCard
-              label={t.era.western}
-              value={`${westernResult}年`}
-              highlight
-            />
+            <ResultCard label={t.era.western} value={`${westernResult}年`} highlight />
           )}
         </div>
       </CalculatorCard>
-
 
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.eraPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={t.eraPage.howToTitle}
-        steps={t.eraPage.howToSteps}
-      />
+      <CalculatorHowToSection title={t.eraPage.howToTitle} steps={t.eraPage.howToSteps} />
 
-      <CalculatorFaqSection
-        title={t.eraPage.faqTitle}
-        items={t.eraPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.eraPage.faqTitle} items={t.eraPage.faqItems} />
       <RelatedCalculators activeHref="/era-converter" />
-        </>
+    </>
   );
 }

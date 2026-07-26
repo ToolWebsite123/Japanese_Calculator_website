@@ -74,7 +74,7 @@ export function convertUnit(
   category: UnitCategory,
   value: number,
   fromId: string,
-  toId: string
+  toId: string,
 ): number {
   if (!Number.isFinite(value)) throw new Error("値が無効です");
 

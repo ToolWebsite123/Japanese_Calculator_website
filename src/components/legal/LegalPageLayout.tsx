@@ -25,9 +25,7 @@ export function LegalPageLayout({
               className="mt-4 h-1 w-16 rounded-full bg-[#231942] dark:bg-[#d6ccf0]"
               aria-hidden="true"
             />
-            <p className="mt-4 text-sm leading-7 text-text-secondary sm:text-base">
-              {description}
-            </p>
+            <p className="mt-4 text-sm leading-7 text-text-secondary sm:text-base">{description}</p>
             {lastUpdated && (
               <p className="mt-4 text-xs text-text-tertiary sm:text-sm">
                 最終更新日: {lastUpdated}

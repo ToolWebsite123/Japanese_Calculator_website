@@ -12,10 +12,7 @@ type CalculatorFaqSectionProps = {
   items: FaqItem[];
 };
 
-export function CalculatorFaqSection({
-  title,
-  items,
-}: CalculatorFaqSectionProps) {
+export function CalculatorFaqSection({ title, items }: CalculatorFaqSectionProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
     <section
@@ -37,9 +34,7 @@ export function CalculatorFaqSection({
               </h3>
             </dt>
             <dd className="mt-2 text-sm leading-relaxed text-text-secondary sm:text-base">
-              {typeof item.answer === "string"
-                ? linkify(item.answer, pathname)
-                : item.answer}
+              {typeof item.answer === "string" ? linkify(item.answer, pathname) : item.answer}
             </dd>
           </div>
         ))}

@@ -12,7 +12,15 @@ export const metadata = buildPageMetadata({
   title: metaTitle,
   description: metaDescription,
   path: "/income-tax-calculation",
-  keywords: ["所得税 計算", "所得税", "年収", "給与所得控除", "基礎控除", "復興特別所得税", "課税所得"],
+  keywords: [
+    "所得税 計算",
+    "所得税",
+    "年収",
+    "給与所得控除",
+    "基礎控除",
+    "復興特別所得税",
+    "課税所得",
+  ],
 });
 
 export default function IncomeTaxCalculationPage() {

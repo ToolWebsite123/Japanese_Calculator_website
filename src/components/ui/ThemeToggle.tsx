@@ -9,9 +9,7 @@ export function ThemeToggle() {
   const { t } = useLocale();
 
   if (!mounted) {
-    return (
-      <div className="h-9 w-9 rounded-[var(--radius-sm)] bg-surface-sunken" />
-    );
+    return <div className="h-9 w-9 rounded-[var(--radius-sm)] bg-surface-sunken" />;
   }
 
   const isDark = theme === "dark";

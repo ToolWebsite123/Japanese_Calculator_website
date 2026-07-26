@@ -6,10 +6,9 @@ import FurusatoNozeiCalculationPage, {
 const title =
   typeof furusatoMetadata.title === "string"
     ? furusatoMetadata.title
-    : furusatoMetadata.title?.absolute ?? "ふるさと納税 計算";
+    : (furusatoMetadata.title?.absolute ?? "ふるさと納税 計算");
 const description = furusatoMetadata.description ?? "";
-const canonical =
-  furusatoMetadata.alternates?.canonical ?? "/furusato-nozei-calculation";
+const canonical = furusatoMetadata.alternates?.canonical ?? "/furusato-nozei-calculation";
 const keywords = furusatoMetadata.keywords ?? [];
 const og = (furusatoMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (furusatoMetadata.twitter ?? {}) as Record<string, unknown>;

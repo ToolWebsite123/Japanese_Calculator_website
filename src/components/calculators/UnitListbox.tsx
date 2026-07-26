@@ -15,7 +15,10 @@ type Props = {
 export function UnitListbox({ value, onChange, options, ariaLabel, className = "" }: Props) {
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(() =>
-    Math.max(0, options.findIndex((o) => o.value === value))
+    Math.max(
+      0,
+      options.findIndex((o) => o.value === value),
+    ),
   );
   const btnRef = useRef<HTMLButtonElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -38,7 +41,10 @@ export function UnitListbox({ value, onChange, options, ariaLabel, className = "
 
   useEffect(() => {
     if (open) {
-      const idx = Math.max(0, options.findIndex((o) => o.value === value));
+      const idx = Math.max(
+        0,
+        options.findIndex((o) => o.value === value),
+      );
       setActiveIndex(idx);
       listRef.current?.focus();
     }
@@ -102,7 +108,9 @@ export function UnitListbox({ value, onChange, options, ariaLabel, className = "
         ].join(" ")}
       >
         <span translate="no">{selected?.label}</span>
-        <span aria-hidden="true" className="ml-2 text-text-tertiary">▾</span>
+        <span aria-hidden="true" className="ml-2 text-text-tertiary">
+          ▾
+        </span>
       </button>
       {open && (
         <ul

@@ -7,27 +7,27 @@
 export type AgeBracket = "u29" | "30-34" | "35-44" | "45-59" | "60-64" | "65+";
 export type TenureBracket = "u1" | "1-5" | "5-10" | "10-20" | "20+";
 export type LeaveReason =
-  | "self"          // 自己都合
-  | "company"       // 会社都合（特定受給資格者）
-  | "fixedTerm"     // 有期雇用未更新（特定理由離職者）
-  | "justSelf"      // 正当な理由のある自己都合（特定理由離職者）
-  | "retirement";   // 定年退職
+  | "self" // 自己都合
+  | "company" // 会社都合（特定受給資格者）
+  | "fixedTerm" // 有期雇用未更新（特定理由離職者）
+  | "justSelf" // 正当な理由のある自己都合（特定理由離職者）
+  | "retirement"; // 定年退職
 
 export type UnemploymentResult = {
-  wageDaily: number;         // 賃金日額
-  wageDailyRaw: number;      // 上下限適用前
-  benefitDaily: number;      // 基本手当日額
-  benefitRate: number;       // 給付率
-  prescribedDays: number;    // 所定給付日数
-  totalBenefit: number;      // 受給総額
-  monthlyBenefit: number;    // 月あたりの受給金額（30日換算）
-  isLumpSum: boolean;        // 65歳以上の高年齢求職者給付金
+  wageDaily: number; // 賃金日額
+  wageDailyRaw: number; // 上下限適用前
+  benefitDaily: number; // 基本手当日額
+  benefitRate: number; // 給付率
+  prescribedDays: number; // 所定給付日数
+  totalBenefit: number; // 受給総額
+  monthlyBenefit: number; // 月あたりの受給金額（30日換算）
+  isLumpSum: boolean; // 65歳以上の高年齢求職者給付金
   notes: string[];
 };
 
 // 賃金日額 上限（令和7年8月1日）
 const WAGE_MAX: Record<AgeBracket, number> = {
-  "u29": 14510,
+  u29: 14510,
   "30-34": 16110,
   "35-44": 16110,
   "45-59": 17740,
@@ -40,7 +40,7 @@ const WAGE_MIN = 3014;
 
 // 基本手当日額 上限（令和7年8月1日）
 const BENEFIT_DAILY_MAX: Record<AgeBracket, number> = {
-  "u29": 7255,
+  u29: 7255,
   "30-34": 8055,
   "35-44": 8055,
   "45-59": 8870,
@@ -54,22 +54,27 @@ const BENEFIT_DAILY_MIN = 2411;
 // 所定給付日数 - 自己都合・定年退職（一般離職者）
 function daysSelf(tenure: TenureBracket): number {
   switch (tenure) {
-    case "u1": return 0; // 原則、被保険者期間12ヶ月未満は受給不可
-    case "1-5": return 90;
-    case "5-10": return 90;
-    case "10-20": return 120;
-    case "20+": return 150;
+    case "u1":
+      return 0; // 原則、被保険者期間12ヶ月未満は受給不可
+    case "1-5":
+      return 90;
+    case "5-10":
+      return 90;
+    case "10-20":
+      return 120;
+    case "20+":
+      return 150;
   }
 }
 
 // 所定給付日数 - 会社都合・特定理由離職者
 function daysCompany(age: AgeBracket, tenure: TenureBracket): number {
   const table: Record<Exclude<AgeBracket, "65+">, Record<TenureBracket, number>> = {
-    "u29":   { "u1": 90, "1-5": 90,  "5-10": 120, "10-20": 180, "20+": 180 },
-    "30-34": { "u1": 90, "1-5": 120, "5-10": 180, "10-20": 210, "20+": 240 },
-    "35-44": { "u1": 90, "1-5": 150, "5-10": 180, "10-20": 240, "20+": 270 },
-    "45-59": { "u1": 90, "1-5": 180, "5-10": 240, "10-20": 270, "20+": 330 },
-    "60-64": { "u1": 90, "1-5": 150, "5-10": 180, "10-20": 210, "20+": 240 },
+    u29: { u1: 90, "1-5": 90, "5-10": 120, "10-20": 180, "20+": 180 },
+    "30-34": { u1: 90, "1-5": 120, "5-10": 180, "10-20": 210, "20+": 240 },
+    "35-44": { u1: 90, "1-5": 150, "5-10": 180, "10-20": 240, "20+": 270 },
+    "45-59": { u1: 90, "1-5": 180, "5-10": 240, "10-20": 270, "20+": 330 },
+    "60-64": { u1: 90, "1-5": 150, "5-10": 180, "10-20": 210, "20+": 240 },
   };
   if (age === "65+") return 0;
   return table[age][tenure];
@@ -152,9 +157,7 @@ export function calculateUnemployment(params: {
   // 月あたり（28日想定/月として概算）
   const monthlyBenefit = benefitDailyValue * 28;
 
-  const notes: string[] = [
-    "受給には7日間の待期期間があります。",
-  ];
+  const notes: string[] = ["受給には7日間の待期期間があります。"];
   if (reason === "self" || reason === "retirement") {
     notes.push("自己都合退職の場合、待期後さらに原則1ヶ月の給付制限があります。");
   }
@@ -179,26 +182,26 @@ export function calculateUnemployment(params: {
 }
 
 export const AGE_OPTIONS: { value: AgeBracket; label: string }[] = [
-  { value: "u29",   label: "29歳以下" },
+  { value: "u29", label: "29歳以下" },
   { value: "30-34", label: "30～34歳" },
   { value: "35-44", label: "35～44歳" },
   { value: "45-59", label: "45～59歳" },
   { value: "60-64", label: "60～64歳" },
-  { value: "65+",   label: "65歳以上" },
+  { value: "65+", label: "65歳以上" },
 ];
 
 export const TENURE_OPTIONS: { value: TenureBracket; label: string }[] = [
-  { value: "u1",    label: "1年未満" },
-  { value: "1-5",   label: "1年以上5年未満" },
-  { value: "5-10",  label: "5年以上10年未満" },
+  { value: "u1", label: "1年未満" },
+  { value: "1-5", label: "1年以上5年未満" },
+  { value: "5-10", label: "5年以上10年未満" },
   { value: "10-20", label: "10年以上20年未満" },
-  { value: "20+",   label: "20年以上" },
+  { value: "20+", label: "20年以上" },
 ];
 
 export const REASON_OPTIONS: { value: LeaveReason; label: string }[] = [
-  { value: "self",       label: "自己都合" },
-  { value: "company",    label: "会社都合" },
-  { value: "fixedTerm",  label: "有期雇用未更新" },
-  { value: "justSelf",   label: "正当な理由のある自己都合" },
+  { value: "self", label: "自己都合" },
+  { value: "company", label: "会社都合" },
+  { value: "fixedTerm", label: "有期雇用未更新" },
+  { value: "justSelf", label: "正当な理由のある自己都合" },
   { value: "retirement", label: "定年退職" },
 ];

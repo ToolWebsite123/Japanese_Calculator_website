@@ -6,10 +6,7 @@ export function HomeFaqSection() {
   const { t } = useLocale();
 
   return (
-    <section
-      aria-labelledby="faq-heading"
-      className="mt-16 border-t border-border pt-16"
-    >
+    <section aria-labelledby="faq-heading" className="mt-16 border-t border-border pt-16">
       <h2
         id="faq-heading"
         className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"

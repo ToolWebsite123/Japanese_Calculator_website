@@ -11,11 +11,7 @@ import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToS
 import { PrimaryButton } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
-import {
-  calculateBmi,
-  type BmiCategory,
-  type BmiResult,
-} from "@/lib/calculators/bmi";
+import { calculateBmi, type BmiCategory, type BmiResult } from "@/lib/calculators/bmi";
 
 const categoryColors: Record<BmiCategory, string> = {
   underweight: "text-sky-600 dark:text-sky-400",
@@ -26,45 +22,44 @@ const categoryColors: Record<BmiCategory, string> = {
   obese4: "text-red-800 dark:text-red-300",
 };
 
-const rangeSegments: { key: BmiCategory; from: number; to: number; bar: string }[] =
-  [
-    {
-      key: "underweight",
-      from: 15,
-      to: 18.5,
-      bar: "bg-sky-400 dark:bg-sky-500",
-    },
-    {
-      key: "normal",
-      from: 18.5,
-      to: 25,
-      bar: "bg-emerald-400 dark:bg-emerald-500",
-    },
-    {
-      key: "obese1",
-      from: 25,
-      to: 30,
-      bar: "bg-amber-400 dark:bg-amber-500",
-    },
-    {
-      key: "obese2",
-      from: 30,
-      to: 35,
-      bar: "bg-orange-400 dark:bg-orange-500",
-    },
-    {
-      key: "obese3",
-      from: 35,
-      to: 40,
-      bar: "bg-red-400 dark:bg-red-500",
-    },
-    {
-      key: "obese4",
-      from: 40,
-      to: 45,
-      bar: "bg-red-700 dark:bg-red-600",
-    },
-  ];
+const rangeSegments: { key: BmiCategory; from: number; to: number; bar: string }[] = [
+  {
+    key: "underweight",
+    from: 15,
+    to: 18.5,
+    bar: "bg-sky-400 dark:bg-sky-500",
+  },
+  {
+    key: "normal",
+    from: 18.5,
+    to: 25,
+    bar: "bg-emerald-400 dark:bg-emerald-500",
+  },
+  {
+    key: "obese1",
+    from: 25,
+    to: 30,
+    bar: "bg-amber-400 dark:bg-amber-500",
+  },
+  {
+    key: "obese2",
+    from: 30,
+    to: 35,
+    bar: "bg-orange-400 dark:bg-orange-500",
+  },
+  {
+    key: "obese3",
+    from: 35,
+    to: 40,
+    bar: "bg-red-400 dark:bg-red-500",
+  },
+  {
+    key: "obese4",
+    from: 40,
+    to: 45,
+    bar: "bg-red-700 dark:bg-red-600",
+  },
+];
 
 const RANGE_MIN = 15;
 const RANGE_MAX = 45;
@@ -126,11 +121,7 @@ export function BmiCalculator() {
       <CalculatorCard
         title={t.bmiPage.title}
         description={t.bmiPage.description}
-        actions={
-          result ? (
-            <CopyResultButton value={result.bmi.toFixed(2)} />
-          ) : undefined
-        }
+        actions={result ? <CopyResultButton value={result.bmi.toFixed(2)} /> : undefined}
       >
         <div className="space-y-4">
           <FormField
@@ -150,24 +141,16 @@ export function BmiCalculator() {
             onChange={(e) => setWeight(e.target.value)}
           />
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate}
-          </PrimaryButton>
+          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
           {error && <ErrorMessage message={error} />}
 
           {result && (
             <div className="space-y-3">
               <div className="grid gap-4 sm:grid-cols-2">
-                <ResultCard
-                  label={t.bmi.result}
-                  value={result.bmi.toFixed(2)}
-                  highlight
-                />
+                <ResultCard label={t.bmi.result} value={result.bmi.toFixed(2)} highlight />
                 <div className="rounded-[var(--radius-md)] border border-border bg-surface-sunken p-4">
-                  <div className="text-xs font-medium text-text-tertiary">
-                    {t.bmi.category}
-                  </div>
+                  <div className="text-xs font-medium text-text-tertiary">{t.bmi.category}</div>
                   <div
                     className={`mt-1 text-xl font-bold tracking-tight ${categoryColors[result.category]}`}
                   >
@@ -178,16 +161,11 @@ export function BmiCalculator() {
                   label={t.bmi.idealWeight}
                   value={`${result.idealWeight.toFixed(2)} kg`}
                 />
-                <ResultCard
-                  label={t.bmi.weightDiff}
-                  value={formatSignedKg(result.weightDiff)}
-                />
+                <ResultCard label={t.bmi.weightDiff} value={formatSignedKg(result.weightDiff)} />
               </div>
 
               <div className="rounded-[var(--radius-md)] border border-border bg-surface-sunken p-4">
-                <div className="text-xs font-medium text-text-tertiary">
-                  {t.bmi.rangeLabel}
-                </div>
+                <div className="text-xs font-medium text-text-tertiary">{t.bmi.rangeLabel}</div>
                 <div className="relative mt-3">
                   <div
                     className="flex h-2.5 overflow-hidden rounded-full"
@@ -220,7 +198,6 @@ export function BmiCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.bmiPage.introParagraph} />
       </p>
@@ -229,16 +206,10 @@ export function BmiCalculator() {
         {t.bmiPage.disclaimer}
       </p>
 
-      <CalculatorHowToSection
-        title={t.bmiPage.howToTitle}
-        steps={t.bmiPage.howToSteps}
-      />
+      <CalculatorHowToSection title={t.bmiPage.howToTitle} steps={t.bmiPage.howToSteps} />
 
-      <CalculatorFaqSection
-        title={t.bmiPage.faqTitle}
-        items={t.bmiPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.bmiPage.faqTitle} items={t.bmiPage.faqItems} />
       <RelatedCalculators activeHref="/bmi-calculator" />
-        </>
+    </>
   );
 }

@@ -14,13 +14,9 @@ export function MathFraction({
   return (
     <span className="mx-1 inline-flex items-center align-middle text-lg">
       {sign && <span className="mr-1">{sign}</span>}
-      {whole !== undefined && whole !== 0 && whole !== "" && (
-        <span className="mr-1">{whole}</span>
-      )}
+      {whole !== undefined && whole !== 0 && whole !== "" && <span className="mr-1">{whole}</span>}
       <span className="inline-flex flex-col items-center justify-center text-center leading-none">
-        <span className="border-b-[1.5px] border-text-primary px-1 pb-[1px]">
-          {num}
-        </span>
+        <span className="border-b-[1.5px] border-text-primary px-1 pb-[1px]">{num}</span>
         <span className="px-1 pt-[1px]">{den}</span>
       </span>
     </span>
@@ -39,33 +35,19 @@ export function MathOp({ op }: { op: string }) {
   return <span className="mx-2 font-medium">{op}</span>;
 }
 
-export function MathRadical({
-  index,
-  children,
-}: {
-  index?: number;
-  children: React.ReactNode;
-}) {
+export function MathRadical({ index, children }: { index?: number; children: React.ReactNode }) {
   return (
     <span className="mx-1 inline-flex items-center align-middle text-lg">
       {index !== undefined && index !== 2 && (
         <sup className="mr-0.5 text-xs font-medium">{index}</sup>
       )}
       <span className="text-2xl leading-none">√</span>
-      <span className="border-t-[1.5px] border-text-primary pl-0.5">
-        {children}
-      </span>
+      <span className="border-t-[1.5px] border-text-primary pl-0.5">{children}</span>
     </span>
   );
 }
 
-export function MathSupFraction({
-  num,
-  den,
-}: {
-  num: number | string;
-  den: number | string;
-}) {
+export function MathSupFraction({ num, den }: { num: number | string; den: number | string }) {
   return (
     <span className="inline-flex flex-col items-center justify-center text-center leading-none text-[0.7em]">
       <span className="border-b border-text-primary px-0.5 pb-px">{num}</span>
@@ -96,7 +78,7 @@ function isFractionExponent(value: unknown): value is FractionExponent {
 }
 
 function isProductExponent(
-  value: unknown
+  value: unknown,
 ): value is { factor: number | string; fraction: FractionExponent } {
   return (
     typeof value === "object" &&
@@ -117,10 +99,7 @@ function renderExponent(exponent: MathExponent): React.ReactNode {
       <>
         {exponent.factor}
         <span className="mx-0.5">×</span>
-        <MathSupFraction
-          num={exponent.fraction.num}
-          den={exponent.fraction.den}
-        />
+        <MathSupFraction num={exponent.fraction.num} den={exponent.fraction.den} />
       </>
     );
   }
@@ -135,7 +114,15 @@ export function MathPower({
   base: number | string | React.ReactNode;
   exponent: MathExponent;
 }) {
-  const groupedBase = React.isValidElement(base) ? <>{"("}{base}{")"}</> : base;
+  const groupedBase = React.isValidElement(base) ? (
+    <>
+      {"("}
+      {base}
+      {")"}
+    </>
+  ) : (
+    base
+  );
 
   return (
     <span className="mx-1 inline-flex items-baseline align-middle text-lg">

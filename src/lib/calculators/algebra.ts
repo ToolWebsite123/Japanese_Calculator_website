@@ -8,11 +8,7 @@ export class AlgebraError extends Error {
 }
 
 function normalizeExpr(expr: string): string {
-  return expr
-    .replace(/\s+/g, "")
-    .replace(/×/g, "*")
-    .replace(/÷/g, "/")
-    .replace(/−/g, "-");
+  return expr.replace(/\s+/g, "").replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
 }
 
 type AT =
@@ -67,9 +63,7 @@ function tokenizeAlgebra(expr: string): AT[] {
 
     if ("+-*/^".includes(ch)) {
       const prev = tokens[tokens.length - 1];
-      const isUnary =
-        ch === "-" &&
-        (!prev || prev.type === "op" || prev.type === "lparen");
+      const isUnary = ch === "-" && (!prev || prev.type === "op" || prev.type === "lparen");
       tokens.push({ type: "op", value: isUnary ? "u-" : ch });
       i++;
       continue;
@@ -89,11 +83,7 @@ function tokenizeAlgebra(expr: string): AT[] {
     ) {
       withImplicit.push({ type: "op", value: "*" });
     }
-    if (
-      prev &&
-      prev.type === "rparen" &&
-      cur.type === "x"
-    ) {
+    if (prev && prev.type === "rparen" && cur.type === "x") {
       // already handled above
     }
     withImplicit.push(cur);
@@ -216,10 +206,8 @@ export function solveLinearEquationSafe(equation: string): number {
     throw new AlgebraError("方程式の形式が正しくありません");
   }
 
-  const at0 =
-    evalWithX(normalizeExpr(left), 0) - evalWithX(normalizeExpr(right), 0);
-  const at1 =
-    evalWithX(normalizeExpr(left), 1) - evalWithX(normalizeExpr(right), 1);
+  const at0 = evalWithX(normalizeExpr(left), 0) - evalWithX(normalizeExpr(right), 0);
+  const at1 = evalWithX(normalizeExpr(left), 1) - evalWithX(normalizeExpr(right), 1);
   const a = at1 - at0;
   const b = at0;
 

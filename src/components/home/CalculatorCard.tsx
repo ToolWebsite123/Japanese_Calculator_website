@@ -10,21 +10,14 @@ type CalculatorCardProps = {
   active?: boolean;
 };
 
-export function CalculatorCard({
-  href,
-  label,
-  description,
-  active = false,
-}: CalculatorCardProps) {
+export function CalculatorCard({ href, label, description, active = false }: CalculatorCardProps) {
   return (
     <Link
       href={href}
       className={[
         "group flex min-h-[148px] h-full flex-col rounded-[var(--radius-xl)] border bg-surface-raised p-5 transition duration-200 sm:p-6",
         "hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-[var(--shadow-card)]",
-        active
-          ? "border-brand/40 ring-2 ring-brand/30"
-          : "border-border",
+        active ? "border-brand/40 ring-2 ring-brand/30" : "border-border",
       ].join(" ")}
     >
       <div

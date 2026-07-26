@@ -42,9 +42,7 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
             </svg>
           </IconButton>
           <Link href="/" className="min-w-0">
-            <span className="block truncate text-base font-bold text-brand">
-              電卓
-            </span>
+            <span className="block truncate text-base font-bold text-brand">電卓</span>
           </Link>
         </div>
 

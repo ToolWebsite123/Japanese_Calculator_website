@@ -26,10 +26,7 @@ import {
 import { formatDisplayNumber } from "@/lib/format";
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce(
-    (text, value, index) => text.replace(`{${index}}`, value),
-    template
-  );
+  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
 }
 
 function Num({ children }: { children: ReactNode }) {
@@ -62,17 +59,11 @@ function ExampleStep({
 }
 
 function normalizeAlgebra(expr: string): string {
-  return expr
-    .replace(/\s+/g, "")
-    .replace(/×/g, "*")
-    .replace(/÷/g, "/")
-    .replace(/−/g, "-");
+  return expr.replace(/\s+/g, "").replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
 }
 
 /** Parse forms like 2x+3, -x-1, x+5, 2x */
-function parseAxPlusB(
-  expr: string
-): { a: number; b: number; op: "+" | "-" } | null {
+function parseAxPlusB(expr: string): { a: number; b: number; op: "+" | "-" } | null {
   const n = normalizeAlgebra(expr);
   const m = n.match(/^([+-]?(?:\d*\.?\d+)?)x([+-]\d*\.?\d+)?$/i);
   if (!m) return null;
@@ -91,7 +82,7 @@ function parseAxPlusB(
 
 /** Parse ax±b=c */
 function parseLinearEquation(
-  equation: string
+  equation: string,
 ): { a: number; b: number; c: number; op: "+" | "-" } | null {
   const cleaned = normalizeAlgebra(equation);
   const parts = cleaned.split("=");
@@ -146,11 +137,7 @@ function EvaluateSteps({
   return (
     <SurfacePanel className="space-y-2">
       <p className="font-semibold text-text-primary">
-        {formatTemplate(
-          page.evaluateExampleInput,
-          expression.trim(),
-          xValue.trim()
-        )}
+        {formatTemplate(page.evaluateExampleInput, expression.trim(), xValue.trim())}
       </p>
 
       <MathEq>
@@ -167,8 +154,8 @@ function EvaluateSteps({
             title={formatTemplate(page.evaluateStep1Title, fmt(x))}
             math={
               <>
-                <Num>{fmt(linear.a)}</Num>(<Num>{fmt(x)}</Num>){" "}
-                <MathOp op={linear.op} /> <Num>{fmt(linear.b)}</Num>
+                <Num>{fmt(linear.a)}</Num>(<Num>{fmt(x)}</Num>) <MathOp op={linear.op} />{" "}
+                <Num>{fmt(linear.b)}</Num>
               </>
             }
           />
@@ -177,8 +164,7 @@ function EvaluateSteps({
             title={page.evaluateStep2Title}
             math={
               <>
-                <Num>{fmt(product!)}</Num> <MathOp op={linear.op} />{" "}
-                <Num>{fmt(linear.b)}</Num>
+                <Num>{fmt(product!)}</Num> <MathOp op={linear.op} /> <Num>{fmt(linear.b)}</Num>
               </>
             }
           />
@@ -276,8 +262,8 @@ function SolveSteps({
         title={formatTemplate(page.solveStep1Title, fmt(b))}
         math={[
           <>
-            <AxTerm a={a} /> <MathOp op={op} /> <Num>{fmt(b)}</Num>{" "}
-            <MathOp op="=" /> <Num>{fmt(c)}</Num>
+            <AxTerm a={a} /> <MathOp op={op} /> <Num>{fmt(b)}</Num> <MathOp op="=" />{" "}
+            <Num>{fmt(c)}</Num>
           </>,
           <>
             <AxTerm a={a} /> <MathOp op="=" /> <Num>{fmt(c)}</Num>{" "}
@@ -292,8 +278,7 @@ function SolveSteps({
             )}
           </>,
           <>
-            <AxTerm a={a} /> <MathOp op="=" />{" "}
-            <Num>{fmt(afterSubtract)}</Num>
+            <AxTerm a={a} /> <MathOp op="=" /> <Num>{fmt(afterSubtract)}</Num>
           </>,
         ]}
       />
@@ -302,8 +287,7 @@ function SolveSteps({
         title={formatTemplate(page.solveStep2Title, fmt(a))}
         math={
           <>
-            <VarX /> <MathOp op="=" />{" "}
-            <MathFraction num={fmt(afterSubtract)} den={fmt(a)} />
+            <VarX /> <MathOp op="=" /> <MathFraction num={fmt(afterSubtract)} den={fmt(a)} />
           </>
         }
       />
@@ -423,11 +407,7 @@ export function AlgebraCalculator() {
             <SecondaryButton fullWidth onClick={handleClear} className="flex-1">
               {t.common.clear}
             </SecondaryButton>
-            <PrimaryButton
-              onClick={handleCalculate}
-              fullWidth
-              className="flex-[2]"
-            >
+            <PrimaryButton onClick={handleCalculate} fullWidth className="flex-[2]">
               {t.common.calculate}
             </PrimaryButton>
           </div>
@@ -446,8 +426,7 @@ export function AlgebraCalculator() {
                       <Num>{result}</Num>
                     ) : (
                       <>
-                        <VarX /> <MathOp op="=" />{" "}
-                        <Num>{result.replace(/^x\s*=\s*/, "")}</Num>
+                        <VarX /> <MathOp op="=" /> <Num>{result.replace(/^x\s*=\s*/, "")}</Num>
                       </>
                     )}
                   </MathEq>
@@ -466,11 +445,7 @@ export function AlgebraCalculator() {
                     page={page}
                   />
                 ) : (
-                  <SolveSteps
-                    equation={equation}
-                    resultLabel={page.resultLabel}
-                    page={page}
-                  />
+                  <SolveSteps equation={equation} resultLabel={page.resultLabel} page={page} />
                 )}
               </Divider>
             </div>
@@ -478,21 +453,14 @@ export function AlgebraCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.algebraPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={t.algebraPage.howToTitle}
-        steps={t.algebraPage.howToSteps}
-      />
+      <CalculatorHowToSection title={t.algebraPage.howToTitle} steps={t.algebraPage.howToSteps} />
 
-      <CalculatorFaqSection
-        title={t.algebraPage.faqTitle}
-        items={t.algebraPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.algebraPage.faqTitle} items={t.algebraPage.faqItems} />
       <RelatedCalculators activeHref="/algebra-calculator" />
-        </>
+    </>
   );
 }

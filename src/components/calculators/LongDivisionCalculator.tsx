@@ -3,11 +3,7 @@
 import { useState } from "react";
 import { CalculatorCard } from "@/components/ui/FormField";
 import { FormField } from "@/components/ui/FormField";
-import {
-  Divider,
-  PrimaryButton,
-  SurfacePanel,
-} from "@/components/ui/primitives";
+import { Divider, PrimaryButton, SurfacePanel } from "@/components/ui/primitives";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { MathEq, MathOp } from "@/components/ui/MathDisplay";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -15,17 +11,11 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { useLocale } from "@/context/LocaleContext";
-import {
-  getLongDivisionSteps,
-  type LongDivisionStep,
-} from "@/lib/calculators/longDivision";
+import { getLongDivisionSteps, type LongDivisionStep } from "@/lib/calculators/longDivision";
 
 function formatStepText(template: string, args?: (string | number)[]): string {
   if (!args) return template;
-  return args.reduce<string>(
-    (str, arg, i) => str.replace(`{${i}}`, String(arg)),
-    template
-  );
+  return args.reduce<string>((str, arg, i) => str.replace(`{${i}}`, String(arg)), template);
 }
 
 function RenderStep({
@@ -41,9 +31,7 @@ function RenderStep({
     const template = step.textId ? stepTexts[step.textId] : "";
     const text = template ? formatStepText(template, step.args) : "";
 
-    return (
-      <p className="mb-2 mt-4 font-medium text-text-secondary">{text}</p>
-    );
+    return <p className="mb-2 mt-4 font-medium text-text-secondary">{text}</p>;
   }
 
   if (step.type === "equation") {
@@ -75,9 +63,9 @@ export function LongDivisionCalculator() {
   const [dividend, setDividend] = useState<string>("100");
   const [divisor, setDivisor] = useState<string>("3");
   const [decimalPlaces, setDecimalPlaces] = useState<string>("4");
-  const [stepsResult, setStepsResult] = useState<ReturnType<
-    typeof getLongDivisionSteps
-  > | null>(null);
+  const [stepsResult, setStepsResult] = useState<ReturnType<typeof getLongDivisionSteps> | null>(
+    null,
+  );
   const [stepsError, setStepsError] = useState<string | null>(null);
 
   const calculate = () => {
@@ -119,10 +107,7 @@ export function LongDivisionCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title={t.longDivisionPage.title}
-        description={t.longDivisionPage.description}
-      >
+      <CalculatorCard title={t.longDivisionPage.title} description={t.longDivisionPage.description}>
         <div className="space-y-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <div className="flex-1">
@@ -182,9 +167,7 @@ export function LongDivisionCalculator() {
             </SurfacePanel>
           )}
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate}
-          </PrimaryButton>
+          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
           {stepsError && <ErrorMessage message={stepsError} />}
 
@@ -245,7 +228,6 @@ export function LongDivisionCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.longDivisionPage.introParagraph} />
       </p>
@@ -260,6 +242,6 @@ export function LongDivisionCalculator() {
         items={t.longDivisionPage.faqItems}
       />
       <RelatedCalculators activeHref="/long-division-calculator" />
-        </>
+    </>
   );
 }

@@ -68,24 +68,17 @@ export function formatPrimeFactors(factors: PrimeFactor[]): string {
 
   return factors
     .map(({ prime, exponent }) =>
-      exponent === 1 ? String(prime) : `${prime}${toSuperscript(exponent)}`
+      exponent === 1 ? String(prime) : `${prime}${toSuperscript(exponent)}`,
     )
     .join(" × ");
 }
 
-export function detectRepeatingDecimal(
-  numerator: number,
-  denominator: number
-): string | null {
-  if (
-    !Number.isInteger(numerator) ||
-    !Number.isInteger(denominator) ||
-    denominator === 0
-  ) {
+export function detectRepeatingDecimal(numerator: number, denominator: number): string | null {
+  if (!Number.isInteger(numerator) || !Number.isInteger(denominator) || denominator === 0) {
     return null;
   }
 
-  const sign = (numerator < 0) !== (denominator < 0) ? "-" : "";
+  const sign = numerator < 0 !== denominator < 0 ? "-" : "";
   let n = Math.abs(numerator);
   const d = Math.abs(denominator);
 
@@ -116,11 +109,7 @@ export function detectRepeatingDecimal(
   return null;
 }
 
-export function applyUnary(
-  value: number,
-  fn: string,
-  mode: AngleMode
-): number {
+export function applyUnary(value: number, fn: string, mode: AngleMode): number {
   switch (fn) {
     case "sin":
       return Math.sin(toRadians(value, mode));
@@ -230,17 +219,111 @@ function replaceInnermostFn(expr: string, mode: AngleMode): string | null {
       if (hasNestedFn) continue;
 
       const innerVal = evaluateScientific(inner, mode);
-      const replacement = String(applyUnary(innerVal, fn, mode));
+      const numVal = typeof innerVal === "number" ? innerVal : innerVal.re;
+      const replacement = String(applyUnary(numVal, fn, mode));
       return expr.slice(0, i) + replacement + expr.slice(j);
     }
   }
   return null;
 }
 
+export type Complex = { re: number; im: number };
+
+export function formatComplex(z: Complex): string {
+  const re = Math.abs(z.re) < 1e-12 ? 0 : z.re;
+  const im = Math.abs(z.im) < 1e-12 ? 0 : z.im;
+
+  if (im === 0) return String(re);
+  if (re === 0) {
+    if (im === 1) return "i";
+    if (im === -1) return "-i";
+    return `${im}i`;
+  }
+  const sign = im > 0 ? "+" : "-";
+  const absIm = Math.abs(im);
+  const imStr = absIm === 1 ? "i" : `${absIm}i`;
+  return `${re} ${sign} ${imStr}`;
+}
+
+export function evaluateComplexExpression(expression: string, mode: AngleMode): Complex {
+  let expr = expression.replace(/(\d+(?:\.\d+)?)\s*i/g, "$1*i").replace(/\bi\b/g, "(0+1i)");
+
+  expr = expr.replace(/real\(([^()]+)\)/g, (_, zStr: string) => {
+    const z = evaluateComplexExpression(zStr, mode);
+    return String(z.re);
+  });
+
+  expr = expr.replace(/imag\(([^()]+)\)/g, (_, zStr: string) => {
+    const z = evaluateComplexExpression(zStr, mode);
+    return String(z.im);
+  });
+
+  expr = expr.replace(/conj\(([^()]+)\)/g, (_, zStr: string) => {
+    const z = evaluateComplexExpression(zStr, mode);
+    return formatComplex({ re: z.re, im: -z.im });
+  });
+
+  expr = expr.replace(/arg\(([^()]+)\)/g, (_, zStr: string) => {
+    const z = evaluateComplexExpression(zStr, mode);
+    return String(Math.atan2(z.im, z.re));
+  });
+
+  if (!expr.includes("i")) {
+    const val = evaluateScientific(expr, mode);
+    return { re: typeof val === "number" ? val : val.re, im: typeof val === "number" ? 0 : val.im };
+  }
+
+  const match = expr.match(
+    /^\s*\(\s*(-?\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)i\s*\)\s*([*+/])\s*\(\s*(-?\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)i\s*\)\s*$/,
+  );
+  if (match) {
+    const a1 = parseFloat(match[1]);
+    const b1 = (match[2] === "-" ? -1 : 1) * parseFloat(match[3]);
+    const op = match[4];
+    const a2 = parseFloat(match[5]);
+    const b2 = (match[6] === "-" ? -1 : 1) * parseFloat(match[7]);
+
+    if (op === "*") {
+      return { re: a1 * a2 - b1 * b2, im: a1 * b2 + b1 * a2 };
+    }
+    if (op === "+") {
+      return { re: a1 + a2, im: b1 + b2 };
+    }
+    if (op === "-") {
+      return { re: a1 - a2, im: b1 - b2 };
+    }
+    if (op === "/") {
+      const denom = a2 * a2 + b2 * b2;
+      if (denom === 0) throw new Error("0で割ることはできません");
+      return { re: (a1 * a2 + b1 * b2) / denom, im: (b1 * a2 - a1 * b2) / denom };
+    }
+  }
+
+  const simpleMatch = expr.match(/^\s*(-?\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)i\s*$/);
+  if (simpleMatch) {
+    const re = parseFloat(simpleMatch[1]);
+    const im = (simpleMatch[2] === "-" ? -1 : 1) * parseFloat(simpleMatch[3]);
+    return { re, im };
+  }
+
+  const pureImMatch = expr.match(/^\s*(-?\d+(?:\.\d+)?)i\s*$/);
+  if (pureImMatch) {
+    return { re: 0, im: parseFloat(pureImMatch[1]) };
+  }
+
+  const realVal = evaluateScientific(expr.replace(/\s*([+-])\s*\d+i/g, ""), mode);
+  return { re: typeof realVal === "number" ? realVal : realVal.re, im: 0 };
+}
+
 export function evaluateScientific(
   expression: string,
-  mode: AngleMode
-): number {
+  mode: AngleMode,
+  complexMode = false,
+): number | Complex {
+  if (complexMode || /[i]/.test(expression) || /real|imag|conj|arg/.test(expression)) {
+    return evaluateComplexExpression(expression, mode);
+  }
+
   let expr = expression;
 
   while (true) {
@@ -250,7 +333,7 @@ export function evaluateScientific(
   }
 
   expr = expr.replace(/(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)!/g, (_, n: string) =>
-    String(factorial(Number(n)))
+    String(factorial(Number(n))),
   );
 
   return evaluateExpression(expr);

@@ -12,19 +12,13 @@ export const metadata = buildPageMetadata({
   title: metaTitle,
   description: metaDescription,
   path: "/simultaneous-equations-calculator",
-  keywords: [
-    "連立方程式",
-    "連立方程式計算機",
-    "連立方程式の解き方",
-    "クラメーの公式",
-    "2元1次",
-  ],
+  keywords: ["連立方程式", "連立方程式計算機", "連立方程式の解き方", "クラメーの公式", "2元1次"],
 });
 
 export default function SimultaneousEquationsPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
     ja.simultaneousEquationsPage.faqItems,
-    ja.simultaneousEquationsPage.title
+    ja.simultaneousEquationsPage.title,
   );
 
   return (

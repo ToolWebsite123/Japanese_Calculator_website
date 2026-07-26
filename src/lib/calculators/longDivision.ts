@@ -39,7 +39,7 @@ function roundToDecimalPlaces(value: number, decimalPlaces: number): string {
 export function getLongDivisionSteps(
   dividend: number,
   divisor: number,
-  decimalPlaces: number
+  decimalPlaces: number,
 ): {
   quotient: number;
   remainder: number;

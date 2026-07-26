@@ -40,9 +40,7 @@ function TimeBlock({
 }) {
   return (
     <SurfacePanel>
-      <div className="mb-3 block text-sm font-semibold text-text-primary">
-        {label}
-      </div>
+      <div className="mb-3 block text-sm font-semibold text-text-primary">{label}</div>
       <div className="grid grid-cols-3 gap-3">
         {[
           { value: hours, set: setHours, unit: "時", ariaLabel: `${label}の時間`, max: 9999 },
@@ -110,10 +108,7 @@ export function TimeCalculator() {
 
   return (
     <>
-      <CalculatorCard
-        title={t.timePage.title}
-        description={t.timePage.description}
-      >
+      <CalculatorCard title={t.timePage.title} description={t.timePage.description}>
         <div className="space-y-6">
           <TimeBlock
             label={t.time.timeA}
@@ -167,21 +162,14 @@ export function TimeCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.timePage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={t.timePage.howToTitle}
-        steps={t.timePage.howToSteps}
-      />
+      <CalculatorHowToSection title={t.timePage.howToTitle} steps={t.timePage.howToSteps} />
 
-      <CalculatorFaqSection
-        title={t.timePage.faqTitle}
-        items={t.timePage.faqItems}
-      />
+      <CalculatorFaqSection title={t.timePage.faqTitle} items={t.timePage.faqItems} />
       <RelatedCalculators activeHref="/time-calculator" />
-        </>
+    </>
   );
 }

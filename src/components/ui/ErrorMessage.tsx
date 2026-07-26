@@ -1,10 +1,4 @@
-export function ErrorMessage({
-  message,
-  id,
-}: {
-  message: string;
-  id?: string;
-}) {
+export function ErrorMessage({ message, id }: { message: string; id?: string }) {
   return (
     <div
       id={id}

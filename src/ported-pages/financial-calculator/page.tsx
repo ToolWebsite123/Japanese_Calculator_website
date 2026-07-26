@@ -16,10 +16,7 @@ export const metadata = buildPageMetadata({
 });
 
 export default function FinancialPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.financialPage.faqItems,
-    ja.financialPage.title
-  );
+  const faqJsonLd = buildCalculatorFaqJsonLd(ja.financialPage.faqItems, ja.financialPage.title);
 
   return (
     <>

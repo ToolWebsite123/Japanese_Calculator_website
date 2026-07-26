@@ -45,19 +45,14 @@ export function tvmFutureValue(
   pv: number,
   pmt: number,
   ratePercent: number,
-  periods: number
+  periods: number,
 ): number {
   const gf = growthFactor(ratePercent, periods);
   const af = annuityFactor(ratePercent, periods);
   return pv * gf + pmt * af;
 }
 
-function solvePresentValue(
-  fv: number,
-  pmt: number,
-  ratePercent: number,
-  periods: number
-): number {
+function solvePresentValue(fv: number, pmt: number, ratePercent: number, periods: number): number {
   const gf = growthFactor(ratePercent, periods);
   const af = annuityFactor(ratePercent, periods);
   if (Math.abs(gf) < 1e-12) {
@@ -66,12 +61,7 @@ function solvePresentValue(
   return (fv - pmt * af) / gf;
 }
 
-function solvePayment(
-  pv: number,
-  fv: number,
-  ratePercent: number,
-  periods: number
-): number {
+function solvePayment(pv: number, fv: number, ratePercent: number, periods: number): number {
   const af = annuityFactor(ratePercent, periods);
   if (Math.abs(af) < 1e-12) {
     throw new Error("定期支払額を計算できません");
@@ -80,12 +70,7 @@ function solvePayment(
   return (fv - pv * gf) / af;
 }
 
-function solvePeriods(
-  pv: number,
-  fv: number,
-  pmt: number,
-  ratePercent: number
-): number {
+function solvePeriods(pv: number, fv: number, pmt: number, ratePercent: number): number {
   const i = ratePercent / 100;
 
   if (Math.abs(pmt) < 1e-12 && Math.abs(pv) < 1e-12) {
@@ -131,12 +116,7 @@ function solvePeriods(
   throw new Error("期間数を計算できません");
 }
 
-function solveRatePercent(
-  pv: number,
-  fv: number,
-  pmt: number,
-  periods: number
-): number {
+function solveRatePercent(pv: number, fv: number, pmt: number, periods: number): number {
   if (periods <= 0) {
     throw new Error("期間数が無効です");
   }
@@ -168,10 +148,7 @@ function solveRatePercent(
   throw new Error("利率を計算できません");
 }
 
-export function solveTimeValueOfMoney(
-  target: TvmSolveTarget,
-  inputs: TvmInputs
-): TvmResult {
+export function solveTimeValueOfMoney(target: TvmSolveTarget, inputs: TvmInputs): TvmResult {
   const { pv, fv, pmt, ratePercent, periods } = inputs;
 
   assertFinite("PV", pv);

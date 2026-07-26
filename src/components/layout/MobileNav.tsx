@@ -51,9 +51,7 @@ function DrawerLink({
       <span
         className={[
           "flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)]",
-          active
-            ? "bg-brand text-white"
-            : "bg-surface-sunken text-brand",
+          active ? "bg-brand text-white" : "bg-surface-sunken text-brand",
         ].join(" ")}
       >
         <CalculatorIcon className="h-4 w-4" />
@@ -86,24 +84,20 @@ function CategorySection({
         className="flex w-full items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-xs font-semibold uppercase tracking-wide text-text-tertiary hover:bg-surface-sunken"
       >
         <span>{title}</span>
-        <span aria-hidden="true" className="text-xs">{open ? "▾" : "▸"}</span>
+        <span aria-hidden="true" className="text-xs">
+          {open ? "▾" : "▸"}
+        </span>
       </button>
       {open && (
         <div className="mt-1 space-y-1">
           {items.map((item) => (
-            <DrawerLink
-              key={item.href}
-              item={item}
-              pathname={pathname}
-              onClose={onClose}
-            />
+            <DrawerLink key={item.href} item={item} pathname={pathname} onClose={onClose} />
           ))}
         </div>
       )}
     </div>
   );
 }
-
 
 export function MobileNav({
   menuOpen,
@@ -119,7 +113,7 @@ export function MobileNav({
     if (!menuOpen) return;
 
     const closeButton = dialogRef.current?.querySelector<HTMLElement>(
-      '[data-mobile-nav-close="true"]'
+      '[data-mobile-nav-close="true"]',
     );
     closeButton?.focus();
 
@@ -134,7 +128,7 @@ export function MobileNav({
       }
 
       const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
 
       if (focusable.length === 0) {

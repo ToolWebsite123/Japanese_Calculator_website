@@ -51,7 +51,11 @@ export const CATEGORY_META: Record<CalculatorCategory, CategoryMeta> = {
     accentClass: "text-brand",
     accentMutedClass: "bg-brand-muted",
     borderClass: "border-l-brand",
-    featuredHrefs: ["/financial-calculator", "/compound-interest-calculator", "/interest-calculator"],
+    featuredHrefs: [
+      "/financial-calculator",
+      "/compound-interest-calculator",
+      "/interest-calculator",
+    ],
   },
   health: {
     id: "health",
@@ -78,7 +82,11 @@ export const CATEGORY_META: Record<CalculatorCategory, CategoryMeta> = {
     accentClass: "text-brand",
     accentMutedClass: "bg-brand-muted",
     borderClass: "border-l-brand",
-    featuredHrefs: ["/long-division-calculator", "/factorization-calculator", "/simultaneous-equations-calculator"],
+    featuredHrefs: [
+      "/long-division-calculator",
+      "/factorization-calculator",
+      "/simultaneous-equations-calculator",
+    ],
   },
 };
 
@@ -100,10 +108,7 @@ function getNavLabel(item: NavItem): string {
 
 function getNavDescription(item: NavItem): string {
   if (!item.descriptionKey) return "";
-  const [section, field] = item.descriptionKey.split(".") as [
-    keyof typeof ja,
-    string,
-  ];
+  const [section, field] = item.descriptionKey.split(".") as [keyof typeof ja, string];
   const sectionData = ja[section];
   if (sectionData && typeof sectionData === "object" && field in sectionData) {
     return (sectionData as Record<string, string>)[field];
@@ -115,27 +120,23 @@ export function getCategoryMeta(category: CalculatorCategory): CategoryMeta {
   return CATEGORY_META[category];
 }
 
-export function getCalculatorsByCategory(
-  category: CalculatorCategory
-): NavItem[] {
+export function getCalculatorsByCategory(category: CalculatorCategory): NavItem[] {
   if (category === "more") {
     return SECONDARY_NAV_ITEMS;
   }
   return NAV_ITEMS.filter((item) => item.category === category);
 }
 
-export function getFeaturedCalculators(
-  category: CalculatorCategory
-): NavItem[] {
+export function getFeaturedCalculators(category: CalculatorCategory): NavItem[] {
   return CATEGORY_META[category].featuredHrefs
     .map((href) => NAV_ITEMS.find((item) => item.href === href))
     .filter((item): item is NavItem => item !== undefined);
 }
 
 export function getPopularCalculators(): NavItem[] {
-  return POPULAR_HREFS.map((href) =>
-    NAV_ITEMS.find((item) => item.href === href)
-  ).filter((item): item is NavItem => item !== undefined);
+  return POPULAR_HREFS.map((href) => NAV_ITEMS.find((item) => item.href === href)).filter(
+    (item): item is NavItem => item !== undefined,
+  );
 }
 
 export function getCalculatorByHref(href: string): NavItem | undefined {

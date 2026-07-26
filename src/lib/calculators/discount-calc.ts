@@ -15,7 +15,7 @@ function applyRound(v: number, mode: RoundMode): number {
 export function toDiscount(
   value: number,
   unit: DiscountUnit,
-  original: number
+  original: number,
 ): { rate: number; yenOff: number } {
   if (!Number.isFinite(value) || value < 0) return { rate: 0, yenOff: 0 };
   if (unit === "percent") return { rate: Math.min(value / 100, 1), yenOff: 0 };

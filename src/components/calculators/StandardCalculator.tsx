@@ -62,7 +62,7 @@ export function StandardCalculator({
         return prev + digit;
       });
     },
-    [justEvaluated]
+    [justEvaluated],
   );
 
   const inputOperator = useCallback(
@@ -80,7 +80,7 @@ export function StandardCalculator({
       setDisplay("0");
       setAwaitingOperand(true);
     },
-    [display, error, justEvaluated, awaitingOperand]
+    [display, error, justEvaluated, awaitingOperand],
   );
 
   const handleEquals = useCallback(() => {
@@ -151,7 +151,7 @@ export function StandardCalculator({
         setAwaitingOperand(true);
       }
     },
-    [display, justEvaluated, awaitingOperand]
+    [display, justEvaluated, awaitingOperand],
   );
 
   const handleMemory = useCallback(
@@ -174,7 +174,7 @@ export function StandardCalculator({
           break;
       }
     },
-    [display, memory, awaitingOperand]
+    [display, memory, awaitingOperand],
   );
 
   const toggleSign = useCallback(() => {
@@ -188,11 +188,7 @@ export function StandardCalculator({
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       const target = e.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      ) {
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
         return;
       }
 
@@ -284,9 +280,7 @@ export function StandardCalculator({
         actions={
           hideHeader ? undefined : (
             <div className="flex items-center gap-2">
-              <ChipButton onClick={() => setHistoryOpen(true)}>
-                {t.nav.history}
-              </ChipButton>
+              <ChipButton onClick={() => setHistoryOpen(true)}>{t.nav.history}</ChipButton>
               <CopyResultButton value={error ? "" : display} />
             </div>
           )
@@ -294,18 +288,20 @@ export function StandardCalculator({
         compact={compact}
       >
         <div className={compact ? "space-y-4 md:space-y-2" : "space-y-4"}>
-          <InlineHistoryTape
-            route="/"
-            onSelect={(expr, res) => {
-              setExpression(expr);
-              setDisplay(res);
-              setJustEvaluated(true);
-              setAwaitingOperand(true);
-              setError(false);
-            }}
-            onOpenFullHistory={() => setHistoryOpen(true)}
-            compact={compact}
-          />
+          {hideHeader && (
+            <InlineHistoryTape
+              route="/"
+              onSelect={(expr, res) => {
+                setExpression(expr);
+                setDisplay(res);
+                setJustEvaluated(true);
+                setAwaitingOperand(true);
+                setError(false);
+              }}
+              onOpenFullHistory={() => setHistoryOpen(true)}
+              compact={compact}
+            />
+          )}
           <Display
             expression={expression}
             value={display}

@@ -18,7 +18,7 @@ export const metadata = buildPageMetadata({
 export default function WebCalculatorPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
     ja.webCalculatorPage.faqItems,
-    ja.webCalculatorPage.title
+    ja.webCalculatorPage.title,
   );
 
   return (

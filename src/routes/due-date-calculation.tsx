@@ -6,10 +6,9 @@ import DueDateCalculationPage, {
 const title =
   typeof dueDateMetadata.title === "string"
     ? dueDateMetadata.title
-    : dueDateMetadata.title?.absolute ?? "出産予定日 計算";
+    : (dueDateMetadata.title?.absolute ?? "出産予定日 計算");
 const description = dueDateMetadata.description ?? "";
-const canonical =
-  dueDateMetadata.alternates?.canonical ?? "/due-date-calculation";
+const canonical = dueDateMetadata.alternates?.canonical ?? "/due-date-calculation";
 const keywords = dueDateMetadata.keywords ?? [];
 const og = (dueDateMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (dueDateMetadata.twitter ?? {}) as Record<string, unknown>;

@@ -5,10 +5,7 @@ export type DiscountResult = {
   finalPrice: number;
 };
 
-export function calculateDiscount(
-  original: number,
-  discountRate: number
-): DiscountResult {
+export function calculateDiscount(original: number, discountRate: number): DiscountResult {
   if (!Number.isFinite(original) || original < 0) {
     throw new Error("金額が無効です");
   }

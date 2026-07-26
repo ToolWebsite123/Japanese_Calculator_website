@@ -16,7 +16,10 @@ export const metadata = buildPageMetadata({
 });
 
 export default function UnemploymentInsurancePage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(UnemploymentInsuranceCalculatorFaq.items, "失業保険 計算");
+  const faqJsonLd = buildCalculatorFaqJsonLd(
+    UnemploymentInsuranceCalculatorFaq.items,
+    "失業保険 計算",
+  );
 
   return (
     <>

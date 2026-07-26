@@ -95,7 +95,6 @@ const safeNavigationGuardScript = String.raw`
 })();
 `;
 
-
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -165,7 +164,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "無料で使える日本語の電卓・科学計算・BMI・単位変換ツール。" },
       { name: "author", content: "電卓.online" },
       { property: "og:title", content: "電卓.online — Japanese Calculator" },
-      { property: "og:description", content: "無料で使える日本語の電卓・科学計算・BMI・単位変換ツール。" },
+      {
+        property: "og:description",
+        content: "無料で使える日本語の電卓・科学計算・BMI・単位変換ツール。",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

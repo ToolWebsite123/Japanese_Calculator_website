@@ -6,10 +6,9 @@ import DiscountCalculationPage, {
 const title =
   typeof discountMetadata.title === "string"
     ? discountMetadata.title
-    : discountMetadata.title?.absolute ?? "割引 計算";
+    : (discountMetadata.title?.absolute ?? "割引 計算");
 const description = discountMetadata.description ?? "";
-const canonical =
-  discountMetadata.alternates?.canonical ?? "/discount-calculation";
+const canonical = discountMetadata.alternates?.canonical ?? "/discount-calculation";
 const keywords = discountMetadata.keywords ?? [];
 const og = (discountMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (discountMetadata.twitter ?? {}) as Record<string, unknown>;

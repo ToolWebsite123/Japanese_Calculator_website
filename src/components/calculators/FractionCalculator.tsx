@@ -11,12 +11,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import { MathFraction, MathEq, MathOp } from "@/components/ui/MathDisplay";
-import {
-  Divider,
-  PrimaryButton,
-  SecondaryButton,
-  SurfacePanel,
-} from "@/components/ui/primitives";
+import { Divider, PrimaryButton, SecondaryButton, SurfacePanel } from "@/components/ui/primitives";
 import { FRACTION_BUTTON_GUIDE } from "@/lib/calculator-guides/fraction";
 import {
   formatFraction,
@@ -37,10 +32,7 @@ const OPS: { op: FractionOp; label: string }[] = [
 
 function formatStepText(template: string, args?: (string | number)[]): string {
   if (!args) return template;
-  return args.reduce<string>(
-    (str, arg, i) => str.replace(`{${i}}`, String(arg)),
-    template
-  );
+  return args.reduce<string>((str, arg, i) => str.replace(`{${i}}`, String(arg)), template);
 }
 
 function FractionInputBox({
@@ -109,13 +101,9 @@ function RenderStep({
 }) {
   if (step.type === "text") {
     const template = step.textId ? stepTexts[step.textId] : "";
-    const text = template
-      ? formatStepText(template, step.args)
-      : "";
+    const text = template ? formatStepText(template, step.args) : "";
 
-    return (
-      <p className="mb-2 mt-4 font-medium text-text-secondary">{text}</p>
-    );
+    return <p className="mb-2 mt-4 font-medium text-text-secondary">{text}</p>;
   }
 
   return (
@@ -229,9 +217,7 @@ export function FractionCalculator() {
       <CalculatorCard
         title={t.fractionPage.title}
         description={t.fractionPage.description}
-        actions={
-          result ? <CopyResultButton value={result.formatted} /> : undefined
-        }
+        actions={result ? <CopyResultButton value={result.formatted} /> : undefined}
       >
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 py-4">
@@ -257,9 +243,7 @@ export function FractionCalculator() {
                       ? "bg-gradient-to-b from-brand to-brand-hover font-bold text-white"
                       : "text-text-secondary hover:bg-border-subtle",
                   ].join(" ")}
-                  style={
-                    op === o ? { boxShadow: "var(--shadow-brand)" } : undefined
-                  }
+                  style={op === o ? { boxShadow: "var(--shadow-brand)" } : undefined}
                 >
                   {label}
                 </button>
@@ -281,11 +265,7 @@ export function FractionCalculator() {
             <SecondaryButton fullWidth onClick={handleClear} className="flex-1">
               {t.common.clear}
             </SecondaryButton>
-            <PrimaryButton
-              onClick={handleCalculate}
-              fullWidth
-              className="flex-[2]"
-            >
+            <PrimaryButton onClick={handleCalculate} fullWidth className="flex-[2]">
               {t.common.calculate}
             </PrimaryButton>
           </div>
@@ -323,11 +303,7 @@ export function FractionCalculator() {
 
                   <div className="mt-6 text-left w-full">
                     {result.stepsData.steps.map((step, idx) => (
-                      <RenderStep
-                        key={idx}
-                        step={step}
-                        stepTexts={t.fraction.stepTexts}
-                      />
+                      <RenderStep key={idx} step={step} stepTexts={t.fraction.stepTexts} />
                     ))}
                   </div>
                 </SurfacePanel>
@@ -341,11 +317,7 @@ export function FractionCalculator() {
                   <SurfacePanel className="space-y-2">
                     <div className="mt-2 text-left w-full">
                       {result.stepsData.formulaSteps.map((step, idx) => (
-                        <RenderStep
-                          key={idx}
-                          step={step}
-                          stepTexts={t.fraction.stepTexts}
-                        />
+                        <RenderStep key={idx} step={step} stepTexts={t.fraction.stepTexts} />
                       ))}
                     </div>
                   </SurfacePanel>
@@ -356,21 +328,14 @@ export function FractionCalculator() {
         </div>
       </CalculatorCard>
 
-
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.fractionPage.introParagraph} />
       </p>
 
-      <ButtonGuideTable
-        title={t.fractionPage.buttonGuideTitle}
-        rows={FRACTION_BUTTON_GUIDE}
-      />
+      <ButtonGuideTable title={t.fractionPage.buttonGuideTitle} rows={FRACTION_BUTTON_GUIDE} />
 
-      <CalculatorFaqSection
-        title={t.fractionPage.faqTitle}
-        items={t.fractionPage.faqItems}
-      />
+      <CalculatorFaqSection title={t.fractionPage.faqTitle} items={t.fractionPage.faqItems} />
       <RelatedCalculators activeHref="/fraction-calculator" />
-        </>
+    </>
   );
 }
