@@ -1,4 +1,4 @@
-User-agent: *
-Disallow: 
-Disallow: /cgi-bin/
-Sitemap: https://www.xn--2kr778m.online/sitemap.xml
+User-Agent:*
+Disallow:
+
+Sitemap:https://www.xn--2kr778m.online/sitemap.xml
