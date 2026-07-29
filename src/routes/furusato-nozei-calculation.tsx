@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import FurusatoNozeiCalculationPage, {
   metadata as furusatoMetadata,
 } from "@/ported-pages/furusato-nozei-calculation/page";
@@ -8,7 +9,7 @@ const title =
     ? furusatoMetadata.title
     : (furusatoMetadata.title?.absolute ?? "ふるさと納税 計算");
 const description = furusatoMetadata.description ?? "";
-const canonical = furusatoMetadata.alternates?.canonical ?? "/furusato-nozei-calculation";
+const canonical = absoluteUrl(furusatoMetadata.alternates?.canonical ?? "/furusato-nozei-calculation");
 const keywords = furusatoMetadata.keywords ?? [];
 const og = (furusatoMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (furusatoMetadata.twitter ?? {}) as Record<string, unknown>;

@@ -14,6 +14,10 @@ export const LEGAL_PATHS = [
 ] as const;
 
 export function absoluteUrl(path = "/"): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path.replace(/^https?:\/\/xn--2kr778m\.online/, SITE_URL);
+  }
   const normalized = path === "/" ? "/" : path.endsWith("/") ? path.slice(0, -1) : path;
-  return normalized === "/" ? SITE_URL : `${SITE_URL}${normalized}`;
+  const cleanPath = normalized.startsWith("/") ? normalized : `/${normalized}`;
+  return cleanPath === "/" ? SITE_URL : `${SITE_URL}${cleanPath}`;
 }

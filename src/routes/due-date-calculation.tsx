@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import DueDateCalculationPage, {
   metadata as dueDateMetadata,
 } from "@/ported-pages/due-date-calculation/page";
@@ -8,7 +9,7 @@ const title =
     ? dueDateMetadata.title
     : (dueDateMetadata.title?.absolute ?? "出産予定日 計算");
 const description = dueDateMetadata.description ?? "";
-const canonical = dueDateMetadata.alternates?.canonical ?? "/due-date-calculation";
+const canonical = absoluteUrl(dueDateMetadata.alternates?.canonical ?? "/due-date-calculation");
 const keywords = dueDateMetadata.keywords ?? [];
 const og = (dueDateMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (dueDateMetadata.twitter ?? {}) as Record<string, unknown>;

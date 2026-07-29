@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import DiscountCalculationPage, {
   metadata as discountMetadata,
 } from "@/ported-pages/discount-calculation/page";
@@ -8,7 +9,7 @@ const title =
     ? discountMetadata.title
     : (discountMetadata.title?.absolute ?? "割引 計算");
 const description = discountMetadata.description ?? "";
-const canonical = discountMetadata.alternates?.canonical ?? "/discount-calculation";
+const canonical = absoluteUrl(discountMetadata.alternates?.canonical ?? "/discount-calculation");
 const keywords = discountMetadata.keywords ?? [];
 const og = (discountMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (discountMetadata.twitter ?? {}) as Record<string, unknown>;

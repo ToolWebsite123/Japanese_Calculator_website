@@ -51,6 +51,7 @@ import WebCalculatorPage, {
   metadata as webCalculatorMetadata,
 } from "@/ported-pages/web-calculator/page";
 import type { Metadata } from "@/lib/seo/metadata";
+import { absoluteUrl } from "@/lib/seo/site";
 
 type Head = {
   title: string;
@@ -126,7 +127,7 @@ function metadataToHead(metadata: Metadata, fallbackPath: string): Head {
   return {
     title: metadataTitleToString(metadata.title),
     description: metadata.description ?? "無料で使える日本語の電卓・計算ツール。",
-    canonical: metadata.alternates?.canonical ?? fallbackPath,
+    canonical: absoluteUrl(metadata.alternates?.canonical ?? fallbackPath),
     keywords: metadata.keywords,
     openGraph: metadata.openGraph,
     twitter: metadata.twitter,

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import IncomeTaxCalculationPage, {
   metadata as incomeTaxMetadata,
 } from "@/ported-pages/income-tax-calculation/page";
@@ -8,7 +9,7 @@ const title =
     ? incomeTaxMetadata.title
     : (incomeTaxMetadata.title?.absolute ?? "所得税 計算");
 const description = incomeTaxMetadata.description ?? "";
-const canonical = incomeTaxMetadata.alternates?.canonical ?? "/income-tax-calculation";
+const canonical = absoluteUrl(incomeTaxMetadata.alternates?.canonical ?? "/income-tax-calculation");
 const keywords = incomeTaxMetadata.keywords ?? [];
 const og = (incomeTaxMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (incomeTaxMetadata.twitter ?? {}) as Record<string, unknown>;

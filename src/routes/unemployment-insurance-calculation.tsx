@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import UnemploymentInsurancePage, {
   metadata as unemploymentMetadata,
 } from "@/ported-pages/unemployment-insurance-calculation/page";
@@ -8,8 +9,7 @@ const title =
     ? unemploymentMetadata.title
     : (unemploymentMetadata.title?.absolute ?? "失業保険 計算");
 const description = unemploymentMetadata.description ?? "";
-const canonical =
-  unemploymentMetadata.alternates?.canonical ?? "/unemployment-insurance-calculation";
+const canonical = absoluteUrl(unemploymentMetadata.alternates?.canonical ?? "/unemployment-insurance-calculation");
 const keywords = unemploymentMetadata.keywords ?? [];
 const og = (unemploymentMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (unemploymentMetadata.twitter ?? {}) as Record<string, unknown>;

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import MahjongScoreCalculationPage, {
   metadata as mahjongMetadata,
 } from "@/ported-pages/mahjong-score-calculation/page";
@@ -8,7 +9,7 @@ const title =
     ? mahjongMetadata.title
     : (mahjongMetadata.title?.absolute ?? "麻雀 点数 計算");
 const description = mahjongMetadata.description ?? "";
-const canonical = mahjongMetadata.alternates?.canonical ?? "/mahjong-score-calculation";
+const canonical = absoluteUrl(mahjongMetadata.alternates?.canonical ?? "/mahjong-score-calculation");
 const keywords = mahjongMetadata.keywords ?? [];
 const og = (mahjongMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (mahjongMetadata.twitter ?? {}) as Record<string, unknown>;

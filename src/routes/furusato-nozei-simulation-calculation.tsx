@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { absoluteUrl } from "@/lib/seo/site";
 import FurusatoNozeiSimulationCalculationPage, {
   metadata as pageMetadata,
 } from "@/ported-pages/furusato-nozei-simulation-calculation/page";
@@ -6,9 +7,9 @@ import FurusatoNozeiSimulationCalculationPage, {
 const title =
   typeof pageMetadata.title === "string"
     ? pageMetadata.title
-    : (pageMetadata.title?.absolute ?? "ふるさと納税 シミュレーション");
+    : (pageMetadata.title?.absolute ?? "ふるさと納税 シミュレーション 計算");
 const description = pageMetadata.description ?? "";
-const canonical = pageMetadata.alternates?.canonical ?? "/furusato-nozei-simulation-calculation";
+const canonical = absoluteUrl(pageMetadata.alternates?.canonical ?? "/furusato-nozei-simulation-calculation");
 const keywords = pageMetadata.keywords ?? [];
 const og = (pageMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (pageMetadata.twitter ?? {}) as Record<string, unknown>;
