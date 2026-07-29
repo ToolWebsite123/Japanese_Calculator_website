@@ -1,4 +1,4 @@
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://xn--2kr778m.online";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.xn--2kr778m.online";
 export const SITE_NAME = "電卓.Online";
 export const HOME_META_TITLE = "電卓.Online｜オールインワン計算プラットフォーム";
 
