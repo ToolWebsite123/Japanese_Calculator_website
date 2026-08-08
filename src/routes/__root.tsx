@@ -162,7 +162,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "電卓.online — Japanese Calculator" },
       { name: "description", content: "無料で使える日本語の電卓・科学計算・BMI・単位変換ツール。" },
-      { name: "google-site-verification", content: "Ut6bfVpRHmc9ypq2zrOx3NWIqbmbiQUmJK-yatZPARI" },
+      { name: "google-site-verification", content: "google39f0ca4d252248af" },
       { name: "author", content: "電卓.online" },
       { property: "og:title", content: "電卓.online — Japanese Calculator" },
       {
