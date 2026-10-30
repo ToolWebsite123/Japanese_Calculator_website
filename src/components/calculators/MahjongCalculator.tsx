@@ -129,6 +129,9 @@ export function MahjongCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        麻雀 点数 計算
+      </h1>
       <CalculatorCard compact>
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -292,9 +295,6 @@ export function MahjongCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          麻雀 点数 計算
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           翻・符・親子・ロンツモを選ぶだけで、合計点と支払いの内訳まで算出。満貫〜役満の固定点にも対応。
         </p>

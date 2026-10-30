@@ -123,6 +123,9 @@ export function DueDateCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        出産予定日計算機
+      </h1>
       <CalculatorCard compact maxWidthClass="max-w-[500px]">
         <div className="space-y-2.5 sm:space-y-3">
           <label className="block space-y-1.5">
@@ -279,9 +282,6 @@ export function DueDateCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          出産予定日計算機
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           最終月経日・排卵日・希望日の3方向から出産予定日を計算。生理周期の調整と、妊娠週数カレンダー（初期/中期/後期・正期産）にも対応。
         </p>
