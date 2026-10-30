@@ -1,5 +1,7 @@
-import { createFileRoute, notFound, redirect, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import type { ReactElement } from "react";
+
+import { PageLoading } from "@/components/layout/PageLoading";
 
 import AboutPage, { metadata as aboutMetadata } from "@/ported-pages/about/page";
 import AlgebraPage, { metadata as algebraMetadata } from "@/ported-pages/algebra-calculator/page";
@@ -271,13 +273,15 @@ const pages: Record<string, () => ReactElement> = {
 };
 
 function CatchAllPage() {
-  const pathname = useRouterState({ select: (state) => state.location.pathname }).replace(
-    /\/$/,
-    "",
-  );
-  // Unknown paths never reach this component during SSR (beforeLoad throws
-  // notFound()); the fallback below is only a client-navigation safety net.
-  const Component = pages[pathname];
+  // Derive the path from THIS route's own params, not the global router
+  // location. During a client-side navigation transition the global location
+  // can point at the destination (or lag on the previous page) while this
+  // route is already matched, and looking the page up by the global pathname
+  // could miss and flash a 404. The matched route's _splat always agrees
+  // with the page this route is supposed to render.
+  const { _splat } = Route.useParams();
+  const raw = "/" + (_splat ?? "").replace(/^\/+/, "");
+  const Component = pages[normalizePath(raw)];
 
   if (Component) {
     return (
@@ -287,16 +291,10 @@ function CatchAllPage() {
     );
   }
 
-  return (
-    <main className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6">
-      <h1 className="text-4xl font-bold text-brand">404</h1>
-      <p className="mt-3 text-text-secondary">ページが見つかりません。</p>
-      <a
-        className="mt-6 inline-flex rounded-[var(--radius-md)] bg-brand px-4 py-2 text-white"
-        href="/"
-      >
-        ホームへ戻る
-      </a>
-    </main>
-  );
+  // Unknown paths never reach this component: beforeLoad throws notFound()
+  // for them, so SSR (and the client router) render the root
+  // NotFoundComponent with a real 404 instead. This fallback only covers
+  // transient client-navigation states, so it shows the neutral loading
+  // indicator — never a 404 message.
+  return <PageLoading />;
 }
