@@ -122,12 +122,12 @@ export function BmiCalculator() {
   }
 
   return (
-    <>
-      {/* Wave 5 design prototype (BMI only): page header block ABOVE the
-          calculator — fuller keyword/benefit H1 + the existing description
-          and intro paragraph moved up from below the widget. All other
-          calculator pages keep the widget-first order until this prototype
-          is approved. */}
+    <div className="design-v2">
+      {/* Design sample v2 (BMI only, scoped under .design-v2 in styles.css):
+          title-first header block stays, but the VISUAL design changes —
+          vivid violet action colour, dark result display panel, layered
+          card shadow, violet-tinted page background. All other calculator
+          pages keep the current design until this sample is approved. */}
       <header className="mb-6 space-y-3 sm:mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
           {t.bmiPage.heading}
@@ -165,8 +165,15 @@ export function BmiCalculator() {
 
           {error && <ErrorMessage message={error} />}
 
+          {!result && !error && (
+            <div className="bmi-result-panel" aria-live="polite">
+              <div className="bmi-panel-label">{t.bmi.result}</div>
+              <div className="tabular-display bmi-panel-figure">—</div>
+            </div>
+          )}
+
           {result && (
-            <div className="space-y-3">
+            <div className="bmi-result-panel space-y-3">
               <div className="grid gap-4 sm:grid-cols-2">
                 <ResultCard label={t.bmi.result} value={result.bmi.toFixed(2)} highlight />
                 <div className="rounded-[var(--radius-md)] border border-border bg-surface-sunken p-4">
@@ -226,6 +233,6 @@ export function BmiCalculator() {
 
       <CalculatorFaqSection title={t.bmiPage.faqTitle} items={t.bmiPage.faqItems} />
       <RelatedCalculators activeHref="/bmi-calculator" />
-    </>
+    </div>
   );
 }
