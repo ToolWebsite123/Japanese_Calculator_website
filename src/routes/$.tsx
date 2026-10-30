@@ -1,4 +1,4 @@
-import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect, useRouterState } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 
 import AboutPage, { metadata as aboutMetadata } from "@/ported-pages/about/page";
@@ -31,7 +31,6 @@ import PercentagePage, {
 import PrivacyPolicyPage, {
   metadata as privacyPolicyMetadata,
 } from "@/ported-pages/privacy-policy/page";
-import RootRedirectPage from "@/ported-pages/root-calculator/page";
 import RootPage, { metadata as rootMetadata } from "@/ported-pages/squareroot-calculator/page";
 import ScientificPage, {
   metadata as scientificMetadata,
@@ -51,7 +50,8 @@ import WebCalculatorPage, {
   metadata as webCalculatorMetadata,
 } from "@/ported-pages/web-calculator/page";
 import type { Metadata } from "@/lib/seo/metadata";
-import { absoluteUrl } from "@/lib/seo/site";
+import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
+import { absoluteUrl, LEGAL_PATHS } from "@/lib/seo/site";
 
 type Head = {
   title: string;
@@ -91,7 +91,10 @@ const routeHeads: Record<string, Head> = Object.fromEntries(
   Object.entries(metadataByPath).map(([path, metadata]) => [path, metadataToHead(metadata, path)]),
 );
 
-// Aliases (short paths) point to the same head as their canonical route.
+// Aliases (short paths) permanently redirect (301) to their canonical route.
+// This map is the single source of truth for alias redirects: the route's
+// beforeLoad throws a 301 for any path listed here, so aliases never serve
+// duplicate content.
 const aliasMap: Record<string, string> = {
   "/algebra": "/algebra-calculator",
   "/bmi": "/bmi-calculator",
@@ -110,12 +113,12 @@ const aliasMap: Record<string, string> = {
   "/time": "/time-calculator",
 };
 
+function normalizePath(path: string): string {
+  return path.replace(/\/$/, "") || "/";
+}
+
 function resolveHead(path: string): Head | undefined {
-  const p = path.replace(/\/$/, "") || "/";
-  if (routeHeads[p]) return routeHeads[p];
-  const target = aliasMap[p];
-  if (target) return routeHeads[target];
-  return undefined;
+  return routeHeads[normalizePath(path)];
 }
 
 function metadataTitleToString(title: Metadata["title"]): string {
@@ -152,18 +155,36 @@ function openGraphMeta(openGraph: Record<string, unknown> | undefined) {
     siteName: "og:site_name",
   };
 
-  return Object.entries(propertyByKey)
+  const base = Object.entries(propertyByKey)
     .map(([key, property]) => {
       const content = metaContent(openGraph[key]);
       return content ? { property, content } : undefined;
     })
     .filter((item): item is { property: string; content: string } => Boolean(item));
+
+  const images = Array.isArray(openGraph.images)
+    ? (openGraph.images as Record<string, unknown>[])
+    : [];
+  const imageMeta = images.flatMap((image) => {
+    const url = metaContent(image.url);
+    if (!url) return [];
+    const entries = [{ property: "og:image", content: url }];
+    const width = metaContent(image.width);
+    const height = metaContent(image.height);
+    const alt = metaContent(image.alt);
+    if (width) entries.push({ property: "og:image:width", content: width });
+    if (height) entries.push({ property: "og:image:height", content: height });
+    if (alt) entries.push({ property: "og:image:alt", content: alt });
+    return entries;
+  });
+
+  return [...base, ...imageMeta];
 }
 
 function twitterMeta(twitter: Record<string, unknown> | undefined) {
   if (!twitter) return [];
 
-  return ["card", "title", "description"]
+  return ["card", "title", "description", "image"]
     .map((key) => {
       const content = metaContent(twitter[key]);
       return content ? { name: `twitter:${key}`, content } : undefined;
@@ -172,6 +193,20 @@ function twitterMeta(twitter: Record<string, unknown> | undefined) {
 }
 
 export const Route = createFileRoute("/$")({
+  // Alias short paths get a real 301 to the canonical URL, and anything that
+  // is not a known page throws notFound() so SSR returns a true HTTP 404
+  // (rendered by the root notFoundComponent) instead of a soft-404 200.
+  beforeLoad: ({ params }) => {
+    const raw = "/" + (params._splat ?? "").replace(/^\/+/, "");
+    const path = normalizePath(raw);
+    const target = aliasMap[path];
+    if (target) {
+      throw redirect({ href: target, statusCode: 301 });
+    }
+    if (!pages[path]) {
+      throw notFound();
+    }
+  },
   component: CatchAllPage,
   head: ({ params }) => {
     const raw = "/" + (params._splat ?? "").replace(/^\/+/, "");
@@ -188,6 +223,7 @@ export const Route = createFileRoute("/$")({
           { name: "robots", content: "noindex, follow" },
         ],
       };
+    const path = normalizePath(raw);
     return {
       meta: [
         { title: info.title },
@@ -197,46 +233,39 @@ export const Route = createFileRoute("/$")({
         ...twitterMeta(info.twitter),
       ],
       links: [{ rel: "canonical", href: info.canonical }],
+      scripts: buildPageSchemaScripts({
+        path,
+        title: info.title,
+        description: info.description,
+        isLegal: (LEGAL_PATHS as readonly string[]).includes(path),
+      }),
     };
   },
 });
 
+// Canonical pages only. Alias short paths are NOT listed here on purpose:
+// beforeLoad redirects them (301) via aliasMap before any rendering happens.
 const pages: Record<string, () => ReactElement> = {
   "/about": AboutPage,
   "/algebra-calculator": AlgebraPage,
-  "/algebra": AlgebraPage,
   "/bmi-calculator": BmiPage,
-  "/bmi": BmiPage,
   "/compound-interest-calculator": CompoundInterestPage,
-  "/compound-interest": CompoundInterestPage,
   "/contact": ContactPage,
   "/disclaimer": DisclaimerPage,
   "/era-converter": EraPage,
-  "/era": EraPage,
   "/factorization-calculator": FactorizationPage,
-  "/factorization": FactorizationPage,
   "/financial-calculator": FinancialPage,
-  "/financial": FinancialPage,
   "/fraction-calculator": FractionPage,
-  "/fraction": FractionPage,
   "/interest-calculator": InterestPage,
-  "/interest": InterestPage,
   "/long-division-calculator": LongDivisionPage,
-  "/long-division": LongDivisionPage,
   "/percentage-calculator": PercentagePage,
-  "/percentage": PercentagePage,
   "/privacy-policy": PrivacyPolicyPage,
-  "/root-calculator": RootRedirectPage,
   "/squareroot-calculator": RootPage,
-  "/root": RootPage,
   "/scientific-calculator": ScientificPage,
-  "/scientific": ScientificPage,
   "/simultaneous-equations-calculator": SimultaneousEquationsPage,
-  "/simultaneous-equations": SimultaneousEquationsPage,
   "/social-insurance-calculator": SocialInsurancePage,
   "/terms": TermsPage,
   "/time-calculator": TimePage,
-  "/time": TimePage,
   "/unit-converter": UnitConverterPage,
   "/web-calculator": WebCalculatorPage,
 };
@@ -246,6 +275,8 @@ function CatchAllPage() {
     /\/$/,
     "",
   );
+  // Unknown paths never reach this component during SSR (beforeLoad throws
+  // notFound()); the fallback below is only a client-navigation safety net.
   const Component = pages[pathname];
 
   if (Component) {

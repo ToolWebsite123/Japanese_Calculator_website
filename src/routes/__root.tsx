@@ -97,19 +97,25 @@ const safeNavigationGuardScript = String.raw`
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-surface px-4 dark:bg-surface-dark">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+        <h1 className="text-7xl font-bold text-brand">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-text-primary">ページが見つかりません</h2>
+        <p className="mt-2 text-sm text-text-secondary">
+          お探しのページは存在しないか、移動した可能性があります。
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
           >
-            Go home
+            トップページへ戻る
+          </Link>
+          <Link
+            to="/calculators"
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-border bg-surface-raised px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-sunken"
+          >
+            計算機一覧を見る
           </Link>
         </div>
       </div>
@@ -125,13 +131,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-surface px-4 dark:bg-surface-dark">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+        <h1 className="text-xl font-semibold tracking-tight text-text-primary">
+          ページを読み込めませんでした
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
+        <p className="mt-2 text-sm text-text-secondary">
+          問題が発生しました。再読み込みするか、トップページへお戻りください。
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -139,15 +145,15 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
           >
-            Try again
+            もう一度試す
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-[var(--radius-md)] border border-border bg-surface-raised px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-surface-sunken"
           >
-            Go home
+            トップページへ戻る
           </a>
         </div>
       </div>
@@ -162,7 +168,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "電卓.online — Japanese Calculator" },
       { name: "description", content: "無料で使える日本語の電卓・科学計算・BMI・単位変換ツール。" },
-      { name: "google-site-verification", content: "google39f0ca4d252248af" },
       { name: "author", content: "電卓.online" },
       { property: "og:title", content: "電卓.online — Japanese Calculator" },
       {
@@ -170,14 +175,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "無料で使える日本語の電卓・科学計算・BMI・単位変換ツール。",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://www.xn--2kr778m.online/og-image.svg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://www.xn--2kr778m.online/og-image.svg" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap",
       },
       {
         rel: "stylesheet",
