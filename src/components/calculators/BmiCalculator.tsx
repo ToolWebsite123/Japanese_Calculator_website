@@ -123,6 +123,21 @@ export function BmiCalculator() {
 
   return (
     <>
+      {/* Wave 5 design prototype (BMI only): page header block ABOVE the
+          calculator — fuller keyword/benefit H1 + the existing description
+          and intro paragraph moved up from below the widget. All other
+          calculator pages keep the widget-first order until this prototype
+          is approved. */}
+      <header className="mb-6 space-y-3 sm:mb-8">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.bmiPage.heading}
+        </h1>
+        <p className="text-sm text-text-secondary sm:text-base">{t.bmiPage.description}</p>
+        <p className="max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+          <LinkedText text={t.bmiPage.introParagraph} />
+        </p>
+      </header>
+
       <CalculatorCard
         compact
         maxWidthClass="max-w-[480px]"
@@ -203,18 +218,7 @@ export function BmiCalculator() {
         </div>
       </CalculatorCard>
 
-      <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          {t.bmiPage.title}
-        </h1>
-        <p className="text-sm text-text-secondary sm:text-base">{t.bmiPage.description}</p>
-      </div>
-
-      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
-        <LinkedText text={t.bmiPage.introParagraph} />
-      </p>
-
-      <p className="mt-4 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+      <p className="mt-6 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
         {t.bmiPage.disclaimer}
       </p>
 
