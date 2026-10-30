@@ -81,6 +81,50 @@ function formatSignedKg(diff: number): string {
   return `${abs} kg`;
 }
 
+function BmiGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full border-collapse text-sm sm:text-base">
+        <thead>
+          <tr>
+            {head.map((cell) => (
+              <th
+                key={cell}
+                scope="col"
+                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+              >
+                {cell}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell, i) => (
+                <td
+                  key={cell}
+                  className={`border border-border px-3 py-2 ${
+                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                  }`}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideSubHeadingClass =
+  "mt-8 text-base font-semibold text-[#231942] sm:text-lg dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-3 text-sm leading-relaxed text-text-secondary sm:text-base";
+
 export function BmiCalculator() {
   const { t } = useLocale();
   const { addEntry } = useHistory();
@@ -219,6 +263,51 @@ export function BmiCalculator() {
       </p>
 
       <CalculatorHowToSection title={t.bmiPage.howToTitle} steps={t.bmiPage.howToSteps} />
+
+      <section aria-labelledby="bmi-formula-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="bmi-formula-heading" className={guideHeadingClass}>
+          {t.bmiPage.guideFormula.title}
+        </h2>
+        {t.bmiPage.guideFormula.paragraphs.map((paragraph) => (
+          <p key={paragraph} className={guideBodyClass}>
+            {paragraph}
+          </p>
+        ))}
+        <h3 className={guideSubHeadingClass}>{t.bmiPage.guideFormula.classificationTitle}</h3>
+        <BmiGuideTable
+          head={t.bmiPage.guideFormula.classificationHead}
+          rows={t.bmiPage.guideFormula.classificationRows}
+        />
+        <h3 className={guideSubHeadingClass}>{t.bmiPage.guideFormula.idealTitle}</h3>
+        <BmiGuideTable
+          head={t.bmiPage.guideFormula.idealHead}
+          rows={t.bmiPage.guideFormula.idealRows}
+        />
+      </section>
+
+      <section aria-labelledby="bmi-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="bmi-example-heading" className={guideHeadingClass}>
+          {t.bmiPage.guideExample.title}
+        </h2>
+        <p className={guideBodyClass}>{t.bmiPage.guideExample.intro}</p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.bmiPage.guideExample.steps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+        <p className={guideBodyClass}>{t.bmiPage.guideExample.uses}</p>
+      </section>
+
+      <section aria-labelledby="bmi-notes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="bmi-notes-heading" className={guideHeadingClass}>
+          {t.bmiPage.guideNotes.title}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.bmiPage.guideNotes.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
 
       <CalculatorFaqSection title={t.bmiPage.faqTitle} items={t.bmiPage.faqItems} />
       <RelatedCalculators activeHref="/bmi-calculator" />
