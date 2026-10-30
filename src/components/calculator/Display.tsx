@@ -57,11 +57,12 @@ export function Display({
             <button
               type="button"
               onClick={handleCopy}
-              className="inline-flex items-center gap-1 rounded-full bg-surface-raised/80 border border-border px-2 py-0.5 text-[10px] font-medium text-text-secondary hover:bg-surface-raised transition dark:bg-surface-dark/60"
+              // H-09: hit area raised to >= 36px tall (was ~18-20px from py-0.5 + 10px text).
+              className="inline-flex min-h-9 items-center gap-1 rounded-full bg-surface-raised/80 border border-border px-2.5 py-1.5 text-[11px] font-medium text-text-secondary hover:bg-surface-raised transition dark:bg-surface-dark/60"
               title="結果をコピー"
             >
               <svg
-                className="h-3 w-3"
+                className="h-3.5 w-3.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

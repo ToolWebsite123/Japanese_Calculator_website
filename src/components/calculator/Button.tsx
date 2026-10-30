@@ -42,8 +42,13 @@ export function Button({
     <button
       type="button"
       className={[
-        "btn-interactive min-h-10 border text-sm sm:text-base px-1 sm:px-2",
-        compact ? "h-7 sm:h-8 min-h-7 sm:min-h-8 text-[11px] sm:text-xs px-0.5 sm:px-1 py-0" : "",
+        // H-09 touch targets: default keypad >= 44px (was min-h-10 = 40px);
+        // compact >= 36px mobile / 40px desktop (was h-7 = 28px / h-8 = 32px).
+        // Compact stays below 44px on purpose: the scientific keypad is a
+        // 6-column grid, and 44px rows would overflow small phones; the wider
+        // grid gap (ButtonGrid) keeps the effective tap area reasonable.
+        "btn-interactive min-h-11 border text-sm sm:text-base px-1 sm:px-2",
+        compact ? "h-9 sm:h-10 min-h-9 sm:min-h-10 text-[11px] sm:text-xs px-0.5 sm:px-1 py-0" : "",
         variantClasses[variant],
         span === 2 ? "col-span-2" : "",
         active

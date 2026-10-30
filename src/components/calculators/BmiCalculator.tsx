@@ -13,11 +13,16 @@ import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import { calculateBmi, type BmiCategory, type BmiResult } from "@/lib/calculators/bmi";
 
+// H-09 (WCAG AA): light-mode text shades darkened one step where the -600
+// shade failed 4.5:1 on white (sky-600 4.10, emerald-600 3.77, amber-600 3.19,
+// orange-600 3.56). -700 shades: sky 5.93, emerald 5.48, amber 5.02, orange 5.18.
+// red-600 (4.83) and red-800 (8.31) already pass, so they are unchanged.
+// Dark-mode -400/-300 shades all measure >= 6.3:1 on the dark card, unchanged.
 const categoryColors: Record<BmiCategory, string> = {
-  underweight: "text-sky-600 dark:text-sky-400",
-  normal: "text-emerald-600 dark:text-emerald-400",
-  obese1: "text-amber-600 dark:text-amber-400",
-  obese2: "text-orange-600 dark:text-orange-400",
+  underweight: "text-sky-700 dark:text-sky-400",
+  normal: "text-emerald-700 dark:text-emerald-400",
+  obese1: "text-amber-700 dark:text-amber-400",
+  obese2: "text-orange-700 dark:text-orange-400",
   obese3: "text-red-600 dark:text-red-400",
   obese4: "text-red-800 dark:text-red-300",
 };
@@ -202,9 +207,7 @@ export function BmiCalculator() {
         <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
           {t.bmiPage.title}
         </h1>
-        <p className="text-sm text-text-secondary sm:text-base">
-          {t.bmiPage.description}
-        </p>
+        <p className="text-sm text-text-secondary sm:text-base">{t.bmiPage.description}</p>
       </div>
 
       <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">

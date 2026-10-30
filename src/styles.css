@@ -22,7 +22,9 @@
   --color-border-subtle: #f5f5f4;
   --color-text-primary: #1c1917;
   --color-text-secondary: #57534e;
-  --color-text-tertiary: #a8a29e;
+  /* H-09 (WCAG AA): was #a8a29e = 2.52:1 on white / 2.41:1 on surface.
+     #6b655e = 5.76:1 white, 5.51:1 surface, 5.28:1 sunken, 4.82:1 brand-muted. */
+  --color-text-tertiary: #6b655e;
   --color-key-number: #ffffff;
   --color-key-operator: #fef3c7;
   --color-key-function-bg: #f5f5f4;
@@ -55,7 +57,9 @@
   --color-border-subtle: #292524;
   --color-text-primary: #fafaf9;
   --color-text-secondary: #d6d3d1;
-  --color-text-tertiary: #78716c;
+  /* H-09 (WCAG AA): was #78716c = 4.12:1 on dark surface / 3.65:1 on card.
+     #a8a29e = 7.83:1 surface, 6.93:1 card, 6.01:1 sunken. */
+  --color-text-tertiary: #a8a29e;
   --color-key-number: #292524;
   --color-key-operator: #44403c;
   --color-key-function-bg: #1c1917;

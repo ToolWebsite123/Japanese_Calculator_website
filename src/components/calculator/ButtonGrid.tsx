@@ -42,7 +42,9 @@ export function ButtonGrid({
     <div
       className={[
         "grid",
-        compact ? "gap-1 sm:gap-1.5" : "gap-2 sm:gap-2.5",
+        // H-09: slightly wider compact gaps (6px/8px, was 4px/6px) so the
+        // taller compact keys (36px+) read as separate tap targets.
+        compact ? "gap-1.5 sm:gap-2" : "gap-2 sm:gap-2.5",
         colClasses[columns],
         className,
       ].join(" ")}
