@@ -7,14 +7,9 @@ export function HomeIntroSection() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <div className="mb-8">
-        <p className="text-sm font-medium tracking-wide text-brand">
-          {t.home.heroEyebrow}
-        </p>
-        <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl lg:text-4xl dark:text-[#d6ccf0]">
-          {t.home.heroTitle}
-        </h1>
-      </div>
+      <p className="mb-8 text-sm font-medium tracking-wide text-brand">
+        {t.home.heroEyebrow}
+      </p>
 
       <h2 className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
         {t.home.introTitle}
