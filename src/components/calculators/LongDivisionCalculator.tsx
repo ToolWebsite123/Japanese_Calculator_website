@@ -79,7 +79,9 @@ export function LongDivisionCalculator() {
       return { quotient: "—", remainder: "—", error: t.common.invalidInput };
     }
 
-    const quotient = Math.floor(a / b);
+    // Truncated division, matching src/lib/calculators/longDivision.ts (M-01):
+    // Math.floor(-7 / 2) = -4 with remainder -1 breaks quotient*divisor+remainder = dividend.
+    const quotient = Math.trunc(a / b);
     const remainder = a % b;
     return {
       quotient: quotient.toString(),
