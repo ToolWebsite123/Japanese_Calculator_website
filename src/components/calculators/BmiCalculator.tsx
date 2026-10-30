@@ -123,12 +123,6 @@ export function BmiCalculator() {
 
   return (
     <>
-      {/* Owner's requested order (2026-10-30): short heading first, the
-          calculator immediately after, then the intro text below the tool. */}
-      <h1 className="mb-6 text-2xl font-bold tracking-tight text-text-primary sm:mb-8 sm:text-3xl">
-        {t.bmiPage.shortHeading}
-      </h1>
-
       <CalculatorCard
         compact
         maxWidthClass="max-w-[480px]"
@@ -209,14 +203,18 @@ export function BmiCalculator() {
         </div>
       </CalculatorCard>
 
-      <div className="mt-6 space-y-3">
+      <div className="mt-8 space-y-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
+          {t.bmiPage.title}
+        </h1>
         <p className="text-sm text-text-secondary sm:text-base">{t.bmiPage.description}</p>
-        <p className="max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
-          <LinkedText text={t.bmiPage.introParagraph} />
-        </p>
       </div>
 
-      <p className="mt-6 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+        <LinkedText text={t.bmiPage.introParagraph} />
+      </p>
+
+      <p className="mt-4 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
         {t.bmiPage.disclaimer}
       </p>
 
