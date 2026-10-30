@@ -13,7 +13,11 @@ export function CalculatorPageLayout({
 }) {
   return (
     <CalculatorPageContext.Provider value={activeHref}>
-      <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-6" suppressHydrationWarning>
+      {/* Minimal top padding so the calculator card (each page's first block,
+          horizontally centered via the card's own mx-auto) sits immediately
+          below the site header, per the owner's layout instruction. Bottom
+          padding stays larger for the heading/content sections below. */}
+      <div className="mx-auto max-w-6xl px-4 pt-2 pb-4 sm:px-6 sm:pt-3 sm:pb-6" suppressHydrationWarning>
         {children}
       </div>
     </CalculatorPageContext.Provider>
