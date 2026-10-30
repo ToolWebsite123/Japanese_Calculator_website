@@ -122,21 +122,12 @@ export function BmiCalculator() {
   }
 
   return (
-    <div className="design-v2">
-      {/* Design sample v2 (BMI only, scoped under .design-v2 in styles.css):
-          title-first header block stays, but the VISUAL design changes —
-          vivid violet action colour, dark result display panel, layered
-          card shadow, violet-tinted page background. All other calculator
-          pages keep the current design until this sample is approved. */}
-      <header className="mb-6 space-y-3 sm:mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          {t.bmiPage.heading}
-        </h1>
-        <p className="text-sm text-text-secondary sm:text-base">{t.bmiPage.description}</p>
-        <p className="max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
-          <LinkedText text={t.bmiPage.introParagraph} />
-        </p>
-      </header>
+    <>
+      {/* Owner's requested order (2026-10-30): short heading first, the
+          calculator immediately after, then the intro text below the tool. */}
+      <h1 className="mb-6 text-2xl font-bold tracking-tight text-text-primary sm:mb-8 sm:text-3xl">
+        {t.bmiPage.shortHeading}
+      </h1>
 
       <CalculatorCard
         compact
@@ -165,15 +156,8 @@ export function BmiCalculator() {
 
           {error && <ErrorMessage message={error} />}
 
-          {!result && !error && (
-            <div className="bmi-result-panel" aria-live="polite">
-              <div className="bmi-panel-label">{t.bmi.result}</div>
-              <div className="tabular-display bmi-panel-figure">—</div>
-            </div>
-          )}
-
           {result && (
-            <div className="bmi-result-panel space-y-3">
+            <div className="space-y-3">
               <div className="grid gap-4 sm:grid-cols-2">
                 <ResultCard label={t.bmi.result} value={result.bmi.toFixed(2)} highlight />
                 <div className="rounded-[var(--radius-md)] border border-border bg-surface-sunken p-4">
@@ -225,6 +209,13 @@ export function BmiCalculator() {
         </div>
       </CalculatorCard>
 
+      <div className="mt-6 space-y-3">
+        <p className="text-sm text-text-secondary sm:text-base">{t.bmiPage.description}</p>
+        <p className="max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+          <LinkedText text={t.bmiPage.introParagraph} />
+        </p>
+      </div>
+
       <p className="mt-6 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
         {t.bmiPage.disclaimer}
       </p>
@@ -233,6 +224,6 @@ export function BmiCalculator() {
 
       <CalculatorFaqSection title={t.bmiPage.faqTitle} items={t.bmiPage.faqItems} />
       <RelatedCalculators activeHref="/bmi-calculator" />
-    </div>
+    </>
   );
 }

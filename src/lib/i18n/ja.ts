@@ -1116,6 +1116,7 @@ const ja = {
   },
   bmiPage: {
     title: "BMIの計算",
+    shortHeading: "BMI計算",
     heading: "BMI計算｜身長と体重から肥満度と標準体重を判定",
     description: "身長と体重からBMIを算出し、日本肥満学会の基準で判定するBMIの計算。",
     introParagraph:
