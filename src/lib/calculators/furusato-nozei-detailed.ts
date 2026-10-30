@@ -44,8 +44,10 @@ export type FurusatoDetailedResult = {
   singleParentDeductionResidence: number;
   singleParentDeductionIncomeTax: number;
   socialInsurance: number;
-  lifeInsurance: number;
-  earthquakeInsurance: number;
+  lifeInsurance: number; // 所得税の生命保険料控除（上限適用後）
+  lifeInsuranceResidence: number; // 住民税の生命保険料控除（上限適用後）
+  earthquakeInsurance: number; // 所得税の地震保険料控除（上限適用後）
+  earthquakeInsuranceResidence: number; // 住民税の地震保険料控除（上限適用後）
   medical: number;
   basicDeductionResidence: number;
   basicDeductionIncomeTax: number;
@@ -93,9 +95,17 @@ const INC_SPOUSE_OVER70 = 480_000;
 const RES_SINGLE_PARENT = 300_000;
 const INC_SINGLE_PARENT = 350_000;
 const RES_BASIC = 430_000;
-// 配偶者控除は 配偶者の合計所得48万円以下 が原則。
-// 給与収入103万円以下 (≒ 給与所得48万以下) をしきい値として判定する簡易実装。
-const SPOUSE_INCOME_LIMIT = 1_030_000;
+// 配偶者控除は 配偶者の合計所得58万円以下 が原則（令和7年分〜の2025年税制改正）。
+// 給与収入のみの場合は 給与所得控除の最低保障額65万円 を差し引くため、
+// 給与収入123万円以下がしきい値になる（国税庁 No.1190）。
+// Wave 1B fix (M-03): 以前は改正前の103万円（合計所得48万円）を使い、
+// 2025年基準の基礎控除表と混在していた。
+const SPOUSE_INCOME_LIMIT = 1_230_000;
+// 控除額の法定上限（入力は「控除額」そのものなので上限でキャップする）
+const LIFE_DEDUCTION_CAP_INCOME_TAX = 120_000; // 生命保険料控除 所得税（新制度の合計上限）
+const LIFE_DEDUCTION_CAP_RESIDENCE = 70_000; // 生命保険料控除 住民税（新制度の合計上限）
+const EARTHQUAKE_DEDUCTION_CAP_INCOME_TAX = 50_000; // 地震保険料控除 所得税
+const EARTHQUAKE_DEDUCTION_CAP_RESIDENCE = 25_000; // 地震保険料控除 住民税
 
 export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): FurusatoDetailedResult {
   const { annualIncome, spouseType, spouseIncome, dependents, disability, singleParent } = input;
@@ -105,15 +115,26 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
   }
 
   const socialInsurance = Math.max(Math.floor(input.socialInsurance || 0), 0);
-  const lifeInsurance = Math.max(Math.floor(input.lifeInsurance || 0), 0);
-  const earthquakeInsurance = Math.max(Math.floor(input.earthquakeInsurance || 0), 0);
+  const lifeInsuranceRaw = Math.max(Math.floor(input.lifeInsurance || 0), 0);
+  const earthquakeInsuranceRaw = Math.max(Math.floor(input.earthquakeInsurance || 0), 0);
+  // 生命保険料控除・地震保険料控除は法定上限でキャップする（所得税と住民税で上限が異なる）
+  const lifeInsurance = Math.min(lifeInsuranceRaw, LIFE_DEDUCTION_CAP_INCOME_TAX);
+  const lifeInsuranceResidence = Math.min(lifeInsuranceRaw, LIFE_DEDUCTION_CAP_RESIDENCE);
+  const earthquakeInsurance = Math.min(
+    earthquakeInsuranceRaw,
+    EARTHQUAKE_DEDUCTION_CAP_INCOME_TAX,
+  );
+  const earthquakeInsuranceResidence = Math.min(
+    earthquakeInsuranceRaw,
+    EARTHQUAKE_DEDUCTION_CAP_RESIDENCE,
+  );
   const medical = Math.max(Math.floor(input.medical || 0), 0);
   const housingLoanCredit = Math.max(Math.floor(input.housingLoanCredit || 0), 0);
 
   const employmentDeduction = calcEmploymentDeduction(annualIncome);
   const employmentIncome = Math.max(annualIncome - employmentDeduction, 0);
 
-  // 配偶者控除（給与収入103万円以下のときのみ適用）
+  // 配偶者控除（給与収入123万円以下のときのみ適用、令和7年分〜）
   const spouseEligible = spouseType !== "none" && (spouseIncome || 0) <= SPOUSE_INCOME_LIMIT;
   const spouseDeductionResidence = spouseEligible
     ? spouseType === "over70"
@@ -151,8 +172,8 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
   const totalDeductionResidence =
     basicDeductionResidence +
     socialInsurance +
-    lifeInsurance +
-    earthquakeInsurance +
+    lifeInsuranceResidence +
+    earthquakeInsuranceResidence +
     medical +
     spouseDeductionResidence +
     dependentsDeductionResidence +
@@ -199,7 +220,9 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
     singleParentDeductionIncomeTax,
     socialInsurance,
     lifeInsurance,
+    lifeInsuranceResidence,
     earthquakeInsurance,
+    earthquakeInsuranceResidence,
     medical,
     basicDeductionResidence,
     basicDeductionIncomeTax,

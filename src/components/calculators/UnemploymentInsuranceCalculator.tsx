@@ -50,7 +50,7 @@ export const FAQ = {
     {
       question: "この計算結果はそのまま支給されますか？",
       answer:
-        "本ツールは令和7年8月1日の公式レートに基づく目安です。正式な支給額はハローワークの決定に従います。",
+        "本ツールは令和8年8月1日の公式レートに基づく目安です。正式な支給額はハローワークの決定に従います。",
     },
     {
       question: "自己都合退職ではいつから受給できますか？",
@@ -224,7 +224,7 @@ export function UnemploymentInsuranceCalculator() {
           )}
 
           <p className="text-xs text-text-tertiary text-center mt-6">
-            令和7年8月1日改定の公式レートに基づく概算です。正式な支給額はハローワークの決定に従います。
+            令和8年8月1日改定の公式レートに基づく概算です。正式な支給額はハローワークの決定に従います。
           </p>
         </div>
       </CalculatorCard>

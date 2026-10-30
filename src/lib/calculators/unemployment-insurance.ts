@@ -1,7 +1,17 @@
 /**
  * 失業保険（雇用保険 基本手当）計算ロジック
- * 令和7年8月1日改定の賃金日額・基本手当日額・所定給付日数に基づく
+ * 令和8年8月1日改定の賃金日額・基本手当日額・所定給付日数に基づく
  * 概算計算（正式な支給額はハローワークの決定に従います）
+ *
+ * 出典（2026-10-30 確認）: 厚生労働省「雇用保険の基本手当日額が変更になります
+ * 〜令和8年8月1日から〜」および算定式資料
+ * https://www.mhlw.go.jp/content/001726934.pdf
+ * https://www.mhlw.go.jp/content/001726936.pdf
+ *
+ * Wave 1B fix (M-04):
+ *  - 賃金が 0 のとき下限額に引き上げて給付を計算していた誤りを修正（給付は 0）。
+ *  - 給付率は、上下限適用後の基本手当日額から逆算し、表示額と一致させた。
+ *  - 月あたり金額は認定周期の 28 日換算で統一（型コメントの「30日換算」を修正）。
  */
 
 export type AgeBracket = "u29" | "30-34" | "35-44" | "45-59" | "60-64" | "65+";
@@ -20,36 +30,36 @@ export type UnemploymentResult = {
   benefitRate: number; // 給付率
   prescribedDays: number; // 所定給付日数
   totalBenefit: number; // 受給総額
-  monthlyBenefit: number; // 月あたりの受給金額（30日換算）
+  monthlyBenefit: number; // 月あたりの受給金額（28日換算：認定は通常4週間ごと）
   isLumpSum: boolean; // 65歳以上の高年齢求職者給付金
   notes: string[];
 };
 
-// 賃金日額 上限（令和7年8月1日）
+// 賃金日額 上限（令和8年8月1日）
 const WAGE_MAX: Record<AgeBracket, number> = {
-  u29: 14510,
-  "30-34": 16110,
-  "35-44": 16110,
-  "45-59": 17740,
-  "60-64": 16940,
-  "65+": 16940,
+  u29: 14900,
+  "30-34": 16540,
+  "35-44": 16540,
+  "45-59": 18220,
+  "60-64": 17400,
+  "65+": 17400,
 };
 
-// 賃金日額 下限
-const WAGE_MIN = 3014;
+// 賃金日額 下限（令和8年8月1日）
+const WAGE_MIN = 3203;
 
-// 基本手当日額 上限（令和7年8月1日）
+// 基本手当日額 上限（令和8年8月1日）
 const BENEFIT_DAILY_MAX: Record<AgeBracket, number> = {
-  u29: 7255,
-  "30-34": 8055,
-  "35-44": 8055,
-  "45-59": 8870,
-  "60-64": 7294,
-  "65+": 7294,
+  u29: 7450,
+  "30-34": 8270,
+  "35-44": 8270,
+  "45-59": 9110,
+  "60-64": 7830,
+  "65+": 7830,
 };
 
-// 基本手当日額 下限
-const BENEFIT_DAILY_MIN = 2411;
+// 基本手当日額 下限（令和8年8月1日）
+const BENEFIT_DAILY_MIN = 2562;
 
 // 所定給付日数 - 自己都合・定年退職（一般離職者）
 function daysSelf(tenure: TenureBracket): number {
@@ -92,37 +102,35 @@ function prescribedDays(age: AgeBracket, tenure: TenureBracket, reason: LeaveRea
   return daysCompany(age, tenure);
 }
 
-// 基本手当日額の算出（令和7年8月1日 スライド式）
-function benefitDaily(w: number, age: AgeBracket): { y: number; rate: number } {
+// 基本手当日額の算出（令和8年8月1日 スライド式・厚生労働省の算定式資料に基づく）
+function benefitDailyRaw(w: number, age: AgeBracket): number {
   const isSenior = age === "60-64";
   let y = 0;
 
   if (isSenior) {
     // 60〜64歳
-    if (w < 5340) {
+    if (w < 5480) {
       y = 0.8 * w;
-    } else if (w <= 11800) {
+    } else if (w <= 12120) {
       // 下記2式のうち低い方
-      const y1 = 0.8 * w - 0.35 * ((w - 5340) / 6460) * w;
-      const y2 = 0.05 * w + 4720;
+      const y1 = 0.8 * w - 0.35 * ((w - 5480) / 6640) * w;
+      const y2 = 0.05 * w + 4848; // 0.05w + (12,120 × 0.4)
       y = Math.min(y1, y2);
     } else {
       y = 0.45 * w;
     }
   } else {
     // 29歳以下・30〜44歳・45〜59歳
-    if (w < 5340) {
+    if (w < 5480) {
       y = 0.8 * w;
-    } else if (w <= 13140) {
-      y = 0.8 * w - 0.3 * ((w - 5340) / 7800) * w;
+    } else if (w <= 13490) {
+      y = 0.8 * w - 0.3 * ((w - 5480) / 8010) * w;
     } else {
       y = 0.5 * w;
     }
   }
 
-  y = Math.floor(y);
-  const rate = w > 0 ? y / w : 0;
-  return { y, rate };
+  return Math.floor(y);
 }
 
 export function calculateUnemployment(params: {
@@ -139,14 +147,36 @@ export function calculateUnemployment(params: {
 
   // 1. 賃金日額
   const wageDailyRaw = Math.floor(sixMonthWageTotal / 180);
+
+  // 賃金が入力されていない（賃金日額が 0）の場合は給付なし。
+  // 下限額へのクランプで給付が生まれることはない（M-04）。
+  if (wageDailyRaw <= 0) {
+    return {
+      wageDaily: 0,
+      wageDailyRaw: 0,
+      benefitDaily: 0,
+      benefitRate: 0,
+      prescribedDays: 0,
+      totalBenefit: 0,
+      monthlyBenefit: 0,
+      isLumpSum: age === "65+",
+      notes: [
+        "賃金が入力されていないため、給付金額は0円です。離職前6か月の賃金総額を入力してください。",
+      ],
+    };
+  }
+
   const wageMax = WAGE_MAX[age];
   const wageDaily = Math.min(Math.max(wageDailyRaw, WAGE_MIN), wageMax);
 
   // 2. 基本手当日額（65歳以上は同じ計算式を60-64相当で使用）
   const ageForBenefit: AgeBracket = age === "65+" ? "60-64" : age;
-  const { y, rate } = benefitDaily(wageDaily, ageForBenefit);
+  const y = benefitDailyRaw(wageDaily, ageForBenefit);
   const benefitMax = BENEFIT_DAILY_MAX[age];
   const benefitDailyValue = Math.min(Math.max(y, BENEFIT_DAILY_MIN), benefitMax);
+
+  // 給付率は、上下限適用後の基本手当日額 ÷ 賃金日額（上下限適用後）で表示額と一致させる
+  const rate = wageDaily > 0 ? benefitDailyValue / wageDaily : 0;
 
   // 3. 所定給付日数
   const days = prescribedDays(age, tenure, reason);
