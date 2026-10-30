@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="電卓.online｜無料のオンライン計算ツール集">
+  <rect width="1200" height="630" fill="#231942"/>
+  <rect x="0" y="0" width="1200" height="10" fill="#7c6bb3"/>
+  <g transform="translate(480 84)">
+    <rect width="240" height="170" rx="18" fill="#ffffff"/>
+    <rect x="18" y="16" width="204" height="46" rx="8" fill="#ede9f7"/>
+    <g fill="#231942">
+      <circle cx="42" cy="96" r="13"/>
+      <circle cx="96" cy="96" r="13"/>
+      <circle cx="150" cy="96" r="13"/>
+      <circle cx="204" cy="96" r="13" fill="#7c6bb3"/>
+      <circle cx="42" cy="136" r="13"/>
+      <circle cx="96" cy="136" r="13"/>
+      <circle cx="150" cy="136" r="13"/>
+      <circle cx="204" cy="136" r="13" fill="#7c6bb3"/>
+    </g>
+  </g>
+  <text x="600" y="356" text-anchor="middle" font-family="'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif" font-size="96" font-weight="700" fill="#ffffff">電卓.online</text>
+  <text x="600" y="436" text-anchor="middle" font-family="'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif" font-size="40" font-weight="500" fill="#d6ccf0">関数電卓・税金・BMI・単位変換など24種の計算ツール</text>
+  <text x="600" y="500" text-anchor="middle" font-family="'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif" font-size="34" font-weight="400" fill="#b3a6d9">無料・会員登録不要・ブラウザですぐ使える</text>
+</svg>

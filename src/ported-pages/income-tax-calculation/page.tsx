@@ -4,9 +4,9 @@ import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { IncomeTaxCalculator } from "@/components/calculators/IncomeTaxCalculator";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "所得税 計算｜年収から所得税・復興特別所得税を自動算出";
+const metaTitle = "所得税計算シミュレーター｜年収から税額と課税所得を算出｜電卓.online";
 const metaDescription =
-  "所得税 計算を、年収と雇用形態（会社員／個人事業主）から概算できるツール。2025年改正の給与所得控除・基礎控除、所得税の速算表、復興特別所得税（2.1％）に対応。社会保険料控除やその他の所得控除も任意で入力でき、課税所得・所得税・納税額合計を段階的に表示します。";
+  "2025年（令和7年）改正の給与所得控除・基礎控除に対応し、年収と雇用形態（会社員／個人事業主）から所得税を概算できる無料シミュレーター。社会保険料控除など各種控除も入力でき、課税所得・所得税・復興特別所得税・納税額合計を段階的に表示します。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

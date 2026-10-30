@@ -1,3 +1,4 @@
+import { OG_IMAGE_ALT, OG_IMAGE_URL } from "./page-schema";
 import { absoluteUrl, SITE_NAME } from "./site";
 
 export type Metadata = {
@@ -40,11 +41,13 @@ export function buildPageMetadata({
       locale: "ja_JP",
       type: openGraphType,
       siteName: SITE_NAME,
+      images: [{ url: OG_IMAGE_URL, width: 1200, height: 630, alt: OG_IMAGE_ALT }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      image: OG_IMAGE_URL,
     },
   };
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
+import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
 import DiscountCalculationPage, {
   metadata as discountMetadata,
 } from "@/ported-pages/discount-calculation/page";
@@ -13,6 +14,9 @@ const canonical = absoluteUrl(discountMetadata.alternates?.canonical ?? "/discou
 const keywords = discountMetadata.keywords ?? [];
 const og = (discountMetadata.openGraph ?? {}) as Record<string, unknown>;
 const tw = (discountMetadata.twitter ?? {}) as Record<string, unknown>;
+const ogImages = Array.isArray(og.images) ? (og.images as Record<string, unknown>[]) : [];
+const ogImage = ogImages.length ? metaStr(ogImages[0].url) : undefined;
+const twImage = metaStr(tw.image);
 
 function metaStr(v: unknown): string | undefined {
   if (typeof v === "string") return v;
@@ -37,12 +41,20 @@ export const Route = createFileRoute("/discount-calculation")({
       ...(metaStr(og.siteName)
         ? [{ property: "og:site_name", content: metaStr(og.siteName)! }]
         : []),
+      ...(ogImage ? [{ property: "og:image", content: ogImage }] : []),
       ...(metaStr(tw.card) ? [{ name: "twitter:card", content: metaStr(tw.card)! }] : []),
       ...(metaStr(tw.title) ? [{ name: "twitter:title", content: metaStr(tw.title)! }] : []),
       ...(metaStr(tw.description)
         ? [{ name: "twitter:description", content: metaStr(tw.description)! }]
         : []),
+      ...(twImage ? [{ name: "twitter:image", content: twImage }] : []),
     ],
     links: [{ rel: "canonical", href: canonical }],
+    scripts: buildPageSchemaScripts({
+      path: "/discount-calculation",
+      title,
+      description,
+      isLegal: false,
+    }),
   }),
 });

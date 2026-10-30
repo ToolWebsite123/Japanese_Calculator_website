@@ -7,9 +7,9 @@ import { buildLegalMetadata } from "@/lib/seo/legal";
 const LAST_UPDATED = "2026年7月8日";
 
 export const metadata = buildLegalMetadata({
-  title: "利用規約 | オンライン電卓",
+  title: "利用規約｜電卓.onlineのご利用条件と禁止事項",
   description:
-    "オンライン電卓の利用条件、禁止事項、知的財産権、免責、責任制限、準拠法について定めています。",
+    "電卓.onlineの計算ツールおよび関連コンテンツをご利用いただく際の条件を定めた利用規約です。禁止事項、知的財産権、免責と責任制限、準拠法など、ご利用前にご確認いただきたい内容をまとめています。",
   path: "/terms",
 });
 

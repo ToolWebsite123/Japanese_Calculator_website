@@ -403,7 +403,7 @@ export function FurusatoNozeiSimulator() {
 
       <div className="mt-8 space-y-1.5">
         <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          ふるさと納税 シミュレーション（詳細版）
+          ふるさと納税 控除上限額 詳細シミュレーション
         </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           全ての所得控除を反映した詳細な控除上限額シミュレーション。入力するたびにリアルタイムで結果が更新されます。

@@ -1,12 +1,12 @@
-﻿import Script from "next/script";
+import Script from "next/script";
 import { TimeCalculator } from "@/components/calculators/TimeCalculator";
 import ja from "@/lib/i18n/ja";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "時間計算機｜時間計算・時分秒";
+const metaTitle = "時間計算機｜時刻の足し算・引き算と経過時間を計算｜電卓.online";
 const metaDescription =
-  "時・分・秒の足し算・引き算ができる時間計算機。勤務時間の集計、作業時間の合計、休憩時間の差し引きなど、60進法の繰り上がりも自動で処理します。";
+  "時・分・秒の足し算・引き算ができる無料の時間計算機。勤務時間の集計や作業時間の合計、休憩時間の差し引きなど、60進法の繰り上がり・繰り下がりも自動で処理します。残業時間の計算や経過時間の確認にも便利です。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

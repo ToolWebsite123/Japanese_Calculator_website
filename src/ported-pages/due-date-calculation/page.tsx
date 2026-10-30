@@ -4,9 +4,9 @@ import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { DueDateCalculator } from "@/components/calculators/DueDateCalculator";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "出産予定日計算機｜生理周期対応・妊娠週数カレンダー付き";
+const metaTitle = "出産予定日計算｜最終月経・排卵日から妊娠週数も表示｜電卓.online";
 const metaDescription =
-  "出産予定日計算機は、最終月経日（LMP）・排卵日/性交日・希望日からの逆算の3方向で出産予定日を計算します。生理周期を21〜40日で調整でき、妊娠初期/中期/後期の開始日や正期産（37週0日〜41週6日）までカレンダー形式で表示。結果は目安のため、医師の超音波検査で確定してください。";
+  "最終月経日・排卵日・受精日などから出産予定日を計算する無料ツール。生理周期の調整にも対応し、現在の妊娠週数や妊娠初期・中期・後期の開始日、正期産の期間までカレンダー形式で表示します。結果は目安としてご利用ください。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

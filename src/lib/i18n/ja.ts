@@ -718,7 +718,7 @@ const ja = {
     noSolution: "解が存在しません（平行な直線）",
   },
   simultaneousEquationsPage: {
-    title: "連立方程式計算機",
+    title: "連立方程式ソルバー",
     description:
       "2元1次の連立方程式をクラメーの公式で解く連立方程式計算機。連立方程式の解き方をブラウザで確認。",
     introParagraph:
@@ -1416,6 +1416,10 @@ const ja = {
   },
   unemploymentInsurance: {
     description: "退職前の給与、年齢、被保険者期間から失業保険の給付額と給付日数を計算します。",
+  },
+  consumptionTax: {
+    description:
+      "税抜・税込の変換と消費税額を計算。10％・8％（軽減税率）や端数処理にも対応。",
   },
   discountCalc: {
     description:

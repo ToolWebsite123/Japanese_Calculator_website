@@ -4,9 +4,9 @@ import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { DiscountCalculator } from "@/components/calculators/DiscountCalculator";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "割引 計算｜％・割・逆算・消費税対応の割引 計算ツール";
+const metaTitle = "割引計算機｜％オフ・割引後の価格と税込表示｜電卓.online";
 const metaDescription =
-  "割引 計算を、％や「割（1割＝10％）」・値引き額（円）で行えるツール。定価から割引後の価格を求める通常計算と、セール価格から元の定価を求める逆算の両方に対応。消費税8％／10％や端数処理（切り捨て・四捨五入・切り上げ）も選べます。";
+  "％オフや「○割引」から割引後の価格を求める無料の割引計算機。セール価格から元の定価を求める逆算にも対応し、消費税8％／10％の税込・税抜表示や端数処理（切り捨て・四捨五入・切り上げ）も選べます。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

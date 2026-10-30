@@ -5,9 +5,9 @@ import { ScientificCalculator } from "@/components/calculators/ScientificCalcula
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = buildPageMetadata({
-  title: "関数電卓 | 三角関数・対数・順列組み合わせ対応の無料計算サイト",
+  title: "関数電卓オンライン｜三角関数・対数・ルート対応｜電卓.online",
   description:
-    "sin・cos・tanなどの三角関数・双曲線関数・対数・平方根・階乗に対応した無料の関数電卓。順列・組み合わせ（nCr・nPr）、最大公約数・最小公倍数（GCD・LCM）、変数の保存・呼び出し機能も搭載し、理系の学習や工学計算に活用できます。",
+    "sin・cos・tanなどの三角関数、対数、平方根、階乗に対応した無料のオンライン関数電卓。順列・組み合わせ（nCr・nPr）や最大公約数・最小公倍数も計算でき、理系の学習や工学計算に役立ちます。登録不要でブラウザですぐ使えます。",
   path: "/scientific-calculator",
   keywords: [
     "関数電卓",

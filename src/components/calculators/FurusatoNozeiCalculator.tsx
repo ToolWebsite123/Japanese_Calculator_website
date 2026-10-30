@@ -254,7 +254,7 @@ export function FurusatoNozeiCalculator() {
 
       <div className="mt-8 space-y-1.5">
         <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          ふるさと納税 控除上限額を計算
+          ふるさと納税 控除上限額かんたんシミュレーション
         </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           年収・配偶者控除・扶養家族の年齢区分から、ふるさと納税の寄付上限額の目安を公式計算式で算出します。

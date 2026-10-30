@@ -4,9 +4,9 @@ import ja from "@/lib/i18n/ja";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "Web電卓｜電卓web・電卓サイト";
+const metaTitle = "Web電卓｜ブラウザですぐ使えるシンプル電卓｜電卓.online";
 const metaDescription =
-  "インストール不要のweb電卓。ブラウザだけで動く電卓webで、PC・スマホ・タブレットから四則演算・括弧・メモリ計算ができます。入力データは端末内で処理されます。";
+  "ブラウザですぐ使える無料のWeb電卓（オンライン電卓）。四則演算・括弧・メモリ機能に対応したシンプルな電卓で、アプリのインストールは不要です。計算履歴も表示でき、入力データは端末内でのみ処理されるので安心して使えます。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,
