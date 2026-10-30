@@ -10,7 +10,7 @@ import { useLocale } from "@/context/LocaleContext";
  * same data and grouping as the /calculators hub (AllCalculatorsPage).
  * Server-rendered like the hub, so every calculator page is linked from the
  * homepage HTML. Headings start at H2/H3 — the homepage H1 lives in
- * HomeIntroSection and must stay unique.
+ * Hero and must stay unique.
  */
 export function HomeCalculatorsShowcase() {
   const { t } = useLocale();
