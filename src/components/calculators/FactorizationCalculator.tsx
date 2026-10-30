@@ -74,6 +74,9 @@ export function FactorizationCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        {t.factorizationPage.title}
+      </h1>
       <CalculatorCard compact>
         <div className="space-y-6">
           <FormField
@@ -113,9 +116,6 @@ export function FactorizationCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          {t.factorizationPage.title}
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           {t.factorizationPage.description}
         </p>

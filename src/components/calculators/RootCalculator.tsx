@@ -303,6 +303,9 @@ export function RootCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        {t.rootPage.title}
+      </h1>
       <CalculatorCard
         actions={
           result ? <CopyResultButton value={formatDisplayNumber(result.value, 8)} /> : undefined
@@ -438,9 +441,6 @@ export function RootCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          {t.rootPage.title}
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           {t.rootPage.description}
         </p>
