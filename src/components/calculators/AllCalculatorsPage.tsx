@@ -1,27 +1,23 @@
 "use client";
 
-import { useState } from "react";
 import { CalculatorCard } from "@/components/home/CalculatorCard";
-import {
-  CATEGORY_META,
-  getCalculatorsByCategory,
-  getNavDescription,
-  getNavLabel,
-} from "@/lib/catalog";
-import type { CalculatorCategory } from "@/lib/constants";
+import { CATEGORY_META, CATEGORY_ORDER, getNavDescription, getNavLabel } from "@/lib/catalog";
+import { NAV_ITEMS, type CalculatorCategory } from "@/lib/constants";
 import { useLocale } from "@/context/LocaleContext";
 
-const SIDEBAR_CATEGORIES: CalculatorCategory[] = [
-  "basic",
-  "scientific",
-  "finance",
-  "health",
-  "conversion",
-];
+// Every category is rendered in full, including in the server-rendered HTML.
+// The previous version only rendered the interactively selected category,
+// which left most calculators unreachable (and unlinked) for crawlers.
+const HUB_CATEGORIES: CalculatorCategory[] = CATEGORY_ORDER;
 
 export function AllCalculatorsPage() {
   const { t } = useLocale();
-  const [openCategory, setOpenCategory] = useState<CalculatorCategory>("basic");
+
+  const groups = HUB_CATEGORIES.map((category) => ({
+    category,
+    meta: CATEGORY_META[category],
+    items: NAV_ITEMS.filter((item) => item.category === category),
+  })).filter((group) => group.items.length > 0);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -33,24 +29,17 @@ export function AllCalculatorsPage() {
         <aside className="lg:w-56 lg:shrink-0">
           <nav aria-label={t.home.categoriesTitle}>
             <ul className="flex flex-col gap-1">
-              {SIDEBAR_CATEGORIES.map((cat) => {
-                const meta = CATEGORY_META[cat];
+              {groups.map(({ category, meta, items }) => {
                 const name = t.categories[meta.nameKey];
-                const isOpen = openCategory === cat;
                 return (
-                  <li key={cat}>
-                    <button
-                      type="button"
-                      onClick={() => setOpenCategory(cat)}
-                      aria-current={isOpen ? "true" : undefined}
-                      className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm font-semibold transition-colors ${
-                        isOpen
-                          ? "border-brand bg-brand-muted text-brand"
-                          : "border-border bg-surface-raised text-[#231942] hover:bg-brand-muted/50 dark:text-[#d6ccf0]"
-                      }`}
+                  <li key={category}>
+                    <a
+                      href={`#category-${category}`}
+                      className="flex w-full items-center justify-between rounded-md border border-border bg-surface-raised px-3 py-2 text-left text-sm font-semibold text-[#231942] transition-colors hover:bg-brand-muted/50 dark:text-[#d6ccf0]"
                     >
                       <span>{name}</span>
-                    </button>
+                      <span className="text-xs font-medium text-text-tertiary">{items.length}</span>
+                    </a>
                   </li>
                 );
               })}
@@ -58,21 +47,33 @@ export function AllCalculatorsPage() {
           </nav>
         </aside>
 
-        <section className="min-w-0 flex-1">
-          <h2 className="mb-4 text-xl font-bold tracking-tight text-[#231942] dark:text-[#d6ccf0]">
-            {t.categories[CATEGORY_META[openCategory].nameKey]}
-          </h2>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            {getCalculatorsByCategory(openCategory).map((item) => (
-              <CalculatorCard
-                key={item.href}
-                href={item.href}
-                label={getNavLabel(item)}
-                description={getNavDescription(item)}
-              />
-            ))}
-          </div>
-        </section>
+        <div className="min-w-0 flex-1 space-y-14">
+          {groups.map(({ category, meta, items }) => (
+            <section
+              key={category}
+              id={`category-${category}`}
+              aria-labelledby={`heading-${category}`}
+              className="scroll-mt-24"
+            >
+              <h2
+                id={`heading-${category}`}
+                className="mb-4 text-xl font-bold tracking-tight text-[#231942] dark:text-[#d6ccf0]"
+              >
+                {t.categories[meta.nameKey]}
+              </h2>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {items.map((item) => (
+                  <CalculatorCard
+                    key={item.href}
+                    href={item.href}
+                    label={getNavLabel(item)}
+                    description={getNavDescription(item)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
       </div>
     </div>
   );

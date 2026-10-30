@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouterState } from "@tanstack/react-router";
+import Link from "next/link";
 import { CalculatorCard } from "@/components/home/CalculatorCard";
 import {
   POPULAR_HREFS,
@@ -61,6 +62,25 @@ export function RelatedCalculators({
           />
         ))}
       </div>
+
+      {/* Full index of every calculator. This guarantees that every
+          calculator page links to every other one in the server-rendered
+          HTML, so no page can become an orphan (audit H-02). */}
+      <nav aria-label="すべての計算機" className="mt-10">
+        <h3 className="mb-3 text-sm font-semibold text-text-secondary">すべての計算機</h3>
+        <ul className="flex flex-wrap gap-x-4 gap-y-2">
+          {NAV_ITEMS.filter((item) => item.href !== current.href).map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="text-sm text-text-secondary underline-offset-2 transition-colors hover:text-brand hover:underline"
+              >
+                {getNavLabel(item)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </section>
   );
 }
