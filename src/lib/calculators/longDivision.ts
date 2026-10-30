@@ -56,7 +56,11 @@ export function getLongDivisionSteps(
     throw new Error("無効な入力です");
   }
 
-  const quotient = Math.floor(dividend / divisor);
+  // Truncated division (quotient toward zero, remainder takes the sign of
+  // the dividend): quotient * divisor + remainder === dividend always holds.
+  // Wave 1B fix (M-01): Math.floor gave -7 / 2 -> q -4, r -1, which violates
+  // the division identity (-4 * 2 + -1 = -9). Now -7 / 2 -> q -3, r -1.
+  const quotient = Math.trunc(dividend / divisor);
   const remainder = dividend % divisor;
   const exactValue = dividend / divisor;
   const exactDecimal = formatExactDecimal(dividend, divisor);

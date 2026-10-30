@@ -245,74 +245,260 @@ export function formatComplex(z: Complex): string {
   return `${re} ${sign} ${imStr}`;
 }
 
-export function evaluateComplexExpression(expression: string, mode: AngleMode): Complex {
-  let expr = expression.replace(/(\d+(?:\.\d+)?)\s*i/g, "$1*i").replace(/\bi\b/g, "(0+1i)");
+const COMPLEX_FN_NAMES = ["real", "imag", "conj", "arg"] as const;
 
-  expr = expr.replace(/real\(([^()]+)\)/g, (_, zStr: string) => {
-    const z = evaluateComplexExpression(zStr, mode);
-    return String(z.re);
-  });
-
-  expr = expr.replace(/imag\(([^()]+)\)/g, (_, zStr: string) => {
-    const z = evaluateComplexExpression(zStr, mode);
-    return String(z.im);
-  });
-
-  expr = expr.replace(/conj\(([^()]+)\)/g, (_, zStr: string) => {
-    const z = evaluateComplexExpression(zStr, mode);
-    return formatComplex({ re: z.re, im: -z.im });
-  });
-
-  expr = expr.replace(/arg\(([^()]+)\)/g, (_, zStr: string) => {
-    const z = evaluateComplexExpression(zStr, mode);
-    return String(Math.atan2(z.im, z.re));
-  });
-
-  if (!expr.includes("i")) {
-    const val = evaluateScientific(expr, mode);
-    return { re: typeof val === "number" ? val : val.re, im: typeof val === "number" ? 0 : val.im };
-  }
-
-  const match = expr.match(
-    /^\s*\(\s*(-?\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)i\s*\)\s*([*+/])\s*\(\s*(-?\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)i\s*\)\s*$/,
+/**
+ * True when the expression uses the imaginary unit `i` as a value
+ * (e.g. "3i+2", "(1+2i)*(3-i)"), NOT merely as a letter inside a
+ * function name such as "sin" / "asin" / "sinh".
+ *
+ * Wave 1B root-cause fix (H-04): evaluateScientific previously routed
+ * ANY expression containing the letter "i" to the complex path, so
+ * "sin(90)" was sent here, fell through every pattern, and recursed
+ * into itself forever (stack overflow -> 計算エラー on the live site).
+ */
+export function containsImaginaryUnit(expression: string): boolean {
+  let rest = expression;
+  const identifiers = [...FN_NAMES, ...COMPLEX_FN_NAMES, "mod", "nCr", "nPr", "gcd", "lcm"].sort(
+    (a, b) => b.length - a.length,
   );
-  if (match) {
-    const a1 = parseFloat(match[1]);
-    const b1 = (match[2] === "-" ? -1 : 1) * parseFloat(match[3]);
-    const op = match[4];
-    const a2 = parseFloat(match[5]);
-    const b2 = (match[6] === "-" ? -1 : 1) * parseFloat(match[7]);
+  for (const name of identifiers) {
+    rest = rest.split(name).join(" ");
+  }
+  return /i/.test(rest);
+}
 
-    if (op === "*") {
-      return { re: a1 * a2 - b1 * b2, im: a1 * b2 + b1 * a2 };
+function cAdd(a: Complex, b: Complex): Complex {
+  return { re: a.re + b.re, im: a.im + b.im };
+}
+function cSub(a: Complex, b: Complex): Complex {
+  return { re: a.re - b.re, im: a.im - b.im };
+}
+function cMul(a: Complex, b: Complex): Complex {
+  return { re: a.re * b.re - a.im * b.im, im: a.re * b.im + a.im * b.re };
+}
+function cDiv(a: Complex, b: Complex): Complex {
+  const denom = b.re * b.re + b.im * b.im;
+  if (denom === 0) throw new Error("0で割ることはできません");
+  return { re: (a.re * b.re + a.im * b.im) / denom, im: (a.im * b.re - a.re * b.im) / denom };
+}
+function cPow(base: Complex, exp: Complex): Complex {
+  if (exp.im !== 0) {
+    throw new Error("複素数の指数には対応していません");
+  }
+  const w = exp.re;
+  if (base.im === 0) {
+    return { re: Math.pow(base.re, w), im: 0 };
+  }
+  if (Number.isInteger(w)) {
+    let result: Complex = { re: 1, im: 0 };
+    let b = w < 0 ? cDiv({ re: 1, im: 0 }, base) : base;
+    let n = Math.abs(w);
+    while (n > 0) {
+      if (n % 2 === 1) result = cMul(result, b);
+      b = cMul(b, b);
+      n = Math.floor(n / 2);
     }
-    if (op === "+") {
-      return { re: a1 + a2, im: b1 + b2 };
+    return result;
+  }
+  // Real exponent on a complex base: principal value via polar form.
+  const r = Math.hypot(base.re, base.im);
+  const theta = Math.atan2(base.im, base.re);
+  const mag = Math.pow(r, w);
+  const ang = theta * w;
+  return { re: mag * Math.cos(ang), im: mag * Math.sin(ang) };
+}
+
+type ComplexToken =
+  | { type: "num"; value: number }
+  | { type: "i" }
+  | { type: "op"; value: string }
+  | { type: "lparen" }
+  | { type: "rparen" }
+  | { type: "fn"; value: string };
+
+function tokenizeComplex(input: string): ComplexToken[] {
+  const tokens: ComplexToken[] = [];
+  const s = input.replace(/\s+/g, "").replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
+  let i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if ((ch >= "0" && ch <= "9") || ch === ".") {
+      let num = "";
+      while (i < s.length && ((s[i] >= "0" && s[i] <= "9") || s[i] === ".")) num += s[i++];
+      if (i < s.length && (s[i] === "e" || s[i] === "E")) {
+        // scientific notation only when digits follow (avoid eating a fn name)
+        const m = s.slice(i).match(/^[eE][+-]?\d+/);
+        if (m) {
+          num += m[0];
+          i += m[0].length;
+        }
+      }
+      const value = parseFloat(num);
+      if (!Number.isFinite(value)) throw new Error("複素数の式が正しくありません");
+      tokens.push({ type: "num", value });
+      continue;
     }
-    if (op === "-") {
-      return { re: a1 - a2, im: b1 - b2 };
+    if (ch === "(") {
+      tokens.push({ type: "lparen" });
+      i++;
+      continue;
     }
-    if (op === "/") {
-      const denom = a2 * a2 + b2 * b2;
-      if (denom === 0) throw new Error("0で割ることはできません");
-      return { re: (a1 * a2 + b1 * b2) / denom, im: (b1 * a2 - a1 * b2) / denom };
+    if (ch === ")") {
+      tokens.push({ type: "rparen" });
+      i++;
+      continue;
+    }
+    if ("+-*/^".includes(ch)) {
+      tokens.push({ type: "op", value: ch });
+      i++;
+      continue;
+    }
+    if (/[a-zA-Z]/.test(ch)) {
+      let name = "";
+      while (i < s.length && /[a-zA-Z]/.test(s[i])) name += s[i++];
+      if (name === "i") {
+        tokens.push({ type: "i" });
+      } else {
+        tokens.push({ type: "fn", value: name });
+      }
+      continue;
+    }
+    throw new Error("複素数の式が正しくありません");
+  }
+  return tokens;
+}
+
+/**
+ * Recursive-descent evaluator for complex expressions.
+ * Supports + - * / ^, parentheses, implicit multiplication (3i, 2(1+i)),
+ * real/imag/conj/arg, and the real functions of scientific.ts applied to
+ * real arguments. Anything it cannot evaluate exactly throws a clear
+ * Japanese error — it NEVER silently drops the imaginary part
+ * (Wave 1B fix, H-05: previously "3i+2" returned 2).
+ */
+export function evaluateComplexExpression(expression: string, mode: AngleMode): Complex {
+  const hasComplexFn = COMPLEX_FN_NAMES.some((name) => expression.includes(`${name}(`));
+  if (!containsImaginaryUnit(expression) && !hasComplexFn) {
+    const val = evaluateScientific(expression, mode);
+    return typeof val === "number" ? { re: val, im: 0 } : val;
+  }
+
+  const tokens = tokenizeComplex(expression);
+  let pos = 0;
+
+  const peek = (): ComplexToken | undefined => tokens[pos];
+
+  function parseExpression(): Complex {
+    let left = parseTerm();
+    while (true) {
+      const tk = peek();
+      if (tk?.type === "op" && (tk.value === "+" || tk.value === "-")) {
+        pos++;
+        const right = parseTerm();
+        left = tk.value === "+" ? cAdd(left, right) : cSub(left, right);
+      } else {
+        return left;
+      }
     }
   }
 
-  const simpleMatch = expr.match(/^\s*(-?\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)i\s*$/);
-  if (simpleMatch) {
-    const re = parseFloat(simpleMatch[1]);
-    const im = (simpleMatch[2] === "-" ? -1 : 1) * parseFloat(simpleMatch[3]);
-    return { re, im };
+  function startsAtom(tk: ComplexToken | undefined): boolean {
+    return tk?.type === "num" || tk?.type === "i" || tk?.type === "lparen" || tk?.type === "fn";
   }
 
-  const pureImMatch = expr.match(/^\s*(-?\d+(?:\.\d+)?)i\s*$/);
-  if (pureImMatch) {
-    return { re: 0, im: parseFloat(pureImMatch[1]) };
+  function parseTerm(): Complex {
+    let left = parseFactor();
+    while (true) {
+      const tk = peek();
+      if (tk?.type === "op" && (tk.value === "*" || tk.value === "/")) {
+        pos++;
+        const right = parseFactor();
+        left = tk.value === "*" ? cMul(left, right) : cDiv(left, right);
+      } else if (startsAtom(tk)) {
+        // implicit multiplication: 3i, 2(1+i), (1+i)(2-i)
+        const right = parseFactor();
+        left = cMul(left, right);
+      } else {
+        return left;
+      }
+    }
   }
 
-  const realVal = evaluateScientific(expr.replace(/\s*([+-])\s*\d+i/g, ""), mode);
-  return { re: typeof realVal === "number" ? realVal : realVal.re, im: 0 };
+  function parseFactor(): Complex {
+    const tk = peek();
+    if (tk?.type === "op" && (tk.value === "-" || tk.value === "+")) {
+      pos++;
+      const v = parseFactor();
+      return tk.value === "-" ? { re: -v.re, im: -v.im } : v;
+    }
+    return parsePower();
+  }
+
+  function parsePower(): Complex {
+    const base = parseAtom();
+    const tk = peek();
+    if (tk?.type === "op" && tk.value === "^") {
+      pos++;
+      const exp = parseFactor();
+      return cPow(base, exp);
+    }
+    return base;
+  }
+
+  function applyComplexFn(fn: string, arg: Complex): Complex {
+    switch (fn) {
+      case "real":
+        return { re: arg.re, im: 0 };
+      case "imag":
+        return { re: arg.im, im: 0 };
+      case "conj":
+        return { re: arg.re, im: -arg.im };
+      case "arg":
+        return { re: Math.atan2(arg.im, arg.re), im: 0 };
+      case "abs":
+        return { re: Math.hypot(arg.re, arg.im), im: 0 };
+      case "sqrt": {
+        if (arg.im === 0) return { re: applyUnary(arg.re, fn, mode), im: 0 };
+        const r = Math.hypot(arg.re, arg.im);
+        const theta = Math.atan2(arg.im, arg.re) / 2;
+        const mag = Math.sqrt(r);
+        return { re: mag * Math.cos(theta), im: mag * Math.sin(theta) };
+      }
+      default: {
+        if (arg.im !== 0) {
+          throw new Error(`複素数に対する${fn}には対応していません`);
+        }
+        return { re: applyUnary(arg.re, fn, mode), im: 0 };
+      }
+    }
+  }
+
+  function parseAtom(): Complex {
+    const tk = tokens[pos++];
+    if (!tk) throw new Error("複素数の式が正しくありません");
+    if (tk.type === "num") return { re: tk.value, im: 0 };
+    if (tk.type === "i") return { re: 0, im: 1 };
+    if (tk.type === "lparen") {
+      const v = parseExpression();
+      if (tokens[pos++]?.type !== "rparen") throw new Error("複素数の式が正しくありません");
+      return v;
+    }
+    if (tk.type === "fn") {
+      if (tokens[pos++]?.type !== "lparen") throw new Error("複素数の式が正しくありません");
+      const arg = parseExpression();
+      if (tokens[pos++]?.type !== "rparen") throw new Error("複素数の式が正しくありません");
+      return applyComplexFn(tk.value, arg);
+    }
+    throw new Error("複素数の式が正しくありません");
+  }
+
+  const result = parseExpression();
+  if (pos !== tokens.length) throw new Error("複素数の式が正しくありません");
+  if (!Number.isFinite(result.re) || !Number.isFinite(result.im)) {
+    throw new Error("計算結果が範囲外です");
+  }
+  return result;
 }
 
 export function evaluateScientific(
@@ -320,7 +506,11 @@ export function evaluateScientific(
   mode: AngleMode,
   complexMode = false,
 ): number | Complex {
-  if (complexMode || /[i]/.test(expression) || /real|imag|conj|arg/.test(expression)) {
+  if (
+    complexMode ||
+    containsImaginaryUnit(expression) ||
+    COMPLEX_FN_NAMES.some((name) => expression.includes(`${name}(`))
+  ) {
     return evaluateComplexExpression(expression, mode);
   }
 

@@ -9,41 +9,52 @@ import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToS
 import { ChipButton, SurfacePanel } from "@/components/ui/primitives";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useLocale } from "@/context/LocaleContext";
+import { primeFactorize, type PrimeFactor } from "@/lib/calculators/scientific";
+import type { ReactNode } from "react";
 
 export function FactorizationCalculator() {
   const { t } = useLocale();
 
   const [numberInput, setNumberInput] = useState<string>("12");
 
-  const calculate = () => {
+  // Wave 1B fix (M-05): 以前はレンダリング中に上限なしの試し割りを行っており、
+  // 大きな素数を入れるとタブが固まった。lib の primeFactorize（上限 1e12、
+  // 超過時は日本語エラー）に統一し、指数は React の <sup> で描画する
+  // （dangerouslySetInnerHTML は廃止）。
+  const calculate = (): {
+    factorDisplay: ReactNode;
+    divisors: number[];
+    error: string | null;
+  } => {
     const num = parseInt(numberInput);
-    if (isNaN(num) || num < 0 || num > Number.MAX_SAFE_INTEGER) {
+    if (isNaN(num) || num < 0) {
+      return { factorDisplay: null, divisors: [], error: t.common.invalidInput };
+    }
+    if (num === 0) {
+      return { factorDisplay: null, divisors: [], error: "0は素因数分解できません" };
+    }
+    if (num === 1) {
+      return { factorDisplay: "1", divisors: [1], error: null };
+    }
+
+    let factors: PrimeFactor[];
+    try {
+      factors = primeFactorize(num);
+    } catch (e) {
       return {
-        primeFactors: "",
-        divisors: [] as number[],
-        num: 0,
-        error: num === 0 ? "0は素因数分解できません" : t.common.invalidInput,
+        factorDisplay: null,
+        divisors: [],
+        error: e instanceof Error ? e.message : t.common.invalidInput,
       };
     }
 
-    let temp = num;
-    const factors: Record<number, number> = {};
-    for (let i = 2; i * i <= temp; i++) {
-      while (temp % i === 0) {
-        factors[i] = (factors[i] || 0) + 1;
-        temp /= i;
-      }
-    }
-    if (temp > 1) {
-      factors[temp] = (factors[temp] || 0) + 1;
-    }
-
-    const primeFactorsStr = Object.entries(factors)
-      .map(([base, exp]) => {
-        if (exp === 1) return base;
-        return `${base}<sup>${exp}</sup>`;
-      })
-      .join(" &times; ");
+    const factorDisplay: ReactNode = factors.map((f, idx) => (
+      <span key={f.prime}>
+        {idx > 0 && " × "}
+        {f.prime}
+        {f.exponent > 1 && <sup>{f.exponent}</sup>}
+      </span>
+    ));
 
     const divisors: number[] = [];
     for (let i = 1; i * i <= num; i++) {
@@ -56,10 +67,10 @@ export function FactorizationCalculator() {
     }
     divisors.sort((a, b) => a - b);
 
-    return { primeFactors: primeFactorsStr || num.toString(), divisors, num, error: null };
+    return { factorDisplay, divisors, error: null };
   };
 
-  const { primeFactors, divisors, error } = calculate();
+  const { factorDisplay, divisors, error } = calculate();
 
   return (
     <>
@@ -82,10 +93,7 @@ export function FactorizationCalculator() {
               <div className="text-sm font-medium text-text-tertiary">
                 {t.factorization.primeFactors}
               </div>
-              <div
-                className="mt-2 text-2xl font-bold text-brand"
-                dangerouslySetInnerHTML={{ __html: primeFactors || "—" }}
-              />
+              <div className="mt-2 text-2xl font-bold text-brand">{factorDisplay ?? "—"}</div>
             </div>
 
             <div className="border-t border-border pt-4">

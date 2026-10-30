@@ -9,6 +9,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useLocale } from "@/context/LocaleContext";
+import { solveSimultaneousEquations } from "@/lib/calculators/simultaneous-equations";
 
 const coeffInputClass =
   "w-full rounded-[var(--radius-sm)] border border-border bg-surface-raised px-3 py-2 text-center text-lg text-text-primary outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20";
@@ -108,22 +109,14 @@ export function SimultaneousEquationsCalculator() {
       return;
     }
 
-    const determinant = a * e - b * d;
+    const solved = solveSimultaneousEquations(a, b, c, d, e, f);
 
-    if (determinant === 0) {
-      if (a * f === c * d && b * f === c * e) {
-        setResult({ x: "—", y: "—", status: "infinite" as const });
-        return;
-      }
-      setResult({ x: "—", y: "—", status: "no_solution" as const });
+    if (solved.status !== "success") {
+      setResult({ x: "—", y: "—", status: solved.status });
       return;
     }
 
-    const dx = c * e - b * f;
-    const dy = a * f - c * d;
-
-    const x = dx / determinant;
-    const y = dy / determinant;
+    const { x, y, determinant, dx, dy } = solved;
 
     setResult({
       x: Number.isInteger(x) ? x.toString() : x.toFixed(4),
