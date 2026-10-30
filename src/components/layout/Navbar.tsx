@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CalculatorIcon } from "@/components/icons/CalculatorIcon";
 import { SearchInput } from "@/components/home/SearchInput";
 import { NavbarCalcLinks } from "@/components/layout/NavbarCalcLinks";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
@@ -42,9 +43,30 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
               />
             </svg>
           </IconButton>
-          <Link href="/" className="min-w-0">
-            <span className="block truncate text-base font-bold text-brand" suppressHydrationWarning>
-              電卓
+          <Link
+            href="/"
+            className="flex min-w-0 items-center gap-2"
+            aria-label="電卓.online（トップページ）"
+          >
+            <span
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-brand text-white"
+              aria-hidden="true"
+            >
+              <CalculatorIcon className="h-5 w-5" />
+            </span>
+            <span className="flex min-w-0 flex-col justify-center leading-tight">
+              <span
+                className="block truncate text-base font-semibold text-brand dark:text-[#d6ccf0]"
+                suppressHydrationWarning
+              >
+                電卓.online
+              </span>
+              <span
+                className="mt-0.5 hidden truncate text-[11px] text-text-tertiary sm:block"
+                suppressHydrationWarning
+              >
+                登録いらず、すぐ使える計算ツール
+              </span>
             </span>
           </Link>
         </div>
