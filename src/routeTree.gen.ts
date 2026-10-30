@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as CalculatorsRouteImport } from './routes/calculators'
+import { Route as ConsumptionTaxCalculatorRouteImport } from './routes/consumption-tax-calculator'
 import { Route as DiscountCalculationRouteImport } from './routes/discount-calculation'
 import { Route as DueDateCalculationRouteImport } from './routes/due-date-calculation'
 import { Route as FurusatoNozeiCalculationRouteImport } from './routes/furusato-nozei-calculation'
@@ -35,6 +36,12 @@ const CalculatorsRoute = CalculatorsRouteImport.update({
   path: '/calculators',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsumptionTaxCalculatorRoute =
+  ConsumptionTaxCalculatorRouteImport.update({
+    id: '/consumption-tax-calculator',
+    path: '/consumption-tax-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DiscountCalculationRoute = DiscountCalculationRouteImport.update({
   id: '/discount-calculation',
   path: '/discount-calculation',
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/calculators': typeof CalculatorsRoute
+  '/consumption-tax-calculator': typeof ConsumptionTaxCalculatorRoute
   '/discount-calculation': typeof DiscountCalculationRoute
   '/due-date-calculation': typeof DueDateCalculationRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/calculators': typeof CalculatorsRoute
+  '/consumption-tax-calculator': typeof ConsumptionTaxCalculatorRoute
   '/discount-calculation': typeof DiscountCalculationRoute
   '/due-date-calculation': typeof DueDateCalculationRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
@@ -103,6 +112,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/calculators': typeof CalculatorsRoute
+  '/consumption-tax-calculator': typeof ConsumptionTaxCalculatorRoute
   '/discount-calculation': typeof DiscountCalculationRoute
   '/due-date-calculation': typeof DueDateCalculationRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/calculators'
+    | '/consumption-tax-calculator'
     | '/discount-calculation'
     | '/due-date-calculation'
     | '/furusato-nozei-calculation'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/calculators'
+    | '/consumption-tax-calculator'
     | '/discount-calculation'
     | '/due-date-calculation'
     | '/furusato-nozei-calculation'
@@ -141,6 +153,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/calculators'
+    | '/consumption-tax-calculator'
     | '/discount-calculation'
     | '/due-date-calculation'
     | '/furusato-nozei-calculation'
@@ -154,6 +167,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   CalculatorsRoute: typeof CalculatorsRoute
+  ConsumptionTaxCalculatorRoute: typeof ConsumptionTaxCalculatorRoute
   DiscountCalculationRoute: typeof DiscountCalculationRoute
   DueDateCalculationRoute: typeof DueDateCalculationRoute
   FurusatoNozeiCalculationRoute: typeof FurusatoNozeiCalculationRoute
@@ -184,6 +198,13 @@ declare module '@tanstack/react-router' {
       path: '/calculators'
       fullPath: '/calculators'
       preLoaderRoute: typeof CalculatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consumption-tax-calculator': {
+      id: '/consumption-tax-calculator'
+      path: '/consumption-tax-calculator'
+      fullPath: '/consumption-tax-calculator'
+      preLoaderRoute: typeof ConsumptionTaxCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discount-calculation': {
@@ -242,6 +263,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   CalculatorsRoute: CalculatorsRoute,
+  ConsumptionTaxCalculatorRoute: ConsumptionTaxCalculatorRoute,
   DiscountCalculationRoute: DiscountCalculationRoute,
   DueDateCalculationRoute: DueDateCalculationRoute,
   FurusatoNozeiCalculationRoute: FurusatoNozeiCalculationRoute,

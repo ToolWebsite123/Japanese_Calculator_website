@@ -168,6 +168,14 @@ export const SECONDARY_NAV_ITEMS: NavItem[] = [
     secondary: true,
   },
   {
+    href: "/consumption-tax-calculator",
+    labelKey: "消費税 計算",
+    icon: "消",
+    category: "finance",
+    descriptionKey: "consumptionTax.description",
+    secondary: true,
+  },
+  {
     href: "/due-date-calculation",
     labelKey: "出産予定日 計算",
     icon: "産",
