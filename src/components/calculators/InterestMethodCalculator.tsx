@@ -88,6 +88,9 @@ export function InterestMethodCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        {page.title}
+      </h1>
       <CalculatorCard compact>
         <div className="space-y-5">
           <FormField
@@ -154,9 +157,6 @@ export function InterestMethodCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          {page.title}
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           {page.description}
         </p>

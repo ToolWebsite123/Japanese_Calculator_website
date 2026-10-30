@@ -140,6 +140,9 @@ export function DiscountCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        割引 計算
+      </h1>
       <CalculatorCard
         compact
         maxWidthClass="max-w-[500px]"
@@ -397,9 +400,6 @@ export function DiscountCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          割引 計算
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           定価からの割引と、割引後価格からの逆算の両方に対応。％／割／円の指定、消費税、端数処理も選べます。
         </p>

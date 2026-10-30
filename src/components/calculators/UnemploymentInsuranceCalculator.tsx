@@ -91,6 +91,9 @@ export function UnemploymentInsuranceCalculator() {
 
   return (
     <>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        失業保険 計算
+      </h1>
       <CalculatorCard compact maxWidthClass="max-w-[500px]">
         <div className="space-y-2.5 sm:space-y-3">
           <FormField
@@ -230,9 +233,6 @@ export function UnemploymentInsuranceCalculator() {
       </CalculatorCard>
 
       <div className="mt-8 space-y-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl dark:text-[#d6ccf0]">
-          失業保険 計算
-        </h1>
         <p className="text-sm text-text-secondary sm:text-base">
           6ヶ月の賃金合計・年齢・被保険者期間・離職理由から、基本手当日額と受給総額を計算します。
         </p>
