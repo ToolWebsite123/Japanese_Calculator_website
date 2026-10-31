@@ -130,6 +130,38 @@ export function FactorizationCalculator() {
         steps={t.factorizationPage.howToSteps}
       />
 
+      <section aria-labelledby="factor-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="factor-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.factorizationPage.guideExamplesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.factorizationPage.guideExamples.map((ex) => (
+            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="factor-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="factor-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.factorizationPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.factorizationPage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection
         title={t.factorizationPage.faqTitle}
         items={t.factorizationPage.faqItems}
