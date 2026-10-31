@@ -8,6 +8,36 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { WEB_BUTTON_GUIDE } from "@/lib/calculator-guides/web";
 import { useLocale } from "@/context/LocaleContext";
+import { useHistoryForRoute } from "@/context/HistoryContext";
+
+// F1 (owner-approved 2026-10-31): always-visible history list beside the
+// calculator on lg screens. Reads the same history store the
+// StandardCalculator writes to (it stores entries under route "/").
+function VisibleHistory() {
+  const { history } = useHistoryForRoute("/");
+  const { t } = useLocale();
+  return (
+    <aside className="hidden w-72 shrink-0 lg:block">
+      <div className="rounded-2xl border border-border bg-surface-raised p-4 shadow-[0_10px_30px_rgba(35,25,66,0.07)]">
+        <h2 className="text-sm font-semibold text-text-primary">{t.nav.history}</h2>
+        {history.length === 0 ? (
+          <p className="mt-3 text-sm text-text-tertiary">{t.common.historyEmpty}</p>
+        ) : (
+          <ul className="mt-3 space-y-2">
+            {history.slice(0, 8).map((e) => (
+              <li key={e.id} className="rounded-lg bg-surface-sunken px-3 py-2">
+                <div className="truncate text-xs text-text-secondary">{e.expression}</div>
+                <div className="truncate text-base font-semibold text-text-primary">
+                  = {e.result}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </aside>
+  );
+}
 
 const sectionClass = "mt-16 border-t border-border pt-16";
 const headingClass =
@@ -22,10 +52,15 @@ export function WebCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.webCalculatorPage.title}
       </h1>
-      <StandardCalculator
-        title={t.webCalculatorPage.title}
-        description={t.webCalculatorPage.description}
-      />
+      <div className="lg:flex lg:items-start lg:justify-center lg:gap-6">
+        <VisibleHistory />
+        <div className="min-w-0 flex-1">
+          <StandardCalculator
+            title={t.webCalculatorPage.title}
+            description={t.webCalculatorPage.description}
+          />
+        </div>
+      </div>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
