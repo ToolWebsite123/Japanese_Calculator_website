@@ -27,10 +27,12 @@ export function StandardCalculator({
   title,
   description,
   compact = false,
+  maxWidthClass,
 }: {
   title?: string;
   description?: string;
   compact?: boolean;
+  maxWidthClass?: string;
 } = {}) {
   const { t } = useLocale();
   const { addEntry } = useHistory();
@@ -341,6 +343,7 @@ export function StandardCalculator({
           </div>
         }
         compact={compact}
+        maxWidthClass={maxWidthClass}
       >
         <div className={compact ? "space-y-3 md:space-y-1.5" : "space-y-4"}>
           <Display

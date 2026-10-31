@@ -58,6 +58,7 @@ export function WebCalculator() {
           <StandardCalculator
             title={t.webCalculatorPage.title}
             description={t.webCalculatorPage.description}
+            maxWidthClass="max-w-2xl lg:max-w-[860px]"
           />
         </div>
       </div>
