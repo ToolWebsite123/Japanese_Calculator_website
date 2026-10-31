@@ -54,12 +54,12 @@ export function RelatedCalculators({
       >
         関連する計算機
       </h2>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid auto-rows-fr grid-cols-1 gap-3 sm:grid-cols-2">
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="group flex items-start gap-3.5 rounded-[var(--radius-xl)] border border-border bg-surface-raised p-4 transition duration-200 hover:border-brand/30 hover:shadow-[var(--shadow-card)]"
+            className="group flex h-full items-center gap-3.5 rounded-[var(--radius-xl)] border border-border bg-surface-raised p-4 transition duration-200 hover:border-brand/30 hover:shadow-[var(--shadow-card)] sm:p-5"
           >
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-brand-muted text-brand transition group-hover:bg-brand group-hover:text-white">
               <CalculatorIcon className="h-5 w-5" />
