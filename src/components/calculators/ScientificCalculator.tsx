@@ -666,8 +666,8 @@ export function ScientificCalculator() {
             </div>
           )}
 
-          {/* Primary 6-Column Keypad */}
-          <ButtonGrid buttons={primaryKeypad} columns={6} compact />
+          {/* Primary 6-Column Keypad (separator before the digit block) */}
+          <ButtonGrid buttons={primaryKeypad} columns={6} compact separatorsBefore={[24]} />
 
           {/* Collapsible Secondary Panel Toggle */}
           <div className="pt-1">
@@ -698,7 +698,7 @@ export function ScientificCalculator() {
             <p className="pb-1.5 text-[11px] font-semibold tracking-wide text-text-secondary">
               高度な関数
             </p>
-            <ButtonGrid buttons={secondaryKeypad} columns={6} compact />
+            <ButtonGrid buttons={secondaryKeypad} columns={6} compact separatorsBefore={[13]} />
           </div>
         </div>
       </CalculatorCard>
@@ -814,13 +814,16 @@ export function ScientificCalculator() {
         >
           {t.scientificPage.logLawsTitle}
         </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5">
+        <div className="mt-4 space-y-2">
           {t.scientificPage.logLaws.map((law) => (
-            <li key={law} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            <p
+              key={law}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
+            >
               {law}
-            </li>
+            </p>
           ))}
-        </ul>
+        </div>
         <p className="mt-6 font-semibold text-text-primary">計算例</p>
         <ul className="mt-2 list-disc space-y-2 pl-5">
           {t.scientificPage.logExamples.map((ex) => (
@@ -838,13 +841,16 @@ export function ScientificCalculator() {
         >
           {t.scientificPage.expLawsTitle}
         </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5">
+        <div className="mt-4 space-y-2">
           {t.scientificPage.expLaws.map((law) => (
-            <li key={law} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            <p
+              key={law}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
+            >
               {law}
-            </li>
+            </p>
           ))}
-        </ul>
+        </div>
       </section>
 
       <section aria-labelledby="sci-shortcuts-heading" className="mt-16 border-t border-border pt-16">

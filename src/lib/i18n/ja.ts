@@ -329,10 +329,10 @@ const ja = {
     title: "無料オンライン関数電卓",
     guideExamplesTitle: "計算例",
     guideExamples: [
-      "sin(30°) ＝ 0.5（角度は「度（Deg）」の設定で）",
-      "log₁₀(1000) ＝ 3",
-      "2の10乗 ＝ 1,024",
-      "√2 ＝ 約1.414",
+      "cos(60°) ＝ 0.5（角度は「度（Deg）」の設定で）",
+      "ln(e) ＝ 1",
+      "3! ＝ 6",
+      "10³ ＝ 1000",
     ],
     keystrokeTitle: "入力手順の例",
     keystrokeExamples: [
@@ -361,7 +361,7 @@ const ja = {
     ],
     logExamples: [
       "log₁₀2 + log₁₀5 = log₁₀(2 × 5) = log₁₀10 = 1",
-      "log₂8 = 3（2を3乗すると8）。logₐ ボタンでは「2 → logₐ → 8」の順に入力します",
+      "log₃27 = 3（3を3乗すると27）。logₐ ボタンでは「3 → logₐ → 27」の順に入力します",
     ],
     expLawsTitle: "指数法則",
     expLaws: [
