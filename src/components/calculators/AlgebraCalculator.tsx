@@ -466,6 +466,38 @@ export function AlgebraCalculator() {
 
       <CalculatorHowToSection title={t.algebraPage.howToTitle} steps={t.algebraPage.howToSteps} />
 
+      <section aria-labelledby="algebra-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="algebra-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.algebraPage.guideExamplesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.algebraPage.guideExamples.map((ex) => (
+            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="algebra-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="algebra-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.algebraPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.algebraPage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection title={t.algebraPage.faqTitle} items={t.algebraPage.faqItems} />
       <RelatedCalculators activeHref="/algebra-calculator" />
     </>
