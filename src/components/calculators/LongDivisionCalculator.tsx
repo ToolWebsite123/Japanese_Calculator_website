@@ -248,6 +248,38 @@ export function LongDivisionCalculator() {
         steps={t.longDivisionPage.howToSteps}
       />
 
+      <section aria-labelledby="longdiv-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="longdiv-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.longDivisionPage.guideExamplesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.longDivisionPage.guideExamples.map((ex) => (
+            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="longdiv-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="longdiv-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.longDivisionPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.longDivisionPage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection
         title={t.longDivisionPage.faqTitle}
         items={t.longDivisionPage.faqItems}
