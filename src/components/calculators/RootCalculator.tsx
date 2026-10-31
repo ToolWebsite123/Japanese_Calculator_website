@@ -229,6 +229,10 @@ function RootStepsPanel({
   );
 }
 
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
+
 export function RootCalculator() {
   const { t } = useLocale();
   const { addEntry } = useHistory();
@@ -451,6 +455,71 @@ export function RootCalculator() {
       </p>
 
       <ButtonGuideTable title={t.rootPage.buttonGuideTitle} rows={ROOT_BUTTON_GUIDE} />
+
+      <section aria-labelledby="root-concept-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="root-concept-heading" className={guideHeadingClass}>
+          {t.rootPage.guideConceptTitle}
+        </h2>
+        <p className={guideBodyClass}>{t.rootPage.guideConceptBody}</p>
+        <p className={guideBodyClass}>{t.rootPage.guideConceptExample}</p>
+      </section>
+
+      <section aria-labelledby="root-table-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="root-table-heading" className={guideHeadingClass}>
+          {t.rootPage.guideTableTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+                >
+                  数
+                </th>
+                {t.rootPage.guideTableNumbers.map((n) => (
+                  <th
+                    key={n}
+                    scope="col"
+                    className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+                  >
+                    {n}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th
+                  scope="row"
+                  className="border border-border px-3 py-2 text-left font-medium text-text-primary"
+                >
+                  {t.rootPage.guideTableRowLabel}
+                </th>
+                {t.rootPage.guideTableRoots.map((r) => (
+                  <td key={r} className="border border-border px-3 py-2 text-text-secondary">
+                    {r}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="root-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="root-mistakes-heading" className={guideHeadingClass}>
+          {t.rootPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.rootPage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <CalculatorFaqSection title={t.rootPage.faqTitle} items={t.rootPage.faqItems} />
       <RelatedCalculators activeHref="/squareroot-calculator" />
