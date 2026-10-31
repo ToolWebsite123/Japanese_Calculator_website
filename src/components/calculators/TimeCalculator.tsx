@@ -177,6 +177,38 @@ export function TimeCalculator() {
 
       <CalculatorHowToSection title={t.timePage.howToTitle} steps={t.timePage.howToSteps} />
 
+      <section aria-labelledby="time-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="time-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.timePage.guideExamplesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.timePage.guideExamples.map((ex) => (
+            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="time-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="time-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.timePage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.timePage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection title={t.timePage.faqTitle} items={t.timePage.faqItems} />
       <RelatedCalculators activeHref="/time-calculator" />
     </>
