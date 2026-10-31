@@ -726,8 +726,6 @@ export function ScientificCalculator() {
         <LinkedText text={t.scientificPage.introParagraph} />
       </p>
 
-      <ButtonGuideTable title={t.scientificPage.buttonGuideTitle} rows={SCIENTIFIC_BUTTON_GUIDE} />
-
       <section aria-labelledby="sci-examples-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="sci-examples-heading"
@@ -807,6 +805,18 @@ export function ScientificCalculator() {
         </div>
       </section>
 
+      <section aria-labelledby="sci-degrad-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-degrad-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.guideDegRadTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.scientificPage.guideDegRadBody}
+        </p>
+      </section>
+
       <section aria-labelledby="sci-log-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="sci-log-heading"
@@ -853,45 +863,6 @@ export function ScientificCalculator() {
         </div>
       </section>
 
-      <section aria-labelledby="sci-shortcuts-heading" className="mt-16 border-t border-border pt-16">
-        <h2
-          id="sci-shortcuts-heading"
-          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
-        >
-          {t.scientificPage.shortcutsTitle}
-        </h2>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full border-collapse text-sm sm:text-base">
-            <thead>
-              <tr className="border-b border-border bg-surface-sunken">
-                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">キー</th>
-                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {t.scientificPage.shortcuts.map((row) => (
-                <tr key={row.key} className="border-b border-border last:border-b-0">
-                  <td className="px-3 py-2.5 font-medium whitespace-nowrap text-text-primary">{row.key}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.action}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section aria-labelledby="sci-degrad-heading" className="mt-16 border-t border-border pt-16">
-        <h2
-          id="sci-degrad-heading"
-          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
-        >
-          {t.scientificPage.guideDegRadTitle}
-        </h2>
-        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
-          {t.scientificPage.guideDegRadBody}
-        </p>
-      </section>
-
       <section aria-labelledby="sci-handcalc-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="sci-handcalc-heading"
@@ -930,6 +901,35 @@ export function ScientificCalculator() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <ButtonGuideTable title={t.scientificPage.buttonGuideTitle} rows={SCIENTIFIC_BUTTON_GUIDE} />
+
+      <section aria-labelledby="sci-shortcuts-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-shortcuts-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.shortcutsTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken">
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">キー</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.scientificPage.shortcuts.map((row) => (
+                <tr key={row.key} className="border-b border-border last:border-b-0">
+                  <td className="px-3 py-2.5 font-medium whitespace-nowrap text-text-primary">{row.key}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <CalculatorFaqSection title={t.scientificPage.faqTitle} items={t.scientificPage.faqItems} />
