@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/context/LocaleContext";
+import { HeroCalculator } from "@/components/home/HeroCalculator";
 
 export function Hero() {
   const { t } = useLocale();
@@ -13,6 +14,9 @@ export function Hero() {
       <h1 className="max-w-2xl text-center text-base font-medium leading-relaxed text-text-secondary sm:text-lg">
         {t.home.heroTitle}
       </h1>
+      <div className="mt-6 flex w-full justify-center sm:mt-8">
+        <HeroCalculator />
+      </div>
     </section>
   );
 }

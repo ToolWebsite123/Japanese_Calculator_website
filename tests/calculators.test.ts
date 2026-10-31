@@ -388,3 +388,35 @@ test("BMI Step C: Deurenberg body-fat estimate (BMI 21.48, age 60)", () => {
   // the estimate never goes below zero
   assert.equal(estimateBodyFatPercent(10, 18, "male"), 0);
 });
+
+import {
+  taxIncluded,
+  taxExcluded,
+  sqrtValue,
+} from "../src/lib/calculators/desk-features";
+
+test("Step A: desk tax buttons — taxIncluded at 10% and 8%", () => {
+  assert.equal(taxIncluded(1000, 10), 1100);
+  assert.equal(taxIncluded(1000, 8), 1080);
+  assert.equal(taxIncluded(2980, 10), 3278);
+  // half-up to whole yen: 1985 * 1.1 = 2183.5 -> 2184
+  assert.equal(taxIncluded(1985, 10), 2184);
+  assert.equal(taxIncluded(0, 10), 0);
+});
+
+test("Step A: desk tax buttons — taxExcluded at 10% and 8%", () => {
+  assert.equal(taxExcluded(1100, 10), 1000);
+  assert.equal(taxExcluded(3300, 10), 3000);
+  // the classic float trap: 1080 / 1.08 must be exactly 1000
+  assert.equal(taxExcluded(1080, 8), 1000);
+  // 2184 / 1.1 = 1985.4545… -> 1985
+  assert.equal(taxExcluded(2184, 10), 1985);
+});
+
+test("Step A: desk sqrt key", () => {
+  assert.equal(sqrtValue(529), 23);
+  assert.equal(sqrtValue(0), 0);
+  const r = sqrtValue(2);
+  assert.ok(r !== null && Math.abs(r - 1.41421356237) < 1e-11);
+  assert.equal(sqrtValue(-4), null);
+});

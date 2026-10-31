@@ -16,6 +16,7 @@ import {
   openParenthesis,
 } from "@/lib/calculators/expression-input";
 import { evaluateExpression } from "@/lib/calculators/standard";
+import { sqrtValue, taxExcluded, taxIncluded } from "@/lib/calculators/desk-features";
 import { formatDisplayNumber, CALCULATOR_ERROR_DISPLAY } from "@/lib/format";
 
 function normalizeExpr(expr: string): string {
@@ -43,6 +44,8 @@ export function StandardCalculator({
   const [awaitingOperand, setAwaitingOperand] = useState(true);
   const [error, setError] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [taxRate, setTaxRate] = useState<10 | 8>(10);
 
   const inputDigit = useCallback(
     (digit: string) => {
@@ -94,6 +97,7 @@ export function StandardCalculator({
       setJustEvaluated(true);
       setAwaitingOperand(true);
       setError(false);
+      setGrandTotal((gt) => gt + result);
       addEntry({ expression: full, result: formatted, route: "/" });
     } catch {
       setDisplay(CALCULATOR_ERROR_DISPLAY);
@@ -109,7 +113,58 @@ export function StandardCalculator({
     setJustEvaluated(false);
     setAwaitingOperand(true);
     setError(false);
+    // AC also resets the grand total, like a physical desk calculator.
+    setGrandTotal(0);
   }, []);
+
+  const handleGrandTotal = useCallback(() => {
+    setError(false);
+    setDisplay(formatDisplayNumber(grandTotal));
+    setJustEvaluated(false);
+    setAwaitingOperand(false);
+  }, [grandTotal]);
+
+  const handleTax = useCallback(
+    (included: boolean) => {
+      const val = parseFloat(display);
+      if (!Number.isFinite(val) || error) return;
+      const converted = included ? taxIncluded(val, taxRate) : taxExcluded(val, taxRate);
+      setDisplay(formatDisplayNumber(converted));
+      setAwaitingOperand(false);
+      setError(false);
+    },
+    [display, error, taxRate],
+  );
+
+  const handleSqrt = useCallback(() => {
+    const val = parseFloat(display);
+    const result = Number.isFinite(val) ? sqrtValue(val) : null;
+    if (result === null) {
+      setDisplay(CALCULATOR_ERROR_DISPLAY);
+      setError(true);
+      setJustEvaluated(true);
+      setAwaitingOperand(true);
+      return;
+    }
+    setDisplay(formatDisplayNumber(result));
+    setAwaitingOperand(false);
+    setError(false);
+  }, [display]);
+
+  const handleDoubleZero = useCallback(() => {
+    setError(false);
+    setAwaitingOperand(false);
+    if (justEvaluated) {
+      setDisplay("0");
+      setExpression("");
+      setJustEvaluated(false);
+      return;
+    }
+    setDisplay((prev) => {
+      if (prev === "0" || prev.length >= 15) return prev;
+      return `${prev}00`;
+    });
+  }, [justEvaluated]);
 
   const handleBackspace = useCallback(() => {
     if (justEvaluated || error) {
@@ -247,6 +302,10 @@ export function StandardCalculator({
     { id: "mr", label: "MR", variant: "memory", onClick: () => handleMemory("MR") },
     { id: "m+", label: "M+", variant: "memory", onClick: () => handleMemory("M+") },
     { id: "m-", label: "M−", variant: "memory", onClick: () => handleMemory("M-") },
+    { id: "tax-in", label: "税込", variant: "function", onClick: () => handleTax(true) },
+    { id: "tax-out", label: "税抜", variant: "function", onClick: () => handleTax(false) },
+    { id: "gt", label: "GT", variant: "function", onClick: handleGrandTotal },
+    { id: "sqrt", label: "√", variant: "function", onClick: handleSqrt },
     { id: "ac", label: "AC", variant: "danger", onClick: handleClear },
     { id: "bs", label: "⌫", variant: "function", onClick: handleBackspace },
     { id: "pct", label: "%", variant: "function", onClick: handlePercent },
@@ -268,7 +327,8 @@ export function StandardCalculator({
     { id: "3", label: "3", onClick: () => inputDigit("3") },
     { id: "eq", label: "=", variant: "equals", onClick: handleEquals },
     { id: "0", label: "0", span: 2, onClick: () => inputDigit("0") },
-    { id: "dot", label: ".", span: 2, onClick: () => inputDigit(".") },
+    { id: "00", label: "00", onClick: handleDoubleZero },
+    { id: "dot", label: ".", onClick: () => inputDigit(".") },
   ];
 
   return (
@@ -315,6 +375,31 @@ export function StandardCalculator({
             memoryActive={memory !== 0}
             compact={compact}
           />
+          <div className="flex items-center justify-between gap-2 px-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-medium text-text-secondary">税率</span>
+              {([10, 8] as const).map((rate) => (
+                <button
+                  key={rate}
+                  type="button"
+                  aria-pressed={taxRate === rate}
+                  onClick={() => setTaxRate(rate)}
+                  className={
+                    taxRate === rate
+                      ? "rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-white"
+                      : "rounded-full border border-border bg-surface-sunken/80 px-2.5 py-1 text-xs font-medium text-text-secondary transition hover:text-text-primary dark:bg-surface-dark/60"
+                  }
+                >
+                  {rate}%
+                </button>
+              ))}
+            </div>
+            {grandTotal !== 0 && (
+              <span className="text-xs font-medium text-text-secondary">
+                GT: {formatDisplayNumber(grandTotal)}
+              </span>
+            )}
+          </div>
           <div className="-mx-1 overflow-x-auto px-1 pb-1">
             <div className="min-w-[280px]">
               <ButtonGrid buttons={keypad} columns={4} compact={compact} />
