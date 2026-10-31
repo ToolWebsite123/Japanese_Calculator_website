@@ -620,3 +620,14 @@ test("FURUSATO: remainingDonationRoom subtracts donations and floors at 0", () =
   assert.equal(remainingDonationRoom(77949, 100000), 0);
   assert.equal(remainingDonationRoom(77949, 0), 77949);
 });
+
+test("FURUSATO: expanded table anchors — ¥2,000,000 single and spouse+2 university students", () => {
+  const low = calcFurusatoNozei({ annualIncome: 2_000_000, hasSpouse: false, dependents: NO_DEPS });
+  assert.equal(low.donationLimit, 15899);
+  const uni2 = calcFurusatoNozei({
+    annualIncome: 10_000_000,
+    hasSpouse: true,
+    dependents: { ...NO_DEPS, age19to22: 2 },
+  });
+  assert.equal(uni2.donationLimit, 142557);
+});
