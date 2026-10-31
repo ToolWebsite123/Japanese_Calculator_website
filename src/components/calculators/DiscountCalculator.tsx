@@ -72,8 +72,17 @@ export const FAQ = {
       answer:
         "通常計算では単位を「円」に切り替えると「500円引き」のような固定額の値引きも計算できます。",
     },
+    {
+      question: "「20%オフ＋さらに10%オフ」は合計30%オフですか？",
+      answer:
+        "いいえ、28%オフになります。割引は続けて適用されるため、元の価格×0.8×0.9＝元の価格×0.72となり、割引率は28%です。2回目の割引は、1回目で値引きされた後の価格にかかるためです。",
+    },
   ],
 };
+
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
 
 type Mode = "forward" | "reverse";
 
@@ -410,6 +419,31 @@ export function DiscountCalculator() {
       </p>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="discount-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="discount-example-heading" className={guideHeadingClass}>
+          割引の計算式と計算例
+        </h2>
+        <p className={guideBodyClass}>割引後価格 ＝ 元の価格 ×（1 − 割引率）</p>
+        <p className={guideBodyClass}>
+          例）3,980円の30%オフ ＝ 3,980 × 0.7 ＝{" "}
+          <strong className="text-text-primary">2,786円</strong>（割引額は1,194円）です。
+        </p>
+      </section>
+
+      <section aria-labelledby="discount-tax-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="discount-tax-heading" className={guideHeadingClass}>
+          割引と消費税の順番
+        </h2>
+        <p className={guideBodyClass}>
+          通常、消費税は割引後の金額にかかります。例）5,000円の20%オフ → 4,000円 → 税込（10%）で{" "}
+          <strong className="text-text-primary">4,400円</strong> です。
+        </p>
+        <p className={guideBodyClass}>
+          「税込価格から割引」なのか「税抜価格から割引」なのかで結果が変わるため、お店の表示を確認しましょう。この計算機では「税抜価格を入力」「税込価格を入力」の両方に対応しています。
+        </p>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/discount-calculation" />
     </>
