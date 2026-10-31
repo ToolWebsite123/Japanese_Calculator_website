@@ -684,3 +684,43 @@ test("TIME: decimal + duration formatting", () => {
   assert.equal(formatDurationMinutes(60), "1時間");
   assert.equal(formatDurationMinutes(45), "45分");
 });
+
+/* ------------- Percentage: 4 modes + buai (2026-10-31) ------------- */
+import {
+  changePercent,
+  percentOf,
+  percentToBuai,
+  ratioPercent,
+  wholeFromPart,
+} from "../src/lib/calculators/percentage";
+
+test("PCT: the four modes on the universal test cases", () => {
+  assert.equal(percentOf(150, 20), 30);
+  assert.equal(ratioPercent(30, 150), 20);
+  assert.equal(changePercent(100, 120), 20);
+  assert.equal(wholeFromPart(30, 20), 150);
+});
+
+test("PCT: division-by-zero cases return null", () => {
+  assert.equal(ratioPercent(10, 0), null);
+  assert.equal(changePercent(0, 50), null);
+  assert.equal(wholeFromPart(10, 0), null);
+});
+
+test("PCT: buai conversion is correct (incl. the Rakko-style trap)", () => {
+  assert.equal(percentToBuai(20), "2割");
+  assert.equal(percentToBuai(25), "2割5分");
+  assert.equal(percentToBuai(25.5), "2割5分5厘");
+  assert.equal(percentToBuai(100), "10割");
+  assert.equal(percentToBuai(0), null);
+  assert.equal(percentToBuai(150), null);
+  assert.equal(percentToBuai(-5), null);
+});
+
+test("PCT: worked-examples table values verify against the lib", () => {
+  assert.equal(percentOf(5000, 80), 4000); // 5,000円の20%引き -> 4,000円
+  assert.equal(percentOf(2500, 110), 2750); // 2,500円の税込10% -> 2,750円
+  assert.equal(ratioPercent(80, 400), 20); // 400点中80点 -> 20%
+  assert.equal(wholeFromPart(30, 20), 150); // 30は20% -> 全体150
+  assert.equal(changePercent(100, 120), 20); // 100 -> 120 は +20%
+});

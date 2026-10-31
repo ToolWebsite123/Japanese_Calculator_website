@@ -8,8 +8,16 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { PercentageWorkedExamples } from "@/components/calculator/PercentageWorkedExamples";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { Divider, InputWell, PrimaryButton } from "@/components/ui/primitives";
+import { Divider, InputWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import {
+  changePercent,
+  percentOf,
+  percentToBuai,
+  ratioPercent,
+  wholeFromPart,
+} from "@/lib/calculators/percentage";
+import { formatDisplayNumber } from "@/lib/format";
 
 const inlineInputClass =
   "w-full rounded-[var(--radius-sm)] border border-border bg-surface-sunken px-3 py-2 text-lg text-text-primary outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 sm:w-28";
@@ -73,58 +81,48 @@ export function PercentageCalculator() {
   const [p2Y, setP2Y] = useState<string>("150");
   const [p3X, setP3X] = useState<string>("100");
   const [p3Y, setP3Y] = useState<string>("120");
+  const [p4Part, setP4Part] = useState<string>("30");
+  const [p4Pct, setP4Pct] = useState<string>("20");
 
-  const calc1 = (xStr: string, yStr: string) => {
-    const x = parseFloat(xStr);
-    const y = parseFloat(yStr);
-    if (isNaN(x) || isNaN(y)) {
-      return { value: "—", error: t.common.invalidInput as string | null };
-    }
-    return { value: (y * (x / 100)).toString(), error: null };
+  // All four modes compute live on every render (no calculate button).
+  const parse = (s: string): number | null => {
+    if (s.trim() === "") return null;
+    const n = parseFloat(s);
+    return isNaN(n) ? null : n;
+  };
+  const invalid = t.common.invalidInput as string;
+
+  const n1x = parse(p1X);
+  const n1y = parse(p1Y);
+  const v1 = n1x !== null && n1y !== null ? percentOf(n1y, n1x) : null;
+  const result1 = {
+    value: v1 === null ? "—" : formatDisplayNumber(v1, 8),
+    error: v1 === null ? invalid : null,
   };
 
-  const calc2 = (xStr: string, yStr: string) => {
-    const x = parseFloat(xStr);
-    const y = parseFloat(yStr);
-    if (isNaN(x) || isNaN(y)) {
-      return { value: "—", error: t.common.invalidInput as string | null };
-    }
-    if (y === 0) {
-      return { value: "—", error: t.common.invalidInput as string | null };
-    }
-    return { value: ((x / y) * 100).toFixed(2) + "%", error: null };
+  const n2x = parse(p2X);
+  const n2y = parse(p2Y);
+  const v2 = n2x !== null && n2y !== null ? ratioPercent(n2x, n2y) : null;
+  const buai2 = v2 !== null ? percentToBuai(v2) : null;
+  const result2 = {
+    value: v2 === null ? "—" : `${v2.toFixed(2)}%${buai2 ? `（${buai2}）` : ""}`,
+    error: v2 === null ? invalid : null,
   };
 
-  const calc3 = (xStr: string, yStr: string) => {
-    const x = parseFloat(xStr);
-    const y = parseFloat(yStr);
-    if (isNaN(x) || isNaN(y)) {
-      return { value: "—", error: t.common.invalidInput as string | null };
-    }
-    if (x === 0) {
-      return { value: "—", error: t.common.invalidInput as string | null };
-    }
-    const diff = ((y - x) / Math.abs(x)) * 100;
-    return {
-      value: diff > 0 ? `+${diff.toFixed(2)}%` : `${diff.toFixed(2)}%`,
-      error: null,
-    };
+  const n3x = parse(p3X);
+  const n3y = parse(p3Y);
+  const v3 = n3x !== null && n3y !== null ? changePercent(n3x, n3y) : null;
+  const result3 = {
+    value: v3 === null ? "—" : `${v3 > 0 ? "+" : ""}${v3.toFixed(2)}%`,
+    error: v3 === null ? invalid : null,
   };
 
-  const [results, setResults] = useState(() => ({
-    result1: calc1("20", "150"),
-    result2: calc2("30", "150"),
-    result3: calc3("100", "120"),
-    submitted: { p1X: "20", p1Y: "150", p2X: "30", p2Y: "150", p3X: "100", p3Y: "120" },
-  }));
-
-  const handleCalculate = () => {
-    setResults({
-      result1: calc1(p1X, p1Y),
-      result2: calc2(p2X, p2Y),
-      result3: calc3(p3X, p3Y),
-      submitted: { p1X, p1Y, p2X, p2Y, p3X, p3Y },
-    });
+  const n4part = parse(p4Part);
+  const n4pct = parse(p4Pct);
+  const v4 = n4part !== null && n4pct !== null ? wholeFromPart(n4part, n4pct) : null;
+  const result4 = {
+    value: v4 === null ? "—" : formatDisplayNumber(v4, 8),
+    error: v4 === null ? invalid : null,
   };
 
   return (
@@ -153,9 +151,9 @@ export function PercentageCalculator() {
               />
               <span className="text-text-secondary">% は</span>
             </div>
-            <ResultInline value={results.result1.value} />
+            <ResultInline value={result1.value} />
           </div>
-          {results.result1.error && <ErrorMessage message={results.result1.error} />}
+          {result1.error && <ErrorMessage message={result1.error} />}
 
           <Divider className="pt-0" />
 
@@ -178,9 +176,9 @@ export function PercentageCalculator() {
               />
               <span className="text-text-secondary">の割合は</span>
             </div>
-            <ResultInline value={results.result2.value} />
+            <ResultInline value={result2.value} />
           </div>
-          {results.result2.error && <ErrorMessage message={results.result2.error} />}
+          {result2.error && <ErrorMessage message={result2.error} />}
 
           <Divider className="pt-0" />
 
@@ -203,22 +201,43 @@ export function PercentageCalculator() {
               />
               <span className="text-text-secondary">への変化は</span>
             </div>
-            <ResultInline value={results.result3.value} />
+            <ResultInline value={result3.value} />
           </div>
-          {results.result3.error && <ErrorMessage message={results.result3.error} />}
+          {result3.error && <ErrorMessage message={result3.error} />}
 
-          <PrimaryButton onClick={handleCalculate} className="mt-4">
-            {t.common.calculate}
-          </PrimaryButton>
+          <Divider className="pt-0" />
+
+          <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
+            <InputWell
+              type="number"
+              value={p4Part}
+              onChange={(e) => setP4Part(e.target.value)}
+              className={inlineInputClass}
+              aria-label="部分の数値"
+            />
+            <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+              <span className="text-text-secondary">は</span>
+              <InputWell
+                type="number"
+                value={p4Pct}
+                onChange={(e) => setP4Pct(e.target.value)}
+                className={`${inlineInputClass} sm:w-24`}
+                aria-label="パーセント"
+              />
+              <span className="text-text-secondary">% のとき全体は</span>
+            </div>
+            <ResultInline value={result4.value} />
+          </div>
+          {result4.error && <ErrorMessage message={result4.error} />}
 
           <Divider>
             <PercentageWorkedExamples
-              originalPrice={results.submitted.p1Y}
-              discountPercent={results.submitted.p1X}
-              proportionPart={results.submitted.p2X}
-              proportionWhole={results.submitted.p2Y}
-              changeFrom={results.submitted.p3X}
-              changeTo={results.submitted.p3Y}
+              originalPrice={p1Y}
+              discountPercent={p1X}
+              proportionPart={p2X}
+              proportionWhole={p2Y}
+              changeFrom={p3X}
+              changeTo={p3Y}
             />
           </Divider>
         </div>
@@ -234,16 +253,11 @@ export function PercentageCalculator() {
         <LinkedText text={t.percentagePage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={t.percentagePage.howToTitle}
-        steps={t.percentagePage.howToSteps}
-      />
-
       <section aria-labelledby="percent-formulas-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="percent-formulas-heading" className={guideHeadingClass}>
           {t.percentagePage.guideFormulasTitle}
         </h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {t.percentagePage.guideFormulas.map((f) => (
             <div
               key={f.title}
@@ -254,6 +268,30 @@ export function PercentageCalculator() {
               <p className="mt-2 text-sm text-text-secondary">{f.example}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="percent-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="percent-examples-heading" className={guideHeadingClass}>
+          {t.percentagePage.guideExamplesTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken">
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">計算</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.percentagePage.examplesTable.map((row) => (
+                <tr key={row.calc} className="border-b border-border">
+                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.calc}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.result}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -287,6 +325,11 @@ export function PercentageCalculator() {
           ))}
         </ul>
       </section>
+
+      <CalculatorHowToSection
+        title={t.percentagePage.howToTitle}
+        steps={t.percentagePage.howToSteps}
+      />
 
       <CalculatorFaqSection title={t.percentagePage.faqTitle} items={t.percentagePage.faqItems} />
       <RelatedCalculators activeHref="/percentage-calculator" />
