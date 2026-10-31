@@ -23,6 +23,9 @@ import {
   type FractionStep,
 } from "@/lib/calculators/fraction";
 
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+
 const OPS: { op: FractionOp; label: string }[] = [
   { op: "+", label: "+" },
   { op: "-", label: "−" },
@@ -342,6 +345,36 @@ export function FractionCalculator() {
       </p>
 
       <ButtonGuideTable title={t.fractionPage.buttonGuideTitle} rows={FRACTION_BUTTON_GUIDE} />
+
+      <section aria-labelledby="fraction-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="fraction-examples-heading" className={guideHeadingClass}>
+          {t.fractionPage.guideExamplesTitle}
+        </h2>
+        <div className="mt-6 space-y-3">
+          {t.fractionPage.guideExamples.map((ex) => (
+            <div
+              key={ex.title}
+              className="rounded-[var(--radius-md)] border border-border bg-surface px-4 py-3"
+            >
+              <h3 className="text-sm font-semibold text-text-primary sm:text-base">{ex.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary sm:text-base">{ex.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="fraction-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="fraction-mistakes-heading" className={guideHeadingClass}>
+          {t.fractionPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.fractionPage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <CalculatorFaqSection title={t.fractionPage.faqTitle} items={t.fractionPage.faqItems} />
       <RelatedCalculators activeHref="/fraction-calculator" />
