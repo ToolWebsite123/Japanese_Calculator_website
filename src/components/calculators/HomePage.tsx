@@ -4,6 +4,7 @@ import { Hero } from "@/components/home/Hero";
 import { HomePopularCalculators } from "@/components/home/HomePopularCalculators";
 import { HomeIntroSection } from "@/components/home/HomeIntroSection";
 import { HomeCalculatorsShowcase } from "@/components/home/HomeCalculatorsShowcase";
+import { HomeCalculatorGuide } from "@/components/home/HomeCalculatorGuide";
 import { HomeFaqSection } from "@/components/home/HomeFaqSection";
 import { HomeTrustSection } from "@/components/home/HomeTrustSection";
 
@@ -15,6 +16,8 @@ export function HomePage() {
       <HomePopularCalculators />
 
       <HomeCalculatorsShowcase />
+
+      <HomeCalculatorGuide />
 
       <HomeIntroSection />
 

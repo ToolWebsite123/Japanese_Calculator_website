@@ -221,10 +221,12 @@ export function StandardCalculator({
           setAwaitingOperand(false);
           break;
         case "M+":
-          if (Number.isFinite(val) && !awaitingOperand) setMemory((m) => m + val);
+          // Also allow right after "=" so the displayed result can be
+          // stored, like a physical desk calculator (guide example).
+          if (Number.isFinite(val) && (!awaitingOperand || justEvaluated)) setMemory((m) => m + val);
           break;
         case "M-":
-          if (Number.isFinite(val) && !awaitingOperand) setMemory((m) => m - val);
+          if (Number.isFinite(val) && (!awaitingOperand || justEvaluated)) setMemory((m) => m - val);
           break;
       }
     },
