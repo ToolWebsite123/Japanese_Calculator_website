@@ -11,28 +11,27 @@
 
 const FEATURES: { title: string; text: string }[] = [
   {
-    title: "税込・税抜ボタン",
-    text: "金額を入力して「税込」を押すだけで、消費税込みの価格に変換できます。税率は10%と軽減税率8%を切り替えられ、「税抜」で税抜き価格に戻すこともできます。",
-  },
-  {
-    title: "GT（グランドトータル）",
-    text: "「＝」で計算するたびに結果が自動で合計されます。「GT」を押すと、それまでの計算結果の総計をいつでも呼び出せます（ACでリセット）。",
-  },
-  {
-    title: "メモリー機能（M+ / M− / MR / MC）",
-    text: "M+で表示中の数値をメモリーに加算、MRで呼び出し、MCで消去します。買い物の合計など、複数の計算をまとめるときに便利です。",
-  },
-  {
     title: "√（平方根）と00キー",
     text: "数値を入力して「√」を押すと平方根が表示されます。「00」キーを押せば0を2つまとめて入力でき、大きな金額の入力が速くなります。",
   },
   {
-    title: "計算履歴",
-    text: "計算した式と結果は履歴に残ります。履歴をタップすると、その計算をそのまま再利用できます。",
-  },
-  {
     title: "キーボード対応",
     text: "PCではキーボードの数字キーやテンキーから直接入力できます。Enterで計算、Escでリセット、Backspaceで1文字消去します。",
+  },
+];
+
+const FEATURE_SECTIONS: { title: string; text: string }[] = [
+  {
+    title: "税込・税抜ボタンの使い方",
+    text: "買い物の金額に消費税を含めたいときは、金額を入力して「税込」を押すだけです。税率は10%と8%（軽減税率）を切り替えられます。税抜価格に戻したいときは「税抜」を押します。端数（1円未満）は四捨五入して表示します。たとえば税抜2,480円なら、税込（10%）は2,728円、税額は248円です。",
+  },
+  {
+    title: "メモリー機能とGTの使い方",
+    text: "「M+」は表示中の数値や計算結果をメモリーに加えるキーです。買い物の合計を出すときは、品目ごとに「金額 × 個数 =」のあとにM+を押していくと、最後に「MR」で合計を確認できます。例：280円×3個 ＝ M+、198円×2個 ＝ M+、MR → 1,236円。「GT」は「=」を押した計算結果の総計を自動でためる機能で、GTキーでいつでも確認できます。「MC」でメモリー、ACでGTも消去されます。",
+  },
+  {
+    title: "計算履歴の使い方",
+    text: "計算結果は「履歴」に自動で残ります。履歴を開くと過去の計算式と結果の一覧が表示され、タップするとその計算をそのまま再利用できます。履歴はお使いのブラウザの中にのみ保存され、サーバーへ送信されることはありません。",
   },
 ];
 
@@ -129,7 +128,7 @@ export function HomeCalculatorGuide() {
       </ol>
 
       <h3 className="mt-10 text-base font-bold text-text-primary sm:text-lg">便利な機能</h3>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {FEATURES.map((feature) => (
           <div key={feature.title} className="rounded-xl border border-border bg-surface p-4">
             <p className="text-sm font-bold text-text-primary">{feature.title}</p>
@@ -137,6 +136,12 @@ export function HomeCalculatorGuide() {
           </div>
         ))}
       </div>
+      {FEATURE_SECTIONS.map((section) => (
+        <div key={section.title}>
+          <h4 className="mt-8 text-base font-bold text-text-primary">{section.title}</h4>
+          <p className="mt-3 text-sm leading-relaxed text-text-secondary sm:text-base">{section.text}</p>
+        </div>
+      ))}
 
       <h3 className="mt-10 text-base font-bold text-text-primary sm:text-lg">計算の例</h3>
       <div className="mt-4 grid gap-3 md:grid-cols-3">

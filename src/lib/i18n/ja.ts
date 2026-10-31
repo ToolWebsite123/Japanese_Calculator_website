@@ -1546,7 +1546,7 @@ const ja = {
   },
   home: {
     heroEyebrow: "無料オンライン電卓サイト",
-    heroTitle: "必要な計算は、無料のオンライン電卓ひとつで",
+    heroTitle: "無料Web電卓・計算機",
     heroIntro:
       "電卓.onlineは、四則演算から消費税・所得税の計算、BMIや単位変換まで、全25種の計算ツールを無料で使えるWeb電卓・計算機サイトです。登録やインストールは不要で、スマホでもPCでも、開いてすぐに計算できます。",
     heroSubtitle:

@@ -28,7 +28,7 @@ export function HomeCalculatorsShowcase() {
     >
       <h2
         id="home-calculators-heading"
-        className="mb-4 text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        className="mb-4 text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
       >
         すべての計算機
       </h2>
@@ -41,10 +41,13 @@ export function HomeCalculatorsShowcase() {
           <section key={category} aria-labelledby={`home-category-${category}`}>
             <h3
               id={`home-category-${category}`}
-              className="mb-4 text-lg font-bold tracking-tight text-[#231942] sm:text-xl dark:text-[#d6ccf0]"
+              className="mb-2 text-lg font-bold tracking-tight text-[#231942] sm:text-xl dark:text-[#d6ccf0]"
             >
               {t.categories[meta.nameKey]}
             </h3>
+            <p className="mb-4 text-sm leading-relaxed text-text-secondary">
+              {t.categories[meta.descriptionKey]}
+            </p>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((item) => (
                 <CalculatorCard

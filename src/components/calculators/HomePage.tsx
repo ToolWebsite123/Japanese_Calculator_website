@@ -22,6 +22,8 @@ export function HomePage() {
 
       <HomeCalculatorGuide />
 
+      <HomeCalculatorsShowcase />
+
       <HomeIntroSection />
 
       <HomeWhyUs />
@@ -30,8 +32,6 @@ export function HomePage() {
         <HomeFaqSection />
         <HomeTrustSection />
       </div>
-
-      <HomeCalculatorsShowcase />
 
       <HomeFinalCta />
     </div>
