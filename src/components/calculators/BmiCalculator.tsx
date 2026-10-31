@@ -315,6 +315,23 @@ export function BmiCalculator() {
         <p className={guideBodyClass}>{t.bmiPage.guideAgeGender.sourceNote}</p>
       </section>
 
+      <section aria-labelledby="bmi-variants-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="bmi-variants-heading" className={guideHeadingClass}>
+          {t.bmiPage.guideVariants.title}
+        </h2>
+        {t.bmiPage.guideVariants.paragraphs.map((paragraph) => (
+          <p key={paragraph} className={guideBodyClass}>
+            {paragraph}
+          </p>
+        ))}
+        <h3 className={guideSubHeadingClass}>{t.bmiPage.guideVariants.tableTitle}</h3>
+        <BmiGuideTable
+          head={t.bmiPage.guideVariants.tableHead}
+          rows={t.bmiPage.guideVariants.tableRows}
+        />
+        <p className={guideBodyClass}>{t.bmiPage.guideVariants.caution}</p>
+      </section>
+
       <section aria-labelledby="bmi-notes-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="bmi-notes-heading" className={guideHeadingClass}>
           {t.bmiPage.guideNotes.title}
