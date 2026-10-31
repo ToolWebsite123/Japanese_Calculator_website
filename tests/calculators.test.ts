@@ -26,6 +26,7 @@ import {
 } from "../src/lib/calculators/furusato-nozei-detailed";
 import { calculateUnemployment } from "../src/lib/calculators/unemployment-insurance";
 import { calculateBmi, getBmiCategory } from "../src/lib/calculators/bmi";
+import ja from "../src/lib/i18n/ja";
 
 const approx = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps;
 
@@ -333,4 +334,31 @@ test("BMI: invalid inputs throw the controlled Japanese messages", () => {
   assert.throws(() => calculateBmi(0, 60), /身長が無効です/);
   assert.throws(() => calculateBmi(170, 0), /体重が無効です/);
   assert.throws(() => calculateBmi(Number.NaN, 60), /身長が無効です/);
+});
+
+/* ---------------- BMI Step B: WHO table + quick-lookup matrix ---------------- */
+
+test("BMI Step B: matrix cells match the BMI formula (1 decimal, half-up)", () => {
+  const { head, rows } = ja.bmiPage.guideMatrix;
+  const cell = (heightLabel: string, weightLabel: string) => {
+    const row = rows.find((r) => r[0] === heightLabel);
+    assert.ok(row, `row ${heightLabel} exists`);
+    const col = head.indexOf(weightLabel);
+    assert.ok(col > 0, `column ${weightLabel} exists`);
+    return row[col];
+  };
+  assert.equal(cell("170cm", "65kg"), "22.5");
+  assert.equal(cell("160cm", "55kg"), "21.5");
+  assert.equal(cell("180cm", "100kg"), "30.9");
+  assert.equal(cell("140cm", "40kg"), "20.4");
+  assert.equal(cell("190cm", "90kg"), "24.9");
+  assert.equal(rows.length, 11);
+  for (const row of rows) assert.equal(row.length, head.length);
+});
+
+test("BMI Step B: WHO classification table has the 8 WHO bands", () => {
+  const { whoRows } = ja.bmiPage.guideFormula;
+  assert.equal(whoRows.length, 8);
+  assert.deepEqual(whoRows[3], ["18.50～24.99", "普通体重"]);
+  assert.deepEqual(whoRows[7], ["40.00以上", "肥満（3度）"]);
 });

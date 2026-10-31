@@ -309,6 +309,12 @@ export function BmiCalculator() {
           head={t.bmiPage.guideFormula.idealHead}
           rows={t.bmiPage.guideFormula.idealRows}
         />
+        <h3 className={guideSubHeadingClass}>{t.bmiPage.guideFormula.whoTitle}</h3>
+        <p className={guideBodyClass}>{t.bmiPage.guideFormula.whoIntro}</p>
+        <BmiGuideTable
+          head={t.bmiPage.guideFormula.whoHead}
+          rows={t.bmiPage.guideFormula.whoRows}
+        />
       </section>
 
       <section aria-labelledby="bmi-example-heading" className="mt-16 border-t border-border pt-16">
@@ -322,6 +328,15 @@ export function BmiCalculator() {
           ))}
         </ol>
         <p className={guideBodyClass}>{t.bmiPage.guideExample.uses}</p>
+      </section>
+
+      <section aria-labelledby="bmi-matrix-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="bmi-matrix-heading" className={guideHeadingClass}>
+          {t.bmiPage.guideMatrix.title}
+        </h2>
+        <p className={guideBodyClass}>{t.bmiPage.guideMatrix.intro}</p>
+        <BmiGuideTable head={t.bmiPage.guideMatrix.head} rows={t.bmiPage.guideMatrix.rows} />
+        <p className={guideBodyClass}>{t.bmiPage.guideMatrix.note}</p>
       </section>
 
       <section aria-labelledby="bmi-age-gender-heading" className="mt-16 border-t border-border pt-16">
