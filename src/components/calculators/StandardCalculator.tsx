@@ -26,12 +26,10 @@ function normalizeExpr(expr: string): string {
 export function StandardCalculator({
   title,
   description,
-  hideHeader = false,
   compact = false,
 }: {
   title?: string;
   description?: string;
-  hideHeader?: boolean;
   compact?: boolean;
 } = {}) {
   const { t } = useLocale();
@@ -345,32 +343,6 @@ export function StandardCalculator({
         compact={compact}
       >
         <div className={compact ? "space-y-4 md:space-y-2" : "space-y-4"}>
-          {hideHeader && (
-            <div className="flex items-center justify-between pb-1">
-              <button
-                type="button"
-                onClick={() => setHistoryOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-sunken/80 px-2.5 py-1 text-xs font-medium text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition dark:bg-surface-dark/60"
-                aria-label={t.nav.history}
-                title={t.nav.history}
-              >
-                <svg
-                  className="h-3.5 w-3.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{t.nav.history}</span>
-              </button>
-            </div>
-          )}
           <Display
             expression={expression}
             value={display}

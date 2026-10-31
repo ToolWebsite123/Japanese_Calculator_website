@@ -7,7 +7,7 @@ export function Hero() {
   const { t } = useLocale();
 
   return (
-    <section className="border-b border-border bg-brand-muted/30 px-4 py-6 sm:px-6 sm:py-8 flex flex-col items-center">
+    <section className="border-b border-border bg-brand-muted/30 px-4 py-4 sm:px-6 sm:py-6 flex flex-col items-center">
       <p className="mb-4 text-center text-2xl font-semibold tracking-tight text-[#231942] sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         オンライン電卓
       </p>
@@ -18,7 +18,7 @@ export function Hero() {
           then the Web calculator, then content below. The hero intro
           paragraph was removed on 2026-10-31 at the owner's request so
           the calculator sits fully inside the hero. */}
-      <div className="mt-6 flex w-full justify-center sm:mt-8">
+      <div className="mt-4 flex w-full justify-center sm:mt-5">
         <HeroCalculator />
       </div>
     </section>

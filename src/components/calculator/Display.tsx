@@ -34,8 +34,8 @@ export function Display({
     <div
       className={[
         "relative overflow-hidden rounded-[var(--radius-lg)] border border-border",
-        "bg-surface-sunken p-2.5 sm:p-4",
-        compact ? "p-1.5 sm:p-2.5" : "",
+        "bg-surface-sunken",
+        compact ? "p-1.5 sm:p-2" : "p-2.5 sm:p-4",
         className,
       ].join(" ")}
       style={{ boxShadow: "var(--shadow-key-pressed)" }}
