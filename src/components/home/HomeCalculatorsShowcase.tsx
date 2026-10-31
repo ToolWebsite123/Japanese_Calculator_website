@@ -28,10 +28,13 @@ export function HomeCalculatorsShowcase() {
     >
       <h2
         id="home-calculators-heading"
-        className="mb-8 text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        className="mb-4 text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
       >
         すべての計算機
       </h2>
+      <p className="mb-8 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+        計算機は目的に合わせて選ぶと、もっと速く正確に計算できます。当サイトでは、日常の計算に使う「基本」、三角関数や対数などの「関数」、税金や複利などの「金融」、BMIなどの「健康」、長さや重さの「変換」という5つのカテゴリに、全25種の計算ツールをまとめています。お探しの計算が決まっているときは、下のカテゴリからそのまま選んでください。
+      </p>
 
       <div className="space-y-10">
         {groups.map(({ category, meta, items }) => (
