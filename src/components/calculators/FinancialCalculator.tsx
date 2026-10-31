@@ -869,6 +869,26 @@ export function FinancialCalculator() {
 
       <CalculatorHowToSection title={tPage.howToTitle} steps={tPage.howToSteps} />
 
+      <section aria-labelledby="financial-terms-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="financial-terms-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {tPage.guideTermsTitle}
+        </h2>
+        <div className="mt-6 space-y-3">
+          {tPage.guideTerms.map((item) => (
+            <div
+              key={item.term}
+              className="rounded-[var(--radius-md)] border border-border bg-surface px-4 py-3"
+            >
+              <h3 className="text-sm font-semibold text-text-primary sm:text-base">{item.term}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary sm:text-base">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <CalculatorFaqSection title={tPage.faqTitle} items={tPage.faqItems} />
       <RelatedCalculators activeHref="/financial-calculator" />
     </>
