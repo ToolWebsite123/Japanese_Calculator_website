@@ -35,6 +35,30 @@ export function WebCalculator() {
         steps={t.webCalculatorPage.howToSteps}
       />
 
+      <section aria-labelledby="webcalc-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="webcalc-example-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.webCalculatorPage.guideExampleTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.webCalculatorPage.guideExampleBody}
+        </p>
+      </section>
+
+      <section aria-labelledby="webcalc-role-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="webcalc-role-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.webCalculatorPage.guideRoleTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          <LinkedText text={t.webCalculatorPage.guideRoleBody} activeHref="/web-calculator" />
+        </p>
+      </section>
+
       <CalculatorFaqSection
         title={t.webCalculatorPage.faqTitle}
         items={t.webCalculatorPage.faqItems}
