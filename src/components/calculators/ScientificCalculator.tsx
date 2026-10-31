@@ -583,7 +583,7 @@ export function ScientificCalculator() {
       </h1>
       <CalculatorCard
         compact
-        maxWidthClass="max-w-[480px]"
+        maxWidthClass="max-w-[480px] lg:max-w-[860px]"
       >
         <div className="space-y-1.5 sm:space-y-2">
           {/* Top Actions Row: Deg/Rad Pill & History Button */}
@@ -666,6 +666,11 @@ export function ScientificCalculator() {
             </div>
           )}
 
+          {/* Keypad area: one column on small screens; on lg the primary
+              keypad (6 cols) and the advanced keys (3 cols) form a single
+              wide keypad under the full-width display. */}
+          <div className="lg:flex lg:gap-3">
+            <div className="lg:flex-[2]">
           {/* Primary 6-Column Keypad (separator before the digit block) */}
           <ButtonGrid buttons={primaryKeypad} columns={6} compact separatorsBefore={[24]} />
 
@@ -690,15 +695,24 @@ export function ScientificCalculator() {
             </button>
           </div>
 
+            </div>
+
           {/* Secondary Keypad: always visible on sm+ screens; on phones it
-              stays behind the toggle above so the basic keypad fits first. */}
+              stays behind the toggle above so the basic keypad fits first.
+              On lg it joins the primary keypad as its right-hand 3 columns. */}
           <div
-            className={`${advancedOpen ? "block" : "hidden sm:block"} border-t border-border/60 pt-1.5`}
+            className={`${advancedOpen ? "block" : "hidden sm:block"} mt-1.5 border-t border-border/60 pt-1.5 sm:mt-2 lg:mt-0 lg:flex-[1] lg:border-t-0 lg:pt-0`}
           >
-            <p className="pb-1.5 text-[11px] font-semibold tracking-wide text-text-secondary">
+            <p className="pb-1.5 text-[11px] font-semibold tracking-wide text-text-secondary lg:hidden">
               高度な関数
             </p>
-            <ButtonGrid buttons={secondaryKeypad} columns={6} compact separatorsBefore={[13]} />
+            <div className="lg:hidden">
+              <ButtonGrid buttons={secondaryKeypad} columns={6} compact separatorsBefore={[13]} />
+            </div>
+            <div className="hidden lg:block">
+              <ButtonGrid buttons={secondaryKeypad} columns={6} compact className="lg:grid-cols-3" />
+            </div>
+          </div>
           </div>
         </div>
       </CalculatorCard>
