@@ -194,7 +194,8 @@ export function TimeCalculator() {
                 { value: "+", label: "+" },
                 { value: "-", label: "−" },
               ]}
-              className="max-w-xs"
+              className="w-full max-w-sm"
+              size="lg"
             />
           </div>
 
@@ -401,6 +402,26 @@ export function TimeCalculator() {
             </li>
           ))}
         </ul>
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken">
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">計算</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">モード</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.timePage.examplesTable.map((row) => (
+                <tr key={row.calc} className="border-b border-border">
+                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.calc}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.mode}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.result}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section aria-labelledby="time-mistakes-heading" className="mt-16 border-t border-border pt-16">

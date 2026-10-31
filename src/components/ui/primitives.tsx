@@ -86,12 +86,14 @@ export function SegmentedControl<T extends string>({
   onChange,
   columns,
   className = "",
+  size = "md",
 }: {
   options: SegmentedOption<T>[];
   value: T;
   onChange: (value: T) => void;
   columns?: number;
   className?: string;
+  size?: "md" | "lg";
 }) {
   const cols = columns ?? options.length;
   return (
@@ -120,7 +122,8 @@ export function SegmentedControl<T extends string>({
             type="button"
             onClick={() => onChange(opt.value)}
             className={[
-              "btn-interactive min-h-11 py-3 text-sm font-semibold",
+              "btn-interactive font-semibold",
+              size === "lg" ? "min-h-14 py-4 text-2xl" : "min-h-11 py-3 text-sm",
               active
                 ? "bg-gradient-to-b from-brand to-brand-hover text-white"
                 : "border border-border bg-surface-sunken text-[#231942] hover:bg-border-subtle dark:text-[#d6ccf0]",
