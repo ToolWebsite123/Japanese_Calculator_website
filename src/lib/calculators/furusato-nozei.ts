@@ -74,12 +74,10 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
     throw new Error("年収が無効です");
   }
 
+  // An explicitly entered amount is honoured as-is — including ¥0.
+  // Only an omitted field falls back to the 15%-of-income estimate.
   const socialInsurance = Math.max(
-    Math.floor(
-      input.socialInsurance != null && input.socialInsurance > 0
-        ? input.socialInsurance
-        : annualIncome * 0.15,
-    ),
+    Math.floor(input.socialInsurance != null ? input.socialInsurance : annualIncome * 0.15),
     0,
   );
 
@@ -136,4 +134,10 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
     incomeTaxRate: rate,
     donationLimit,
   };
+}
+
+/** Donation room left before the limit, given this year's donations so far. */
+export function remainingDonationRoom(donationLimit: number, alreadyDonated: number): number {
+  if (!Number.isFinite(alreadyDonated) || alreadyDonated <= 0) return donationLimit;
+  return Math.max(donationLimit - Math.floor(alreadyDonated), 0);
 }

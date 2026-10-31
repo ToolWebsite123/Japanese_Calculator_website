@@ -10,12 +10,13 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { formatYen } from "@/lib/format";
 import {
   calcFurusatoNozei,
+  remainingDonationRoom,
   type DependentCategory,
   type FurusatoResult,
 } from "@/lib/calculators/furusato-nozei";
 
 const INTRO =
-  "ふるさと納税の控除上限額を、年収・家族構成・社会保険料から正確に計算できるツールです。競合サイトの家族タイプ別の早見表とは異なり、扶養家族の年齢区分（16歳未満／16〜18歳／19〜22歳（特定扶養）／23歳以上／70歳以上）を1人単位で入力し、住民税所得割額と所得税の限界税率をもとに公式の計算式で寄付上限の目安を算出します。所得税 計算や社会保険料計算と併せてご活用ください。";
+  "ふるさと納税の控除上限額を、年収・家族構成・社会保険料から正確に計算できるツールです。扶養家族の年齢区分（16歳未満／16〜18歳／19〜22歳（特定扶養）／23歳以上／70歳以上）を1人単位で入力し、住民税所得割額と所得税の限界税率をもとに公式の計算式で寄付上限の目安を算出します。今年すでに寄付した額を入力すれば、上限までの残りも分かります。所得税 計算や社会保険料計算と併せてご活用ください。";
 
 const HOW_TO = {
   title: "ふるさと納税 控除上限額の計算手順",
@@ -36,6 +37,10 @@ const HOW_TO = {
     {
       title: "控除上限額を計算する",
       body: "給与所得・住民税所得割額・所得税率・控除上限額（寄付上限の目安）が表示されます。",
+    },
+    {
+      title: "今年の寄付済み額（任意）",
+      body: "今年すでに寄付した金額の合計を入力すると、控除上限額までの残り（あといくら自己負担2,000円で寄付できるか）も表示されます。",
     },
   ],
 };
@@ -68,22 +73,38 @@ export const FAQ = {
       answer:
         "本ツールは総務省の公式計算式に基づく概算です。医療費控除・iDeCo・住宅ローン控除など、本ツールでカバーしない控除がある場合は上限額が変わります。正確な金額はお住まいの自治体または税理士にご確認ください。",
     },
+    {
+      question: "サイトによって限度額が違うのはなぜですか？",
+      answer:
+        "主な原因は、社会保険料の見積もり額、計算の前提となる制度の年度、早見表の丸め方の3つです。たとえば当ツールの計算では、年収600万円・単身で社会保険料を年収×15％と見積もると77,949円、0円で計算すると114,963円と大きく変わります。源泉徴収票の社会保険料の実額を入力した結果が、最も実態に近くなります。",
+    },
+    {
+      question: "今年すでに寄付した分がある場合はどうすればいいですか？",
+      answer:
+        "計算機の「今年すでに寄付した額」欄に寄付済みの合計を入力すると、控除上限額までの残り（あといくら自己負担2,000円で寄付できるか）が表示されます。すでに上限に達している場合は、それ以上の寄付は自己負担が増える旨が表示されます。",
+    },
   ],
 };
 
 // Quick-lookup values generated from this page's own calculator
 // (calcFurusatoNozei; social insurance auto-estimated at 15% of income,
 // no dependents). Regenerate if the lib's rules change.
-const LIMIT_TABLE_HEAD = ["年収", "単身（配偶者なし）", "配偶者控除あり"];
+const LIMIT_TABLE_HEAD = [
+  "年収",
+  "単身（配偶者なし）",
+  "配偶者控除あり",
+  "配偶者＋高校生1人",
+  "配偶者＋大学生1人",
+];
 const LIMIT_TABLE_ROWS: string[][] = [
-  ["300万円", "28,856円", "21,082円"],
-  ["400万円", "42,756円", "34,981円"],
-  ["500万円", "61,656円", "50,294円"],
-  ["600万円", "77,949円", "69,677円"],
-  ["700万円", "108,927円", "86,973円"],
-  ["800万円", "130,485円", "120,999円"],
-  ["900万円", "153,480円", "143,994円"],
-  ["1,000万円", "177,912円", "168,427円"],
+  ["300万円", "28,856円", "21,082円", "13,308円", "10,481円"],
+  ["400万円", "42,756円", "34,981円", "27,207円", "24,380円"],
+  ["500万円", "61,656円", "50,294円", "42,520円", "39,693円"],
+  ["600万円", "77,949円", "69,677円", "61,405円", "55,006円"],
+  ["700万円", "108,927円", "86,973円", "78,701円", "75,693円"],
+  ["800万円", "130,485円", "120,999円", "111,514円", "94,492円"],
+  ["900万円", "153,480円", "143,994円", "134,509円", "131,060円"],
+  ["1,000万円", "177,912円", "168,427円", "158,941円", "155,492円"],
 ];
 
 const guideHeadingClass =
@@ -109,6 +130,8 @@ export function FurusatoNozeiCalculator() {
     age70plus: "0",
   });
   const [socialInsurance, setSocialInsurance] = useState("");
+  const [alreadyDonated, setAlreadyDonated] = useState("");
+  const [donatedYen, setDonatedYen] = useState(0);
   const [result, setResult] = useState<FurusatoResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -127,6 +150,7 @@ export function FurusatoNozeiCalculator() {
         dependents: parsedDeps,
         socialInsurance: socialInsurance ? parseFloat(socialInsurance) : undefined,
       });
+      setDonatedYen(Math.max(parseFloat(alreadyDonated) || 0, 0));
       setResult(r);
     } catch (e) {
       setError(e instanceof Error ? e.message : "計算エラー");
@@ -188,6 +212,15 @@ export function FurusatoNozeiCalculator() {
             className="py-1 px-2.5 text-xs sm:text-sm h-8 sm:h-9"
           />
 
+          <FormField
+            label="今年すでに寄付した額（円・任意）"
+            type="number"
+            min={0}
+            value={alreadyDonated}
+            onChange={(e) => setAlreadyDonated(e.target.value)}
+            className="py-1 px-2.5 text-xs sm:text-sm h-8 sm:h-9"
+          />
+
           <PrimaryButton onClick={handleCalculate} className="py-2 text-sm h-9">計算する</PrimaryButton>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -229,6 +262,18 @@ export function FurusatoNozeiCalculator() {
                     {formatYen(result.donationLimit)}
                   </div>
                 </div>
+                {donatedYen > 0 && (
+                  <div className="mt-4 border-t border-brand/20 pt-4">
+                    <div className="text-sm font-medium text-text-tertiary">
+                      今年の寄付済み（{formatYen(donatedYen)}）を差し引いた残り
+                    </div>
+                    <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
+                      {remainingDonationRoom(result.donationLimit, donatedYen) > 0
+                        ? `あと${formatYen(remainingDonationRoom(result.donationLimit, donatedYen))}まで自己負担2,000円で寄付できます`
+                        : "すでに控除上限額に達しています。これ以上の寄付は自己負担が増えます"}
+                    </div>
+                  </div>
+                )}
               </SurfacePanel>
 
               <Divider>
@@ -295,6 +340,9 @@ export function FurusatoNozeiCalculator() {
           を利用でき、全額が翌年度の住民税から控除されます。医療費控除などで確定申告を行う方や6自治体以上に寄付した方は
           <strong>確定申告</strong>が必要となり、所得税からの還付＋住民税からの控除で調整されます。
         </p>
+        <p>
+          寄付の期限にも注意してください。その年の控除対象になるのは、1月1日から12月31日までに寄付した分です。ワンストップ特例を使う場合は、申請書を翌年1月10日までに寄付先の自治体へ提出する必要があります（必着）。年末は年収が固まる時期でもあるため、上限額を再確認してから寄付すると安全です。
+        </p>
       </section>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
@@ -304,7 +352,7 @@ export function FurusatoNozeiCalculator() {
           年収別の控除上限額 早見表
         </h2>
         <p className={guideBodyClass}>
-          この計算機の実計算から作成した早見表です（扶養親族なし、社会保険料は年収×15％で自動見積もりした場合）。家族構成や控除が異なる場合は、上の計算機でご自身の条件で計算してください。
+          この計算機の実計算から作成した早見表です（社会保険料は年収×15％で自動見積もりした場合）。「配偶者＋高校生1人」は配偶者控除＋16〜18歳の扶養親族1人、「配偶者＋大学生1人」は配偶者控除＋19〜22歳（特定扶養）1人の場合です。家族構成や控除が異なる場合は、上の計算機でご自身の条件で計算してください。
         </p>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full border-collapse text-sm sm:text-base">
@@ -339,6 +387,30 @@ export function FurusatoNozeiCalculator() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section aria-labelledby="furusato-why-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-why-heading" className={guideHeadingClass}>
+          サイトによって限度額が違うのはなぜ？
+        </h2>
+        <p className={guideBodyClass}>
+          シミュレーションサイトによって控除上限額の結果が違うのは、計算式そのものよりも、計算の「前提」が異なるためです。代表的な原因は次の3つです。
+        </p>
+        <p className={guideBodyClass}>
+          <strong className="text-text-primary">① 社会保険料の前提。</strong>
+          上限額は住民税をもとに計算するため、社会保険料をいくらと見積もるかで結果が大きく変わります。当ツールの計算例では、年収600万円・単身の場合、社会保険料を年収×15％（90万円）と見積もると上限額は77,949円、社会保険料を0円として計算すると114,963円になります。源泉徴収票の実額を入力するのが最も正確です。
+        </p>
+        <p className={guideBodyClass}>
+          <strong className="text-text-primary">② 制度の年度。</strong>
+          基礎控除などの金額は税制改正で見直されるため、古い年度の前提で作られたシミュレーションでは、現在の制度と結果がずれる場合があります。
+        </p>
+        <p className={guideBodyClass}>
+          <strong className="text-text-primary">③ 端数の丸め。</strong>
+          早見表は1,000円単位などに丸めて表示されることが多く、円単位のシミュレーション結果と数千円ずれることがあります。
+        </p>
+        <p className={guideBodyClass}>
+          当サイトの早見表は、このページの計算機とまったく同じ計算から円単位で作成しているため、同じ条件では計算機の結果と一致します。「どれが正しいか」は、金額の大きさではなく、前提が自分の状況に合っているかどうかで判断してください。
+        </p>
       </section>
 
       <section aria-labelledby="furusato-choice-heading" className="mt-16 border-t border-border pt-16">

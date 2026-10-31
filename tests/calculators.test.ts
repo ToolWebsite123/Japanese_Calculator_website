@@ -27,6 +27,10 @@ import {
   formatDate,
   parseDate,
 } from "../src/lib/calculators/due-date";
+import {
+  calcFurusatoNozei,
+  remainingDonationRoom,
+} from "../src/lib/calculators/furusato-nozei";
 import { solveSimultaneousEquations } from "../src/lib/calculators/simultaneous-equations";
 import {
   calcFurusatoNozeiDetailed,
@@ -588,4 +592,31 @@ test("DUE-RESULT: milestones are dated from the derived LMP and daysRemaining is
   assert.ok(formatDate(r.milestones[0].date).startsWith("2026年11月16日"), formatDate(r.milestones[0].date));
   // last milestone (37w0d) equals the safe-window start
   assert.equal(r.milestones[4].date.getTime(), r.safeWindowStart.getTime());
+});
+
+/* ------------- Furusato nozei: SI=0 fix + anchor + remaining room (2026-10-31) ------------- */
+
+const NO_DEPS = { under16: 0, age16to18: 0, age19to22: 0, age23plus: 0, age70plus: 0 };
+
+test("FURUSATO: anchor — ¥6,000,000 single, SI estimated 15% -> limit ¥77,949", () => {
+  const r = calcFurusatoNozei({ annualIncome: 6_000_000, hasSpouse: false, dependents: NO_DEPS });
+  assert.equal(r.donationLimit, 77949);
+  assert.equal(r.socialInsurance, 900000);
+});
+
+test("FURUSATO: an explicit social insurance of ¥0 is honoured, not replaced by the estimate", () => {
+  const r = calcFurusatoNozei({
+    annualIncome: 6_000_000,
+    hasSpouse: false,
+    dependents: NO_DEPS,
+    socialInsurance: 0,
+  });
+  assert.equal(r.socialInsurance, 0);
+  assert.equal(r.donationLimit, 114963);
+});
+
+test("FURUSATO: remainingDonationRoom subtracts donations and floors at 0", () => {
+  assert.equal(remainingDonationRoom(77949, 30000), 47949);
+  assert.equal(remainingDonationRoom(77949, 100000), 0);
+  assert.equal(remainingDonationRoom(77949, 0), 77949);
 });
