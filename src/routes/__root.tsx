@@ -184,10 +184,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap",
-      },
-      {
-        rel: "stylesheet",
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
@@ -232,12 +228,35 @@ function SafeNavigationListener() {
   return null;
 }
 
+// Loads the Noto Sans JP stylesheet AFTER first paint instead of as a
+// render-blocking <link> in <head>. PageSpeed (2026-10-31) showed the old
+// setup cost ~1.2s of mobile LCP (119 KB cross-origin CSS blocking render)
+// and, once the JS bundle was split and pages painted earlier, the late
+// font swap reflowed the whole main column on desktop (CLS 1.862).
+// display=optional means the webfont is used only when it arrives almost
+// immediately (or from cache on later visits) and never swaps mid-view,
+// so text paints at once in the system font and never shifts.
+function FontStylesheetLoader() {
+  useEffect(() => {
+    const href =
+      "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=optional";
+    if (document.querySelector(`link[href="${href}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }, []);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <Providers>
+        <FontStylesheetLoader />
         <SafeNavigationListener />
         <AppShell>
           <Outlet />
