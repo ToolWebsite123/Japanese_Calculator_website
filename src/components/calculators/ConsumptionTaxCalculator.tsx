@@ -73,6 +73,136 @@ export const FAQ = {
       answer:
         "割引後の税抜価格を本ツールに入力すれば、その金額にかかる消費税額と税込価格が計算できます。割引率そのものを計算したい場合は、割引 計算のツールが便利です。",
     },
+    {
+      question: "税込価格から消費税だけを求めるには？",
+      answer:
+        "税込価格 ÷（1＋税率）で税抜価格を求め、税込価格から引いた金額が消費税額です。税率10%なら「税込価格 × 10 ÷ 110」でも同じ結果になります。例：税込2,728円なら消費税額は248円です。",
+    },
+    {
+      question: "8%と10%が混ざった買い物はどう計算しますか？",
+      answer:
+        "税率ごとに合計を分けてから、それぞれの税率で計算します。この計算機でも、税率を切り替えて別々に計算してください。レシートでは税率ごとに区分して表示されるのが一般的です。",
+    },
+  ],
+};
+
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideSubHeadingClass =
+  "mt-8 text-base font-semibold text-[#231942] sm:text-lg dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-3 text-sm leading-relaxed text-text-secondary sm:text-base";
+
+function TaxGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full border-collapse text-sm sm:text-base">
+        <thead>
+          <tr>
+            {head.map((cell) => (
+              <th
+                key={cell}
+                scope="col"
+                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+              >
+                {cell}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell, i) => (
+                <td
+                  key={cell}
+                  className={`border border-border px-3 py-2 ${
+                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                  }`}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+const TAX_TABLES = {
+  title: "消費税の早見表",
+  intro:
+    "よく使う金額の変換結果をまとめました。端数が出ない金額のみを載せています。実際の計算は上の計算機でどうぞ。",
+  excludedToIncluded10Title: "税抜 → 税込（税率10%）",
+  excludedToIncluded8Title: "税抜 → 税込（軽減税率8%）",
+  includedToExcluded10Title: "税込 → 税抜（税率10%）",
+  includedToExcluded8Title: "税込 → 税抜（軽減税率8%）",
+  excludedHead: ["税抜価格", "税込価格", "消費税額"],
+  includedHead: ["税込価格", "税抜価格", "消費税額"],
+  excludedToIncluded10Rows: [
+    ["100円", "110円", "10円"],
+    ["500円", "550円", "50円"],
+    ["1,000円", "1,100円", "100円"],
+    ["5,000円", "5,500円", "500円"],
+    ["10,000円", "11,000円", "1,000円"],
+  ],
+  excludedToIncluded8Rows: [
+    ["100円", "108円", "8円"],
+    ["500円", "540円", "40円"],
+    ["1,000円", "1,080円", "80円"],
+    ["5,000円", "5,400円", "400円"],
+    ["10,000円", "10,800円", "800円"],
+  ],
+  includedToExcluded10Rows: [
+    ["110円", "100円", "10円"],
+    ["550円", "500円", "50円"],
+    ["1,100円", "1,000円", "100円"],
+    ["5,500円", "5,000円", "500円"],
+    ["11,000円", "10,000円", "1,000円"],
+  ],
+  includedToExcluded8Rows: [
+    ["108円", "100円", "8円"],
+    ["540円", "500円", "40円"],
+    ["1,080円", "1,000円", "80円"],
+    ["5,400円", "5,000円", "400円"],
+    ["10,800円", "10,000円", "800円"],
+  ],
+};
+
+const TAX_EXAMPLE = {
+  title: "消費税の計算例",
+  intro: "税抜2,480円の商品（税率10%の対象）の場合で計算してみます。",
+  steps: [
+    "税率を10%に設定します。",
+    "税抜価格2,480円を入力します。",
+    "税込価格は 2,480 × 1.10 ＝ 2,728円、消費税額は 248円 です。",
+  ],
+  reverse:
+    "逆に、税込2,728円から税抜価格を出す場合は 2,728 ÷ 1.10 ＝ 2,480円 となり、消費税額は 2,728 − 2,480 ＝ 248円 で一致します。",
+};
+
+const TAX_REDUCED = {
+  title: "軽減税率（8%）の対象品目",
+  intro: "次のものは軽減税率（8%）の対象です。",
+  items: [
+    "酒類と外食を除く飲食料品（テイクアウトやデリバリーは8%、店内での飲食は10%です）",
+    "週2回以上発行され、定期購読契約に基づく新聞",
+  ],
+  closing: "それ以外のほとんどの商品・サービスは標準税率10%です。",
+};
+
+const TAX_ROUNDING = {
+  title: "端数処理について",
+  body: "消費税の計算では1円未満の端数が出ることがあります。端数の処理方法（切り捨て・四捨五入・切り上げ）は事業者が決めるもので、法律で一律に決まっているわけではありません。この計算機では3つの方法から選べます。請求書を受け取る側・出す側で方法が違うと1円の差が出ることがあるため、取引先との取り決めを確認しましょう。",
+};
+
+const TAX_MISTAKES = {
+  title: "よくある間違い",
+  items: [
+    "テイクアウト（8%）と店内飲食（10%）を取り違える。同じ飲食料品でも、食べる場所で税率が変わります。",
+    "税込価格にそのまま税率をかけて消費税額を出してしまう。税込価格から税額を出すときは、割り戻す計算（税込価格 × 税率 ÷（1＋税率））が必要です。",
+    "割引と消費税の順番を間違える。通常、消費税は割引後の金額にかかります。割引の計算には割引計算のツールもあわせてご利用ください。",
   ],
 };
 
@@ -278,6 +408,66 @@ export function ConsumptionTaxCalculator() {
       </Divider>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="tax-tables-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-tables-heading" className={guideHeadingClass}>
+          {TAX_TABLES.title}
+        </h2>
+        <p className={guideBodyClass}>{TAX_TABLES.intro}</p>
+        <h3 className={guideSubHeadingClass}>{TAX_TABLES.excludedToIncluded10Title}</h3>
+        <TaxGuideTable head={TAX_TABLES.excludedHead} rows={TAX_TABLES.excludedToIncluded10Rows} />
+        <h3 className={guideSubHeadingClass}>{TAX_TABLES.excludedToIncluded8Title}</h3>
+        <TaxGuideTable head={TAX_TABLES.excludedHead} rows={TAX_TABLES.excludedToIncluded8Rows} />
+        <h3 className={guideSubHeadingClass}>{TAX_TABLES.includedToExcluded10Title}</h3>
+        <TaxGuideTable head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded10Rows} />
+        <h3 className={guideSubHeadingClass}>{TAX_TABLES.includedToExcluded8Title}</h3>
+        <TaxGuideTable head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded8Rows} />
+      </section>
+
+      <section aria-labelledby="tax-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-example-heading" className={guideHeadingClass}>
+          {TAX_EXAMPLE.title}
+        </h2>
+        <p className={guideBodyClass}>{TAX_EXAMPLE.intro}</p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {TAX_EXAMPLE.steps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+        <p className={guideBodyClass}>{TAX_EXAMPLE.reverse}</p>
+      </section>
+
+      <section aria-labelledby="tax-reduced-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-reduced-heading" className={guideHeadingClass}>
+          {TAX_REDUCED.title}
+        </h2>
+        <p className={guideBodyClass}>{TAX_REDUCED.intro}</p>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {TAX_REDUCED.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+        <p className={guideBodyClass}>{TAX_REDUCED.closing}</p>
+      </section>
+
+      <section aria-labelledby="tax-rounding-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-rounding-heading" className={guideHeadingClass}>
+          {TAX_ROUNDING.title}
+        </h2>
+        <p className={guideBodyClass}>{TAX_ROUNDING.body}</p>
+      </section>
+
+      <section aria-labelledby="tax-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-mistakes-heading" className={guideHeadingClass}>
+          {TAX_MISTAKES.title}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {TAX_MISTAKES.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/consumption-tax-calculator" />
     </>

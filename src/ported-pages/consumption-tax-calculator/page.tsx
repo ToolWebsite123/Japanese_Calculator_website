@@ -6,7 +6,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 
 const metaTitle = "消費税計算｜税込・税抜・税額を10%・8%で自動計算｜電卓.online";
 const metaDescription =
-  "消費税計算を税抜⇔税込の両方向で行える無料ツール。標準税率10％と軽減税率8％、任意の税率に対応し、消費税額と税込・税抜価格を自動計算。端数処理（切り捨て・四捨五入・切り上げ）も選べます。";
+  "税抜価格から税込価格、税込価格から税抜価格と消費税額を自動計算。10%と軽減税率8%に対応し、早見表と端数処理の解説も掲載。無料・登録不要。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

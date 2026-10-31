@@ -1,9 +1,32 @@
 "use client";
 
 import { CalculatorCard } from "@/components/home/CalculatorCard";
+import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CATEGORY_META, CATEGORY_ORDER, getNavDescription, getNavLabel } from "@/lib/catalog";
 import { NAV_ITEMS, type CalculatorCategory } from "@/lib/constants";
 import { useLocale } from "@/context/LocaleContext";
+
+const HUB_INTRO =
+  "電卓.onlineの計算ツールをすべてまとめました。関数電卓や税金・社会保険のシミュレーション、単位変換、麻雀の点数計算まで、全25種類のツールが無料・登録不要で使えます。入力した数値はブラウザの中で処理され、サーバーには送信されません。目的の計算をカテゴリからお選びください。";
+
+export const HUB_FAQ = {
+  title: "計算ツール一覧のよくある質問",
+  items: [
+    {
+      question: "利用料金はかかりますか？",
+      answer: "すべて無料です。会員登録も必要ありません。",
+    },
+    {
+      question: "入力した数値は保存されますか？",
+      answer:
+        "いいえ。計算はお使いのブラウザ内で処理され、サーバーへ送信されることはありません。",
+    },
+    {
+      question: "スマートフォンでも使えますか？",
+      answer: "はい。スマートフォンやタブレットのブラウザでもそのまま使えます。",
+    },
+  ],
+};
 
 // Every category is rendered in full, including in the server-rendered HTML.
 // The previous version only rendered the interactively selected category,
@@ -21,9 +44,13 @@ export function AllCalculatorsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <h1 className="mb-8 text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]">
+      <h1 className="mb-4 text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]">
         {t.nav.allCalculators}
       </h1>
+
+      <p className="mb-8 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+        {HUB_INTRO}
+      </p>
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <aside className="lg:w-56 lg:shrink-0">
@@ -75,6 +102,8 @@ export function AllCalculatorsPage() {
           ))}
         </div>
       </div>
+
+      <CalculatorFaqSection title={HUB_FAQ.title} items={HUB_FAQ.items} />
     </div>
   );
 }
