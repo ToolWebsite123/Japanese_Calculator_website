@@ -696,6 +696,53 @@ export function ScientificCalculator() {
 
       <ButtonGuideTable title={t.scientificPage.buttonGuideTitle} rows={SCIENTIFIC_BUTTON_GUIDE} />
 
+      <section aria-labelledby="sci-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.guideExamplesTitle}
+        </h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {t.scientificPage.guideExamples.map((ex) => (
+            <li
+              key={ex}
+              className="rounded-full border border-border bg-surface-sunken px-3 py-1.5 text-sm text-text-primary"
+            >
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="sci-degrad-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-degrad-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.guideDegRadTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.scientificPage.guideDegRadBody}
+        </p>
+      </section>
+
+      <section aria-labelledby="sci-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.scientificPage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection title={t.scientificPage.faqTitle} items={t.scientificPage.faqItems} />
       <RelatedCalculators activeHref="/scientific-calculator" />
     </>
