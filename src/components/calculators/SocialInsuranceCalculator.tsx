@@ -367,6 +367,33 @@ export function SocialInsuranceCalculator() {
         />
       )}
 
+      <section aria-labelledby="social-mechanism-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="social-mechanism-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.socialInsurancePage.guideMechanismTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.socialInsurancePage.guideMechanismBody}
+        </p>
+      </section>
+
+      <section aria-labelledby="social-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="social-example-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.socialInsurancePage.guideExampleTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.socialInsurancePage.guideExampleBody}
+        </p>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.socialInsurancePage.guideNoteBody}
+        </p>
+      </section>
+
       {t.socialInsurancePage?.faqTitle && t.socialInsurancePage?.faqItems && (
         <CalculatorFaqSection
           title={t.socialInsurancePage.faqTitle}
