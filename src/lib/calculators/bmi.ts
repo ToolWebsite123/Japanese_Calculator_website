@@ -5,6 +5,22 @@ export type BmiResult = {
   category: BmiCategory;
   idealWeight: number;
   weightDiff: number;
+  /** Weight at BMI 18.5 — lower end of the normal range for this height. */
+  healthyWeightMin: number;
+  /** Weight at BMI 24.9 — upper end of the normal range for this height. */
+  healthyWeightMax: number;
+  /** Beauty weight (BMI 20) for this height — a popular-culture yardstick, not an official standard. */
+  beautyWeight: number;
+  /** Current weight minus beauty weight (same sign convention as weightDiff). */
+  beautyDiff: number;
+  /** Cinderella weight (BMI 18) for this height — not an official standard. */
+  cinderellaWeight: number;
+  /** Current weight minus cinderella weight. */
+  cinderellaDiff: number;
+  /** Model weight (BMI 17) for this height — not an official standard. */
+  modelWeight: number;
+  /** Current weight minus model weight. */
+  modelDiff: number;
 };
 
 /** Japanese Society for the Study of Obesity categories. */
@@ -26,15 +42,30 @@ export function calculateBmi(heightCm: number, weightKg: number): BmiResult {
   }
 
   const heightM = heightCm / 100;
-  const bmi = weightKg / (heightM * heightM);
+  const heightSq = heightM * heightM;
+  const bmi = weightKg / heightSq;
   const rounded = Math.round(bmi * 100) / 100;
-  const idealWeight = Math.round(22 * heightM * heightM * 100) / 100;
-  const weightDiff = Math.round((weightKg - idealWeight) * 100) / 100;
+
+  const weightAt = (targetBmi: number) => Math.round(targetBmi * heightSq * 100) / 100;
+  const diffTo = (targetWeight: number) => Math.round((weightKg - targetWeight) * 100) / 100;
+
+  const idealWeight = weightAt(22);
+  const beautyWeight = weightAt(20);
+  const cinderellaWeight = weightAt(18);
+  const modelWeight = weightAt(17);
 
   return {
     bmi: rounded,
     category: getBmiCategory(rounded),
     idealWeight,
-    weightDiff,
+    weightDiff: diffTo(idealWeight),
+    healthyWeightMin: weightAt(18.5),
+    healthyWeightMax: weightAt(24.9),
+    beautyWeight,
+    beautyDiff: diffTo(beautyWeight),
+    cinderellaWeight,
+    cinderellaDiff: diffTo(cinderellaWeight),
+    modelWeight,
+    modelDiff: diffTo(modelWeight),
   };
 }

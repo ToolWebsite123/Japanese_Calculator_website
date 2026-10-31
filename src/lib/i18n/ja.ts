@@ -1096,6 +1096,12 @@ const ja = {
     category: "判定",
     idealWeight: "理想体重",
     weightDiff: "理想体重との差",
+    healthyRange: "普通体重の範囲",
+    beautyWeight: "美容体重",
+    cinderellaWeight: "シンデレラ体重",
+    modelWeight: "モデル体重",
+    variantNote:
+      "美容・シンデレラ・モデル体重は公式の基準ではありません。健康の目標には適正体重を目安にしてください。",
     rangeLabel: "BMIの位置",
     categories: {
       underweight: "低体重",

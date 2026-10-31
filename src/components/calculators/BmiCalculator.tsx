@@ -245,6 +245,38 @@ export function BmiCalculator() {
                   {t.bmi.tips[result.category]}
                 </p>
               </div>
+
+              <div className="rounded-[var(--radius-md)] border border-border bg-surface-sunken p-4">
+                <div className="text-xs font-medium text-text-tertiary">{t.bmi.healthyRange}</div>
+                <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
+                  {result.healthyWeightMin.toFixed(2)} kg 〜 {result.healthyWeightMax.toFixed(2)}{" "}
+                  kg
+                </div>
+                <dl className="mt-3 space-y-1.5 border-t border-border pt-3 text-sm">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <dt className="text-text-secondary">{t.bmi.beautyWeight}</dt>
+                    <dd className="tabular-display font-medium text-text-primary">
+                      {result.beautyWeight.toFixed(2)} kg（{formatSignedKg(result.beautyDiff)}）
+                    </dd>
+                  </div>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <dt className="text-text-secondary">{t.bmi.cinderellaWeight}</dt>
+                    <dd className="tabular-display font-medium text-text-primary">
+                      {result.cinderellaWeight.toFixed(2)} kg（
+                      {formatSignedKg(result.cinderellaDiff)}）
+                    </dd>
+                  </div>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <dt className="text-text-secondary">{t.bmi.modelWeight}</dt>
+                    <dd className="tabular-display font-medium text-text-primary">
+                      {result.modelWeight.toFixed(2)} kg（{formatSignedKg(result.modelDiff)}）
+                    </dd>
+                  </div>
+                </dl>
+                <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
+                  {t.bmi.variantNote}
+                </p>
+              </div>
             </div>
           )}
         </div>

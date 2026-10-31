@@ -25,6 +25,7 @@ import {
   type FurusatoDetailedInput,
 } from "../src/lib/calculators/furusato-nozei-detailed";
 import { calculateUnemployment } from "../src/lib/calculators/unemployment-insurance";
+import { calculateBmi, getBmiCategory } from "../src/lib/calculators/bmi";
 
 const approx = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps;
 
@@ -283,4 +284,53 @@ test("M-05: a large prime near the 1e12 cap returns promptly as itself", () => {
 
 test("M-05: inputs above the cap throw the controlled Japanese message", () => {
   assert.throws(() => primeFactorize(2_000_000_000_000), /素因数分解は1より大きく/);
+});
+
+/* ---------------- BMI: core + Step A result upgrade ---------------- */
+
+test("BMI: 170cm/65kg -> 22.49, normal, ideal 63.58kg", () => {
+  const r = calculateBmi(170, 65);
+  assert.equal(r.bmi, 22.49);
+  assert.equal(r.category, "normal");
+  assert.equal(r.idealWeight, 63.58);
+  assert.ok(approx(r.weightDiff, 1.42));
+});
+
+test("BMI: category boundaries follow the Japan Society table", () => {
+  assert.equal(getBmiCategory(18.49), "underweight");
+  assert.equal(getBmiCategory(18.5), "normal");
+  assert.equal(getBmiCategory(24.99), "normal");
+  assert.equal(getBmiCategory(25), "obese1");
+  assert.equal(getBmiCategory(30), "obese2");
+  assert.equal(getBmiCategory(35), "obese3");
+  assert.equal(getBmiCategory(40), "obese4");
+});
+
+test("BMI Step A: healthy range and variant weights for 160cm/55kg", () => {
+  const r = calculateBmi(160, 55);
+  // height^2 = 2.56; range = BMI 18.5..24.9, variants = BMI 20 / 18 / 17
+  assert.ok(approx(r.healthyWeightMin, 47.36));
+  assert.ok(approx(r.healthyWeightMax, 63.74));
+  assert.ok(approx(r.beautyWeight, 51.2));
+  assert.ok(approx(r.cinderellaWeight, 46.08));
+  assert.ok(approx(r.modelWeight, 43.52));
+  // diffs use the weightDiff convention: current weight minus target weight
+  assert.ok(approx(r.beautyDiff, 3.8));
+  assert.ok(approx(r.cinderellaDiff, 8.92));
+  assert.ok(approx(r.modelDiff, 11.48));
+});
+
+test("BMI Step A: variant weights scale with height^2 (150cm)", () => {
+  const r = calculateBmi(150, 45);
+  assert.ok(approx(r.beautyWeight, 45.0));
+  assert.ok(approx(r.cinderellaWeight, 40.5));
+  assert.ok(approx(r.modelWeight, 38.25));
+  assert.ok(approx(r.healthyWeightMin, 41.63));
+  assert.ok(approx(r.healthyWeightMax, 56.03));
+});
+
+test("BMI: invalid inputs throw the controlled Japanese messages", () => {
+  assert.throws(() => calculateBmi(0, 60), /身長が無効です/);
+  assert.throws(() => calculateBmi(170, 0), /体重が無効です/);
+  assert.throws(() => calculateBmi(Number.NaN, 60), /身長が無効です/);
 });
