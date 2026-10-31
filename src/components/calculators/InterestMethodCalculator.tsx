@@ -168,6 +168,60 @@ export function InterestMethodCalculator() {
 
       <CalculatorHowToSection title={page.howToTitle} steps={page.howToSteps} />
 
+      <section aria-labelledby="interest-compare-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="interest-compare-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {page.guideCompareTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{page.guideCompareIntro}</p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr>
+                {page.guideCompareHead.map((cell) => (
+                  <th
+                    key={cell}
+                    scope="col"
+                    className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+                  >
+                    {cell}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {page.guideCompareRows.map((row) => (
+                <tr key={row[0]}>
+                  {row.map((cell, i) => (
+                    <td
+                      key={cell}
+                      className={`border border-border px-3 py-2 ${
+                        i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                      }`}
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{page.guideCompareNote}</p>
+      </section>
+
+      <section aria-labelledby="interest-tax-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="interest-tax-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {page.guideTaxTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{page.guideTaxBody}</p>
+      </section>
+
       <CalculatorFaqSection title={page.faqTitle} items={faqItems} />
       <RelatedCalculators activeHref="/interest-calculator" />
     </>
