@@ -258,8 +258,6 @@ export function BmiCalculator() {
         <LinkedText text={t.bmiPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection title={t.bmiPage.howToTitle} steps={t.bmiPage.howToSteps} />
-
       <section aria-labelledby="bmi-formula-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="bmi-formula-heading" className={guideHeadingClass}>
           {t.bmiPage.guideFormula.title}
@@ -338,6 +336,8 @@ export function BmiCalculator() {
           ))}
         </ul>
       </section>
+
+      <CalculatorHowToSection title={t.bmiPage.howToTitle} steps={t.bmiPage.howToSteps} />
 
       <p className="mt-16 rounded-[var(--radius-md)] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
         {t.bmiPage.disclaimer}
