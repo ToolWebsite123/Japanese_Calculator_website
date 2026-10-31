@@ -47,8 +47,12 @@ const HOW_TO = {
   ],
 };
 
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
+
 export const FAQ = {
-  title: "FAQs",
+  title: "ふるさと納税 詳細シミュレーションのよくある質問",
   items: [
     {
       question: "簡単版（ふるさと納税ページ）とどう違うの？",
@@ -429,6 +433,20 @@ export function FurusatoNozeiSimulator() {
       </section>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="furusato-detail-note-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-detail-note-heading" className={guideHeadingClass}>
+          ご利用にあたっての注意
+        </h2>
+        <p className={guideBodyClass}>
+          上限額は目安であり、最終的な控除額は確定申告・住民税の決定通知で確定します。年収と家族構成だけの簡単な目安でよい方は{" "}
+          <a href="/furusato-nozei-calculation" className="font-medium text-brand underline underline-offset-2">
+            かんたんシミュレーション
+          </a>{" "}
+          もあわせてご利用ください。
+        </p>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/furusato-nozei-simulation-calculation" />
     </>

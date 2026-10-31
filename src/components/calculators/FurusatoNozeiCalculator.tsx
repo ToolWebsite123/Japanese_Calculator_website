@@ -71,6 +71,25 @@ export const FAQ = {
   ],
 };
 
+// Quick-lookup values generated from this page's own calculator
+// (calcFurusatoNozei; social insurance auto-estimated at 15% of income,
+// no dependents). Regenerate if the lib's rules change.
+const LIMIT_TABLE_HEAD = ["年収", "単身（配偶者なし）", "配偶者控除あり"];
+const LIMIT_TABLE_ROWS: string[][] = [
+  ["300万円", "28,856円", "21,082円"],
+  ["400万円", "42,756円", "34,981円"],
+  ["500万円", "61,656円", "50,294円"],
+  ["600万円", "77,949円", "69,677円"],
+  ["700万円", "108,927円", "86,973円"],
+  ["800万円", "130,485円", "120,999円"],
+  ["900万円", "153,480円", "143,994円"],
+  ["1,000万円", "177,912円", "168,427円"],
+];
+
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
+
 const DEP_LABELS: Array<{ key: DependentCategory; label: string }> = [
   { key: "under16", label: "16歳未満（控除対象外）" },
   { key: "age16to18", label: "16〜18歳（一般扶養）" },
@@ -279,6 +298,65 @@ export function FurusatoNozeiCalculator() {
       </section>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="furusato-limit-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-limit-heading" className={guideHeadingClass}>
+          年収別の控除上限額 早見表
+        </h2>
+        <p className={guideBodyClass}>
+          この計算機の実計算から作成した早見表です（扶養親族なし、社会保険料は年収×15％で自動見積もりした場合）。家族構成や控除が異なる場合は、上の計算機でご自身の条件で計算してください。
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr>
+                {LIMIT_TABLE_HEAD.map((cell) => (
+                  <th
+                    key={cell}
+                    scope="col"
+                    className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+                  >
+                    {cell}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {LIMIT_TABLE_ROWS.map((row) => (
+                <tr key={row[0]}>
+                  {row.map((cell, i) => (
+                    <td
+                      key={cell}
+                      className={`border border-border px-3 py-2 ${
+                        i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                      }`}
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="furusato-choice-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-choice-heading" className={guideHeadingClass}>
+          簡易版と詳細版の使い分け
+        </h2>
+        <p className={guideBodyClass}>
+          このページは年収と家族構成だけの目安計算です。医療費控除や住宅ローン控除、生命保険料控除などがある方は、実際の控除額を入力できる{" "}
+          <a
+            href="/furusato-nozei-simulation-calculation"
+            className="font-medium text-brand underline underline-offset-2"
+          >
+            詳細シミュレーション
+          </a>{" "}
+          をご利用ください。控除が多い方ほど、上限額の差が大きくなります。
+        </p>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/furusato-nozei-calculation" />
     </>
