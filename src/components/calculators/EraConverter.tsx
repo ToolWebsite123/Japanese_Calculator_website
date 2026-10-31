@@ -170,6 +170,80 @@ export function EraConverter() {
 
       <CalculatorHowToSection title={t.eraPage.howToTitle} steps={t.eraPage.howToSteps} />
 
+      <section aria-labelledby="era-memory-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="era-memory-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.eraPage.guideMemoryTitle}
+        </h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {t.eraPage.guideMemoryItems.map((item) => (
+            <li
+              key={item}
+              className="rounded-full border border-border bg-surface-sunken px-3 py-1.5 text-sm text-text-primary"
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.eraPage.guideMemoryExample}
+        </p>
+      </section>
+
+      <section aria-labelledby="era-table-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="era-table-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.eraPage.guideTableTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr>
+                {t.eraPage.guideTableHead.map((cell) => (
+                  <th
+                    key={cell}
+                    scope="col"
+                    className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+                  >
+                    {cell}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {t.eraPage.guideTableRows.map((row) => (
+                <tr key={row[0] + row[1]}>
+                  {row.map((cell, i) => (
+                    <td
+                      key={cell}
+                      className={`border border-border px-3 py-2 ${
+                        i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                      }`}
+                    >
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="era-note-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="era-note-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.eraPage.guideNoteTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{t.eraPage.guideNoteBody}</p>
+      </section>
+
       <CalculatorFaqSection title={t.eraPage.faqTitle} items={t.eraPage.faqItems} />
       <RelatedCalculators activeHref="/era-converter" />
     </>
