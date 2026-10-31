@@ -4,9 +4,9 @@ import ja from "@/lib/i18n/ja";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "BMI計算｜身長と体重から肥満度と適正体重を判定｜電卓.online";
+const metaTitle = "BMI計算｜年齢・性別対応で肥満度と適正体重を判定｜電卓.online";
 const metaDescription =
-  "身長と体重を入れるだけでBMIと肥満度、適正体重を自動計算。日本肥満学会の判定基準表と身長別の適正体重の目安、計算例も掲載。登録不要・無料です。";
+  "身長と体重を入れるだけでBMIと肥満度、適正体重を自動計算。年齢・性別に合わせた目標BMIや体脂肪率の推定、美容体重・シンデレラ体重の目安、BMI早見表も掲載。登録不要・無料です。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,
