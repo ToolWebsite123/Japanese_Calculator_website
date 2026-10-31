@@ -342,7 +342,7 @@ export function StandardCalculator({
         }
         compact={compact}
       >
-        <div className={compact ? "space-y-4 md:space-y-2" : "space-y-4"}>
+        <div className={compact ? "space-y-3 md:space-y-1.5" : "space-y-4"}>
           <Display
             expression={expression}
             value={display}

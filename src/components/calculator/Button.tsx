@@ -47,8 +47,10 @@ export function Button({
         // Compact stays below 44px on purpose: the scientific keypad is a
         // 6-column grid, and 44px rows would overflow small phones; the wider
         // grid gap (ButtonGrid) keeps the effective tap area reasonable.
-        "btn-interactive min-h-11 border text-sm sm:text-base px-1 sm:px-2",
-        compact ? "h-9 sm:h-9 min-h-9 sm:min-h-9 text-[11px] sm:text-xs px-0.5 sm:px-1 py-0" : "",
+        "btn-interactive border text-sm sm:text-base px-1 sm:px-2",
+        compact
+          ? "h-9 min-h-9 sm:h-8 sm:min-h-8 text-[11px] sm:text-xs px-0.5 sm:px-1 py-0"
+          : "min-h-11",
         variantClasses[variant],
         span === 2 ? "col-span-2" : "",
         active
