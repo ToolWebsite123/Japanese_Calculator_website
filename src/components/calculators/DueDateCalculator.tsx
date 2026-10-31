@@ -292,6 +292,25 @@ export function DueDateCalculator() {
       </p>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="due-count-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="due-count-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          妊娠週数と予定日の数え方
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          妊娠期間は、最終月経の開始日を「妊娠0週0日」として数え、予定日はその{" "}
+          <strong className="text-text-primary">280日後（40週0日）</strong>{" "}
+          が目安です（ネーゲレ概算法）。たとえば最終月経が2026年1月1日の場合、予定日は{" "}
+          <strong className="text-text-primary">2026年10月8日</strong> です。
+        </p>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          予定日はあくまで目安で、実際のお産は前後します。月経周期が不規則な方や、医師から予定日を伝えられている場合は、医師の判断を優先してください。
+        </p>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/due-date-calculation" />
     </>
