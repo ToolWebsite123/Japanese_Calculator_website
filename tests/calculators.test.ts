@@ -420,3 +420,53 @@ test("Step A: desk sqrt key", () => {
   assert.ok(r !== null && Math.abs(r - 1.41421356237) < 1e-11);
   assert.equal(sqrtValue(-4), null);
 });
+
+/* ---------------- Compound interest + monthly contribution ---------------- */
+import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
+
+test("Compound: no contribution matches the legacy formula exactly", () => {
+  const r = calcCompoundInterest({ principal: 1000000, annualRatePercent: 5, years: 10, frequency: 1 });
+  assert.ok(approx(r.futureValue, 1000000 * Math.pow(1.05, 10), 1e-6));
+  assert.equal(r.contributionFutureValue, 0);
+  assert.equal(r.totalContributions, 1000000);
+  assert.ok(approx(r.totalInterest, r.futureValue - 1000000, 1e-6));
+});
+
+test("Compound: draft example — 30,000/month, 3%, 20 years ≈ 9.85M yen", () => {
+  const r = calcCompoundInterest({
+    principal: 0,
+    annualRatePercent: 3,
+    years: 20,
+    frequency: 12,
+    monthlyContribution: 30000,
+  });
+  assert.equal(r.totalContributions, 7200000);
+  assert.ok(r.futureValue > 9840000 && r.futureValue < 9860000, `FV was ${r.futureValue}`);
+  assert.ok(approx(r.totalInterest, r.futureValue - 7200000, 1e-6));
+});
+
+test("Compound: zero rate with contribution is a plain sum", () => {
+  const r = calcCompoundInterest({
+    principal: 100000,
+    annualRatePercent: 0,
+    years: 5,
+    frequency: 12,
+    monthlyContribution: 10000,
+  });
+  assert.equal(r.futureValue, 100000 + 10000 * 60);
+  assert.equal(r.totalInterest, 0);
+});
+
+test("Compound: yearly projection's last row equals the totals", () => {
+  const r = calcCompoundInterest({
+    principal: 500000,
+    annualRatePercent: 4,
+    years: 7,
+    frequency: 12,
+    monthlyContribution: 20000,
+  });
+  assert.equal(r.yearly.length, 7);
+  const last = r.yearly[r.yearly.length - 1];
+  assert.ok(approx(last.futureValue, r.futureValue, 1e-6));
+  assert.ok(approx(last.contributed, r.totalContributions, 1e-6));
+});
