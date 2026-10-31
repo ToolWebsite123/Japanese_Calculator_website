@@ -166,6 +166,25 @@ export function UnitConverter() {
 
       <CalculatorHowToSection title={t.unitsPage.howToTitle} steps={t.unitsPage.howToSteps} />
 
+      <section aria-labelledby="units-quick-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="units-quick-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.unitsPage.guideQuickTitle}
+        </h2>
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {t.unitsPage.guideQuickItems.map((item) => (
+            <li
+              key={item}
+              className="rounded-full border border-border bg-surface-sunken px-3 py-1.5 text-sm text-text-primary"
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection title={t.unitsPage.faqTitle} items={t.unitsPage.faqItems} />
       <RelatedCalculators activeHref="/unit-converter" />
     </>
