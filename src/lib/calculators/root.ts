@@ -6,7 +6,33 @@ export type RootResult = {
   index: number;
   isExact: boolean;
   exactText?: string;
+  simplified?: SimplifiedRoot;
+  simplifiedText?: string;
 };
+
+export type SimplifiedRoot = {
+  coefficient: number;
+  remaining: number;
+};
+
+/**
+ * Simplify a square root of a positive integer into coefficient × √remaining
+ * form (e.g. 72 → 6√2). Returns null when there is nothing to simplify:
+ * non-integers, values below 4, perfect squares (handled as exact results),
+ * and integers with no perfect-square factor (e.g. primes).
+ */
+export function simplifySquareRoot(radicand: number): SimplifiedRoot | null {
+  if (!Number.isInteger(radicand) || radicand < 4) return null;
+  for (let i = Math.floor(Math.sqrt(radicand)); i >= 2; i--) {
+    const square = i * i;
+    if (radicand % square === 0) {
+      const remaining = radicand / square;
+      if (remaining === 1) return null;
+      return { coefficient: i, remaining };
+    }
+  }
+  return null;
+}
 
 function isPerfectRoot(value: number, n: number): number | null {
   if (value < 0 && n % 2 === 0) return null;
@@ -43,12 +69,16 @@ export function calculateRoot(radicand: number, index: number, mode: RootMode): 
     exactText = `${n}√${radicand}`;
   }
 
+  const simplified = n === 2 && perfect === null ? simplifySquareRoot(radicand) : null;
+
   return {
     value,
     radicand,
     index: n,
     isExact: perfect !== null,
     exactText,
+    simplified: simplified ?? undefined,
+    simplifiedText: simplified ? `${simplified.coefficient}√${simplified.remaining}` : undefined,
   };
 }
 

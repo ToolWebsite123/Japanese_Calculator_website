@@ -19,6 +19,7 @@ import {
   standardBonusAmount,
 } from "../src/lib/calculators/social-insurance";
 import { getLongDivisionSteps } from "../src/lib/calculators/longDivision";
+import { calculateRoot, simplifySquareRoot } from "../src/lib/calculators/root";
 import { solveSimultaneousEquations } from "../src/lib/calculators/simultaneous-equations";
 import {
   calcFurusatoNozeiDetailed,
@@ -498,4 +499,49 @@ test("Compound: yearly projection's last row equals the totals", () => {
   const last = r.yearly[r.yearly.length - 1];
   assert.ok(approx(last.futureValue, r.futureValue, 1e-6));
   assert.ok(approx(last.contributed, r.totalContributions, 1e-6));
+});
+
+/* ------------- Square root simplification (F1, 2026-10-31) ------------- */
+
+test("ROOT-SIMPLIFY: 72 -> 6√2, 12 -> 2√3, 18 -> 3√2, 50 -> 5√2, 200 -> 10√2, 8 -> 2√2", () => {
+  assert.deepEqual(simplifySquareRoot(72), { coefficient: 6, remaining: 2 });
+  assert.deepEqual(simplifySquareRoot(12), { coefficient: 2, remaining: 3 });
+  assert.deepEqual(simplifySquareRoot(18), { coefficient: 3, remaining: 2 });
+  assert.deepEqual(simplifySquareRoot(50), { coefficient: 5, remaining: 2 });
+  assert.deepEqual(simplifySquareRoot(200), { coefficient: 10, remaining: 2 });
+  assert.deepEqual(simplifySquareRoot(8), { coefficient: 2, remaining: 2 });
+});
+
+test("ROOT-SIMPLIFY: no simplification for primes, perfect squares, small, decimal, negative", () => {
+  assert.equal(simplifySquareRoot(7), null);
+  assert.equal(simplifySquareRoot(2), null);
+  assert.equal(simplifySquareRoot(3), null);
+  assert.equal(simplifySquareRoot(144), null);
+  assert.equal(simplifySquareRoot(4), null);
+  assert.equal(simplifySquareRoot(1), null);
+  assert.equal(simplifySquareRoot(0), null);
+  assert.equal(simplifySquareRoot(4.5), null);
+  assert.equal(simplifySquareRoot(-8), null);
+});
+
+test("ROOT-SIMPLIFY: calculateRoot exposes simplifiedText only for square mode", () => {
+  const r72 = calculateRoot(72, 2, "square");
+  assert.equal(r72.simplifiedText, "6√2");
+  assert.equal(r72.isExact, false);
+  const r144 = calculateRoot(144, 2, "square");
+  assert.equal(r144.simplifiedText, undefined);
+  assert.equal(r144.isExact, true);
+  const r2 = calculateRoot(2, 2, "square");
+  assert.equal(r2.simplifiedText, undefined);
+  const cube = calculateRoot(72, 3, "nth");
+  assert.equal(cube.simplifiedText, undefined);
+});
+
+test("ROOT-SIMPLIFY: simplified value still equals the numeric root", () => {
+  for (const n of [72, 12, 18, 50, 200, 8, 98, 27 * 2]) {
+    const s = simplifySquareRoot(n);
+    assert.ok(s, `expected simplification for ${n}`);
+    const rebuilt = s.coefficient * Math.sqrt(s.remaining);
+    assert.ok(Math.abs(rebuilt - Math.sqrt(n)) < 1e-12, `mismatch for ${n}`);
+  }
 });

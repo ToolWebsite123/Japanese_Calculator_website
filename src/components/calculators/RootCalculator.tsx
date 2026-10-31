@@ -79,6 +79,7 @@ function RootStepsPanel({
   step4Title,
   step5Title,
   inputLabel,
+  simplifyStepTitles,
 }: {
   result: RootResult;
   title?: string;
@@ -88,6 +89,7 @@ function RootStepsPanel({
   step4Title: string;
   step5Title: string;
   inputLabel: string;
+  simplifyStepTitles?: string[];
 }) {
   const displayR = formatDisplayNumber(result.radicand);
   const exactRoot = result.isExact && result.exactText ? result.exactText : null;
@@ -167,6 +169,63 @@ function RootStepsPanel({
             math={
               <>
                 <MathPower base={exactRoot} exponent={1} /> <MathOp op="=" /> <Num>{exactRoot}</Num>
+              </>
+            }
+          />
+        </>
+      ) : result.simplified && simplifyStepTitles ? (
+        <>
+          <ExampleStep
+            stepId={`root-${index}-s1`}
+            title={formatTemplate(simplifyStepTitles[0], displayR)}
+            math={
+              <>
+                <MathRadical index={index}>{displayR}</MathRadical> <MathOp op="=" />{" "}
+                <MathRadical index={index}>
+                  {`${result.simplified.coefficient * result.simplified.coefficient} × ${result.simplified.remaining}`}
+                </MathRadical>
+              </>
+            }
+          />
+          <ExampleStep
+            stepId={`root-${index}-s2`}
+            title={simplifyStepTitles[1]}
+            math={
+              <>
+                <MathRadical index={index}>
+                  {`${result.simplified.coefficient * result.simplified.coefficient} × ${result.simplified.remaining}`}
+                </MathRadical>{" "}
+                <MathOp op="=" />{" "}
+                <MathRadical index={index}>
+                  {String(result.simplified.coefficient * result.simplified.coefficient)}
+                </MathRadical>{" "}
+                <MathOp op="×" />{" "}
+                <MathRadical index={index}>{String(result.simplified.remaining)}</MathRadical>
+              </>
+            }
+          />
+          <ExampleStep
+            stepId={`root-${index}-s3`}
+            title={formatTemplate(
+              simplifyStepTitles[2],
+              String(result.simplified.coefficient * result.simplified.coefficient),
+              String(result.simplified.coefficient),
+            )}
+            math={
+              <>
+                <MathRadical index={index}>
+                  {String(result.simplified.coefficient * result.simplified.coefficient)}
+                </MathRadical>{" "}
+                <MathOp op="=" /> <Num>{String(result.simplified.coefficient)}</Num>
+              </>
+            }
+          />
+          <ExampleStep
+            stepId={`root-${index}-s4`}
+            title={simplifyStepTitles[3]}
+            math={
+              <>
+                <Num>{result.simplifiedText}</Num> <MathOp op="≈" /> <Num>{approxRoot}</Num>
               </>
             }
           />
@@ -381,7 +440,9 @@ export function RootCalculator() {
                     <span>
                       {result.isExact && result.exactText
                         ? result.exactText
-                        : formatDisplayNumber(result.value, 8)}
+                        : result.simplifiedText
+                          ? `${result.simplifiedText} ≈ ${formatDisplayNumber(result.value, 8)}`
+                          : formatDisplayNumber(result.value, 8)}
                     </span>
                   </MathEq>
                 </SurfacePanel>
@@ -399,6 +460,7 @@ export function RootCalculator() {
                   step3Title={page.step3Title}
                   step4Title={page.step4Title}
                   step5Title={page.step5Title}
+                  simplifyStepTitles={page.simplifyStepTitles}
                 />
               </Divider>
 
@@ -505,6 +567,45 @@ export function RootCalculator() {
               </tr>
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="root-simplify-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="root-simplify-heading" className={guideHeadingClass}>
+          {t.rootPage.simplifyTitle}
+        </h2>
+        <p className={guideBodyClass}>{t.rootPage.simplifyBody}</p>
+        <div className="mt-4 space-y-2">
+          {t.rootPage.simplifyExamples.map((ex) => (
+            <p
+              key={ex}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
+            >
+              {ex}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="root-practice-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="root-practice-heading" className={guideHeadingClass}>
+          {t.rootPage.practiceTitle}
+        </h2>
+        <p className={guideBodyClass}>{t.rootPage.practiceIntro}</p>
+        <div className="mt-4 space-y-2">
+          {t.rootPage.practiceItems.map((item, i) => (
+            <div
+              key={item.question}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3"
+            >
+              <p className="text-sm font-semibold text-text-primary sm:text-base">
+                問題{i + 1}：{item.question}
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary sm:text-base">
+                答え：{item.answer}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
