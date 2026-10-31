@@ -2,13 +2,15 @@
 
 import { useRouterState } from "@tanstack/react-router";
 import Link from "next/link";
-import { CalculatorCard } from "@/components/home/CalculatorCard";
+import { CalculatorIcon } from "@/components/icons/CalculatorIcon";
 import {
+  CATEGORY_META,
   POPULAR_HREFS,
   getCalculatorsByCategory,
   getNavLabel,
   getNavDescription,
 } from "@/lib/catalog";
+import ja from "@/lib/i18n/ja";
 import { NAV_ITEMS, type NavItem } from "@/lib/constants";
 
 export function RelatedCalculators({
@@ -52,14 +54,28 @@ export function RelatedCalculators({
       >
         関連する計算機
       </h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {items.map((item) => (
-          <CalculatorCard
+          <Link
             key={item.href}
             href={item.href}
-            label={getNavLabel(item)}
-            description={getNavDescription(item)}
-          />
+            className="group flex items-start gap-3.5 rounded-[var(--radius-xl)] border border-border bg-surface-raised p-4 transition duration-200 hover:border-brand/30 hover:shadow-[var(--shadow-card)]"
+          >
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-brand-muted text-brand transition group-hover:bg-brand group-hover:text-white">
+              <CalculatorIcon className="h-5 w-5" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-bold text-text-primary group-hover:text-brand">
+                {getNavLabel(item)}
+                <span className="rounded-full bg-brand-muted px-2 py-0.5 text-[10px] font-bold text-brand">
+                  {ja.categories[CATEGORY_META[item.category].nameKey]}
+                </span>
+              </h3>
+              <p className="mt-1 text-[13px] leading-relaxed text-text-tertiary">
+                {getNavDescription(item)}
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
 
