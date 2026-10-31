@@ -19,6 +19,8 @@ const PRECEDENCE: Record<string, number> = {
   nPr: 2,
   gcd: 2,
   lcm: 2,
+  logb: 2,
+  root: 3,
   "^": 3,
   "u-": 4,
 };
@@ -57,6 +59,24 @@ function nCrFunc(n: number, r: number): number {
   if (n < 0 || r < 0 || r > n || !Number.isInteger(n) || !Number.isInteger(r))
     throw new Error("Invalid nCr");
   return nPrFunc(n, r) / factFunc(r);
+}
+
+/** a root b = the b-th root of a (entered as "a y√ b"). */
+function rootFunc(a: number, b: number): number {
+  if (b === 0) throw new Error("0乗根は定義できません");
+  if (a < 0) {
+    if (!Number.isInteger(b) || Math.abs(b) % 2 === 0)
+      throw new Error("負の数の偶数乗根は実数では定義できません");
+    return -Math.pow(-a, 1 / b);
+  }
+  return Math.pow(a, 1 / b);
+}
+
+/** a logb b = logarithm of b with base a (entered as "a logₐ b"). */
+function logbFunc(a: number, b: number): number {
+  if (a <= 0 || a === 1) throw new Error("対数の底が無効です");
+  if (b <= 0) throw new Error("対数の真数が無効です");
+  return Math.log(b) / Math.log(a);
 }
 
 const RIGHT_ASSOC = new Set(["^", "u-"]);
@@ -130,6 +150,16 @@ function tokenize(input: string): Token[] {
     if (s.slice(i, i + 3) === "lcm") {
       tokens.push({ type: "op", value: "lcm" });
       i += 3;
+      continue;
+    }
+    if (s.slice(i, i + 2) === "y√") {
+      tokens.push({ type: "op", value: "root" });
+      i += 2;
+      continue;
+    }
+    if (s.slice(i, i + 4) === "logₐ") {
+      tokens.push({ type: "op", value: "logb" });
+      i += 4;
       continue;
     }
 
@@ -242,6 +272,12 @@ function evalRpn(rpn: Token[]): number {
           break;
         case "lcm":
           stack.push(lcmFunc(a, b));
+          break;
+        case "root":
+          stack.push(rootFunc(a, b));
+          break;
+        case "logb":
+          stack.push(logbFunc(a, b));
           break;
         default:
           throw new Error("Unknown operator");

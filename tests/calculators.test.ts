@@ -57,6 +57,35 @@ test("H-04 regression: sqrt(144) = 12 still works", () => {
   assert.ok(approx(evaluateScientific("sqrt(144)", "deg") as number, 12));
 });
 
+/* ------------- Scientific upgrade: true n-th root (y√) + custom-base log (logₐ) ------------- */
+
+test("SCI-UP: n-th root — 27 y√ 3 = 3, 16 y√ 2 = 4, 32 y√ 5 = 2", () => {
+  assert.ok(approx(evaluateScientific("27 y√ 3", "deg") as number, 3));
+  assert.ok(approx(evaluateScientific("16 y√ 2", "deg") as number, 4));
+  assert.ok(approx(evaluateScientific("32 y√ 5", "deg") as number, 2));
+});
+
+test("SCI-UP: odd root of a negative number is real — -8 y√ 3 = -2", () => {
+  assert.ok(approx(evaluateScientific("-8 y√ 3", "deg") as number, -2));
+});
+
+test("SCI-UP: even root of a negative number and 0-degree root throw", () => {
+  assert.throws(() => evaluateScientific("-16 y√ 2", "deg"));
+  assert.throws(() => evaluateScientific("27 y√ 0", "deg"));
+});
+
+test("SCI-UP: custom-base log — 2 logₐ 8 = 3, 10 logₐ 1000 = 3", () => {
+  assert.ok(approx(evaluateScientific("2 logₐ 8", "deg") as number, 3));
+  assert.ok(approx(evaluateScientific("10 logₐ 1000", "deg") as number, 3));
+});
+
+test("SCI-UP: custom-base log rejects invalid base and value", () => {
+  assert.throws(() => evaluateScientific("1 logₐ 8", "deg"));
+  assert.throws(() => evaluateScientific("0 logₐ 8", "deg"));
+  assert.throws(() => evaluateScientific("2 logₐ -8", "deg"));
+  assert.throws(() => evaluateScientific("2 logₐ 0", "deg"));
+});
+
 test("H-04: containsImaginaryUnit ignores the letter i inside function names", () => {
   assert.equal(containsImaginaryUnit("sin(90)"), false);
   assert.equal(containsImaginaryUnit("asin(0.5)"), false);

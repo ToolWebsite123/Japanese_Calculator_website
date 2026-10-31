@@ -18,7 +18,7 @@ export function buildEvalExpression(
   return `${expression}${operand}`.trim();
 }
 
-const TRAILING_OPERATOR = /(?:mod|nCr|nPr|gcd|lcm|[+\-−×÷^])\s*$/;
+const TRAILING_OPERATOR = /(?:mod|nCr|nPr|gcd|lcm|y√|logₐ|[+\-−×÷^])\s*$/;
 
 export function appendOperator(
   expr: string,

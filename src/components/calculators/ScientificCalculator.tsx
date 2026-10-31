@@ -385,6 +385,24 @@ export function ScientificCalculator() {
       } else if (e.key === ")") {
         e.preventDefault();
         handleParen(")");
+      } else if (e.key === "s" || e.key === "S") {
+        e.preventDefault();
+        applyFn("sin");
+      } else if (e.key === "c" || e.key === "C") {
+        e.preventDefault();
+        applyFn("cos");
+      } else if (e.key === "t" || e.key === "T") {
+        e.preventDefault();
+        applyFn("tan");
+      } else if (e.key === "l" || e.key === "L") {
+        e.preventDefault();
+        applyFn("log");
+      } else if (e.key === "n" || e.key === "N") {
+        e.preventDefault();
+        applyFn("ln");
+      } else if (e.key === "p" || e.key === "P") {
+        e.preventDefault();
+        insertPi();
       }
     }
 
@@ -398,6 +416,8 @@ export function ScientificCalculator() {
     handleBackspace,
     handlePercent,
     handleParen,
+    applyFn,
+    insertPi,
   ]);
 
   // Primary 6-column 8-row keypad
@@ -420,7 +440,7 @@ export function ScientificCalculator() {
 
     // Row 3: 10ˣ, y√x, ∛, √, ln, log
     { id: "pow10", label: "10ˣ", variant: "function", onClick: () => applyFn("pow10") },
-    { id: "y_root", label: "y√x", variant: "function", onClick: () => applyFn("cbrt") },
+    { id: "y_root", label: "y√x", variant: "function", onClick: () => inputOperator("y√") },
     { id: "cbrt", label: "∛", variant: "function", onClick: () => applyFn("cbrt") },
     { id: "sqrt", label: "√", variant: "function", onClick: () => applyFn("sqrt") },
     { id: "ln", label: "ln", variant: "function", onClick: () => applyFn("ln") },
@@ -468,6 +488,13 @@ export function ScientificCalculator() {
 
   // Secondary 6-column collapsible keypad (advanced tools)
   const secondaryKeypad: ButtonConfig[] = [
+    {
+      id: "inv",
+      label: "INV",
+      variant: "function",
+      active: invMode,
+      onClick: () => setInvMode((p) => !p),
+    },
     {
       id: "sto",
       label: stoMode ? "STO" : "STO/RCL",
@@ -544,6 +571,7 @@ export function ScientificCalculator() {
     { id: "npr", label: "nPr", variant: "function", onClick: () => inputOperator("nPr") },
     { id: "gcd", label: "GCD", variant: "function", onClick: () => inputOperator("gcd") },
     { id: "lcm", label: "LCM", variant: "function", onClick: () => inputOperator("lcm") },
+    { id: "logbase", label: "logₐ", variant: "function", onClick: () => inputOperator("logₐ") },
     { id: "i_btn", label: "i", variant: "function", onClick: () => inputDigit("i") },
     { id: "exp_btn", label: "EXP", variant: "function", onClick: handleEXP },
   ];
@@ -555,7 +583,7 @@ export function ScientificCalculator() {
       </h1>
       <CalculatorCard
         compact
-        maxWidthClass="max-w-[400px]"
+        maxWidthClass="max-w-[480px]"
       >
         <div className="space-y-1.5 sm:space-y-2">
           {/* Top Actions Row: Deg/Rad Pill & History Button */}
@@ -646,7 +674,7 @@ export function ScientificCalculator() {
             <button
               type="button"
               onClick={() => setAdvancedOpen((prev) => !prev)}
-              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-border/80 bg-surface-sunken/60 py-1 text-xs font-semibold text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition"
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-border/80 bg-surface-sunken/60 py-1 text-xs font-semibold text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition sm:hidden"
             >
               <span>{advancedOpen ? "簡易表示 (Simple)" : "詳細機能 (More functions)"}</span>
               <svg
@@ -662,12 +690,16 @@ export function ScientificCalculator() {
             </button>
           </div>
 
-          {/* Collapsible Secondary Keypad */}
-          {advancedOpen && (
-            <div className="pt-1.5 border-t border-border/60 animate-fade-in">
-              <ButtonGrid buttons={secondaryKeypad} columns={6} compact />
-            </div>
-          )}
+          {/* Secondary Keypad: always visible on sm+ screens; on phones it
+              stays behind the toggle above so the basic keypad fits first. */}
+          <div
+            className={`${advancedOpen ? "block" : "hidden sm:block"} border-t border-border/60 pt-1.5`}
+          >
+            <p className="pb-1.5 text-[11px] font-semibold tracking-wide text-text-secondary">
+              高度な関数
+            </p>
+            <ButtonGrid buttons={secondaryKeypad} columns={6} compact />
+          </div>
         </div>
       </CalculatorCard>
 
@@ -715,6 +747,133 @@ export function ScientificCalculator() {
         </ul>
       </section>
 
+      <section aria-labelledby="sci-keystroke-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-keystroke-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.keystrokeTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken">
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">計算</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">入力手順</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.scientificPage.keystrokeExamples.map((row) => (
+                <tr key={row.calc} className="border-b border-border last:border-b-0">
+                  <td className="px-3 py-2.5 text-text-primary">{row.calc}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.keys}</td>
+                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.result}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="sci-trig-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-trig-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.trigTableTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken">
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">角度</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">sin</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">cos</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">tan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.scientificPage.trigTableRows.map((row) => (
+                <tr key={row.angle} className="border-b border-border last:border-b-0">
+                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.angle}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.sin}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.cos}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.tan}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="sci-log-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-log-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.logLawsTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.scientificPage.logLaws.map((law) => (
+            <li key={law} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {law}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 font-semibold text-text-primary">計算例</p>
+        <ul className="mt-2 list-disc space-y-2 pl-5">
+          {t.scientificPage.logExamples.map((ex) => (
+            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="sci-exp-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-exp-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.expLawsTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.scientificPage.expLaws.map((law) => (
+            <li key={law} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {law}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="sci-shortcuts-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-shortcuts-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.shortcutsTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken">
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">キー</th>
+                <th className="px-3 py-2.5 text-left font-semibold text-text-primary">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.scientificPage.shortcuts.map((row) => (
+                <tr key={row.key} className="border-b border-border last:border-b-0">
+                  <td className="px-3 py-2.5 font-medium whitespace-nowrap text-text-primary">{row.key}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section aria-labelledby="sci-degrad-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="sci-degrad-heading"
@@ -724,6 +883,30 @@ export function ScientificCalculator() {
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           {t.scientificPage.guideDegRadBody}
+        </p>
+      </section>
+
+      <section aria-labelledby="sci-handcalc-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-handcalc-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.handCalcTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.scientificPage.handCalcBody}
+        </p>
+      </section>
+
+      <section aria-labelledby="sci-vsbasic-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-vsbasic-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.vsBasicTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          <LinkedText text={t.scientificPage.vsBasicBody} activeHref="/scientific-calculator" />
         </p>
       </section>
 
