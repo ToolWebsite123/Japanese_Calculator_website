@@ -18,7 +18,10 @@ import {
   standardMonthlyForPension,
   standardBonusAmount,
 } from "../src/lib/calculators/social-insurance";
-import { getLongDivisionSteps } from "../src/lib/calculators/longDivision";
+import {
+  computeLongDivision,
+  getLongDivisionSteps,
+} from "../src/lib/calculators/longDivision";
 import { calculateRoot, simplifySquareRoot } from "../src/lib/calculators/root";
 import {
   buildDueDateResult,
@@ -195,6 +198,105 @@ test("M-01: -7 / 2 -> q -3, r -1 (truncated division keeps the identity)", () =>
   assert.equal(r.quotient, -3);
   assert.equal(r.remainder, -1);
   assert.equal(r.quotient * 2 + r.remainder, -7);
+});
+
+/* ---------------- #6: full 筆算 engine (computeLongDivision) ---------------- */
+
+test("LD-01: 1234 / 7 layout rows are the schoolbook ones (12, 53, 44)", () => {
+  const r = computeLongDivision(1234, 7, 4);
+  const intRows = r.rows.filter((row) => !row.isDecimalStep);
+  assert.deepEqual(
+    intRows.map((row) => row.partialDividend),
+    [12, 53, 44],
+  );
+  assert.deepEqual(
+    intRows.map((row) => row.product),
+    [7, 49, 42],
+  );
+  assert.equal(r.quotientInteger, "176");
+  assert.equal(r.remainder, "2");
+  assert.equal(r.decimalDigits, "2857");
+  assert.equal(r.cycleStart, null); // cycle not provable within 4 places
+  assert.equal(r.roundedDecimal, "176.2857");
+});
+
+test("LD-02: 1234 / 7 with 10 places detects the repeating cycle 285714", () => {
+  const r = computeLongDivision(1234, 7, 10);
+  assert.equal(r.cycleStart, 0);
+  assert.equal(r.decimalDisplay, "176.(285714)");
+  assert.equal(r.terminates, false);
+});
+
+test("LD-03: 100 / 7 -> q 14 r 2, rows 10 and 30", () => {
+  const r = computeLongDivision(100, 7, 2);
+  const intRows = r.rows.filter((row) => !row.isDecimalStep);
+  assert.deepEqual(
+    intRows.map((row) => row.partialDividend),
+    [10, 30],
+  );
+  assert.equal(r.quotientInteger, "14");
+  assert.equal(r.remainder, "2");
+  assert.equal(r.decimalDisplay, "14.28");
+  assert.equal(r.roundedDecimal, "14.29");
+});
+
+test("LD-04: 25 / 4 terminates at 6.25", () => {
+  const r = computeLongDivision(25, 4, 4);
+  assert.equal(r.quotientInteger, "6");
+  assert.equal(r.remainder, "1");
+  assert.equal(r.terminates, true);
+  assert.equal(r.decimalDisplay, "6.25");
+  assert.equal(r.roundedDecimal, "6.25");
+});
+
+test("LD-05: decimal inputs are scaled (12.5 / 2.5 = 5 exactly)", () => {
+  const r = computeLongDivision(12.5, 2.5, 4);
+  assert.equal(r.scaledDividend, 125);
+  assert.equal(r.scaledDivisor, 25);
+  assert.equal(r.quotientInteger, "5");
+  assert.equal(r.remainder, "0");
+  assert.equal(r.decimalDisplay, "5");
+});
+
+test("LD-06: -7 / 2 keeps truncated signs (q -3, r -1, decimal -3.5)", () => {
+  const r = computeLongDivision(-7, 2, 2);
+  assert.equal(r.quotientInteger, "-3");
+  assert.equal(r.remainder, "-1");
+  assert.equal(r.decimalDisplay, "-3.5");
+  assert.equal(Number(r.quotientInteger) * 2 + Number(r.remainder), -7);
+});
+
+test("LD-07: 3 / 7 has no integer rows, quotient 0, digits 428", () => {
+  const r = computeLongDivision(3, 7, 3);
+  assert.equal(r.rows.filter((row) => !row.isDecimalStep).length, 0);
+  assert.equal(r.quotientInteger, "0");
+  assert.equal(r.remainder, "3");
+  assert.equal(r.decimalDigits, "428");
+  assert.equal(r.roundedDecimal, "0.429");
+});
+
+test("LD-08: 612 / 3 includes the zero quotient digit (204)", () => {
+  const r = computeLongDivision(612, 3, 0);
+  assert.deepEqual(
+    r.rows.map((row) => row.quotientDigit),
+    [2, 0, 4],
+  );
+  assert.equal(r.quotientInteger, "204");
+  assert.equal(r.remainder, "0");
+});
+
+test("LD-09: decimalPlaces 0 stops at the remainder", () => {
+  const r = computeLongDivision(100, 7, 0);
+  assert.equal(r.decimalDigits, "");
+  assert.equal(r.decimalDisplay, "14");
+  assert.equal(r.remainder, "2");
+});
+
+test("LD-10: invalid inputs throw", () => {
+  assert.throws(() => computeLongDivision(10, 0, 2));
+  assert.throws(() => computeLongDivision(10, 3, -1));
+  assert.throws(() => computeLongDivision(10, 3, 99));
+  assert.throws(() => computeLongDivision(Number.NaN, 3, 2));
 });
 
 /* ---------------- M-02: simultaneous equations ---------------- */
