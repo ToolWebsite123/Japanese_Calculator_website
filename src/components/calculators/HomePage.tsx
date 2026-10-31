@@ -1,7 +1,6 @@
 "use client";
 
 import { Hero } from "@/components/home/Hero";
-import { HomePopularCalculators } from "@/components/home/HomePopularCalculators";
 import { HomeIntroSection } from "@/components/home/HomeIntroSection";
 import { HomeCalculatorsShowcase } from "@/components/home/HomeCalculatorsShowcase";
 import { HomeCalculatorGuide } from "@/components/home/HomeCalculatorGuide";
@@ -13,7 +12,10 @@ export function HomePage() {
     <div suppressHydrationWarning>
       <Hero />
 
-      <HomePopularCalculators />
+      {/* Popular-calculators cards section removed 2026-10-31 at the
+          owner's request (screenshot + tap confirmation). All 25 tools
+          remain reachable via the category showcase below, the guide's
+          links, and the /calculators hub. */}
 
       <HomeCalculatorsShowcase />
 
