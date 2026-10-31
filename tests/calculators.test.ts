@@ -25,7 +25,12 @@ import {
   type FurusatoDetailedInput,
 } from "../src/lib/calculators/furusato-nozei-detailed";
 import { calculateUnemployment } from "../src/lib/calculators/unemployment-insurance";
-import { calculateBmi, getBmiCategory } from "../src/lib/calculators/bmi";
+import {
+  calculateBmi,
+  getBmiCategory,
+  getAgeTargetRange,
+  estimateBodyFatPercent,
+} from "../src/lib/calculators/bmi";
 import ja from "../src/lib/i18n/ja";
 
 const approx = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps;
@@ -361,4 +366,25 @@ test("BMI Step B: WHO classification table has the 8 WHO bands", () => {
   assert.equal(whoRows.length, 8);
   assert.deepEqual(whoRows[3], ["18.50～24.99", "普通体重"]);
   assert.deepEqual(whoRows[7], ["40.00以上", "肥満（3度）"]);
+});
+
+/* ---------------- BMI Step C: age target range + body-fat estimate ---------------- */
+
+test("BMI Step C: age target ranges follow the MHLW 2025 bands", () => {
+  assert.equal(getAgeTargetRange(17), null);
+  assert.deepEqual(getAgeTargetRange(18), { min: 18.5, max: 24.9 });
+  assert.deepEqual(getAgeTargetRange(49), { min: 18.5, max: 24.9 });
+  assert.deepEqual(getAgeTargetRange(50), { min: 20.0, max: 24.9 });
+  assert.deepEqual(getAgeTargetRange(64), { min: 20.0, max: 24.9 });
+  assert.deepEqual(getAgeTargetRange(65), { min: 21.5, max: 24.9 });
+  assert.deepEqual(getAgeTargetRange(75), { min: 21.5, max: 24.9 });
+  assert.deepEqual(getAgeTargetRange(100), { min: 21.5, max: 24.9 });
+});
+
+test("BMI Step C: Deurenberg body-fat estimate (BMI 21.48, age 60)", () => {
+  assert.ok(approx(estimateBodyFatPercent(21.48, 60, "female"), 34.2, 1e-9));
+  assert.ok(approx(estimateBodyFatPercent(21.48, 60, "male"), 23.4, 1e-9));
+  assert.ok(approx(estimateBodyFatPercent(22.49, 30, "male"), 17.7, 1e-9));
+  // the estimate never goes below zero
+  assert.equal(estimateBodyFatPercent(10, 18, "male"), 0);
 });

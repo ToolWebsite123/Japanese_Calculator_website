@@ -69,3 +69,27 @@ export function calculateBmi(heightCm: number, weightKg: number): BmiResult {
     modelDiff: diffTo(modelWeight),
   };
 }
+
+export type BmiSex = "male" | "female";
+
+/**
+ * Target BMI range by age — MHLW "日本人の食事摂取基準（2025年版）".
+ * Returns null for under-18s, to whom the adult ranges do not apply.
+ */
+export function getAgeTargetRange(age: number): { min: number; max: number } | null {
+  if (!Number.isFinite(age) || age < 0) return null;
+  if (age < 18) return null;
+  if (age < 50) return { min: 18.5, max: 24.9 };
+  if (age < 65) return { min: 20.0, max: 24.9 };
+  return { min: 21.5, max: 24.9 };
+}
+
+/**
+ * Body-fat percentage estimate (Deurenberg et al., 1991):
+ * BF% = 1.20 × BMI + 0.23 × age − 10.8 × sex − 5.4 (sex: male 1, female 0).
+ * An estimate from BMI/age/sex only — not a measurement.
+ */
+export function estimateBodyFatPercent(bmi: number, age: number, sex: BmiSex): number {
+  const raw = 1.2 * bmi + 0.23 * age - 10.8 * (sex === "male" ? 1 : 0) - 5.4;
+  return Math.round(Math.max(0, raw) * 10) / 10;
+}

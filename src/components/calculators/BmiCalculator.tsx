@@ -8,10 +8,26 @@ import { RelatedCalculators } from "@/components/calculators/RelatedCalculators"
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
-import { PrimaryButton } from "@/components/ui/primitives";
+import { PrimaryButton, SelectWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
-import { calculateBmi, type BmiCategory, type BmiResult } from "@/lib/calculators/bmi";
+import {
+  calculateBmi,
+  estimateBodyFatPercent,
+  getAgeTargetRange,
+  type BmiCategory,
+  type BmiResult,
+  type BmiSex,
+} from "@/lib/calculators/bmi";
+
+type GenderChoice = "unspecified" | BmiSex;
+
+type AgeExtras = {
+  target: { min: number; max: number } | null;
+  targetMinKg: number;
+  targetMaxKg: number;
+  bodyFat: number | null;
+};
 
 // H-09 (WCAG AA): light-mode text shades darkened one step where the -600
 // shade failed 4.5:1 on white (sky-600 4.10, emerald-600 3.77, amber-600 3.19,
@@ -130,7 +146,10 @@ export function BmiCalculator() {
   const { addEntry } = useHistory();
   const [height, setHeight] = useState("170");
   const [weight, setWeight] = useState("65");
+  const [ageStr, setAgeStr] = useState("");
+  const [gender, setGender] = useState<GenderChoice>("unspecified");
   const [result, setResult] = useState<BmiResult | null>(null);
+  const [extras, setExtras] = useState<AgeExtras | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   function categoryLabel(cat: BmiCategory): string {
@@ -147,12 +166,36 @@ export function BmiCalculator() {
       weight.trim() === ""
     ) {
       setResult(null);
+      setExtras(null);
       setError(t.common.invalidInput);
       return;
+    }
+    let ageNum: number | null = null;
+    if (ageStr.trim() !== "") {
+      ageNum = Number(ageStr);
+      if (!Number.isInteger(ageNum) || ageNum < 1 || ageNum > 120) {
+        setResult(null);
+        setExtras(null);
+        setError(t.bmi.ageInvalid);
+        return;
+      }
     }
     try {
       const res = calculateBmi(h, w);
       setResult(res);
+      if (ageNum !== null) {
+        const target = getAgeTargetRange(ageNum);
+        const heightSq = (h / 100) * (h / 100);
+        setExtras({
+          target,
+          targetMinKg: target ? target.min * heightSq : 0,
+          targetMaxKg: target ? target.max * heightSq : 0,
+          bodyFat:
+            gender !== "unspecified" ? estimateBodyFatPercent(res.bmi, ageNum, gender) : null,
+        });
+      } else {
+        setExtras(null);
+      }
       setError(null);
       addEntry({
         expression: `${height}cm / ${weight}kg`,
@@ -161,6 +204,7 @@ export function BmiCalculator() {
       });
     } catch (e) {
       setResult(null);
+      setExtras(null);
       setError(e instanceof Error ? e.message : t.common.invalidInput);
     }
   }
@@ -192,6 +236,29 @@ export function BmiCalculator() {
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
           />
+
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            <FormField
+              label={t.bmi.age}
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={120}
+              value={ageStr}
+              onChange={(e) => setAgeStr(e.target.value)}
+            />
+            <label className="block space-y-1.5">
+              <span className="text-sm font-medium text-text-secondary">{t.bmi.gender}</span>
+              <SelectWell
+                value={gender}
+                onChange={(e) => setGender(e.target.value as GenderChoice)}
+              >
+                <option value="unspecified">{t.bmi.genderUnspecified}</option>
+                <option value="male">{t.bmi.male}</option>
+                <option value="female">{t.bmi.female}</option>
+              </SelectWell>
+            </label>
+          </div>
 
           <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
 
@@ -277,6 +344,52 @@ export function BmiCalculator() {
                   {t.bmi.variantNote}
                 </p>
               </div>
+
+              {extras && (
+                <div className="rounded-[var(--radius-md)] border border-border bg-surface-sunken p-4">
+                  <div className="text-xs font-medium text-text-tertiary">
+                    {t.bmi.agePanelTitle}
+                  </div>
+                  {extras.target ? (
+                    <>
+                      <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                        {t.bmi.ageTargetLabel}：
+                        <span className="font-semibold text-text-primary">
+                          {extras.target.min.toFixed(1)} 〜 {extras.target.max.toFixed(1)}
+                        </span>
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+                        {result.bmi < extras.target.min
+                          ? t.bmi.ageTargetBelow
+                          : result.bmi > extras.target.max
+                            ? t.bmi.ageTargetAbove
+                            : t.bmi.ageTargetIn}
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+                        {t.bmi.ageTargetWeightLabel}：{extras.targetMinKg.toFixed(1)} kg 〜{" "}
+                        {extras.targetMaxKg.toFixed(1)} kg
+                      </p>
+                    </>
+                  ) : (
+                    <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                      {t.bmi.under18Note}
+                    </p>
+                  )}
+                  {extras.bodyFat !== null && (
+                    <div className="mt-3 border-t border-border pt-3">
+                      <div className="text-xs font-medium text-text-tertiary">
+                        {t.bmi.bodyFatLabel}
+                      </div>
+                      <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
+                        {extras.bodyFat.toFixed(1)} %
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-text-tertiary">
+                        {t.bmi.bodyFatNote}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
