@@ -97,17 +97,32 @@ function formatSignedKg(diff: number): string {
   return `${abs} kg`;
 }
 
-function BmiGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
+function BmiGuideTable({
+  head,
+  rows,
+  dense = false,
+}: {
+  head: string[];
+  rows: string[][];
+  dense?: boolean;
+}) {
+  // dense (the wide height x weight matrix): tighter cells on mobile and a
+  // sticky first column, so the table stays usable on phones.
+  const cellPad = dense ? "px-1.5 py-1.5 sm:px-2.5 sm:py-2" : "px-3 py-2";
   return (
     <div className="mt-4 overflow-x-auto">
-      <table className="w-full border-collapse text-sm sm:text-base">
+      <table
+        className={`w-full border-collapse ${dense ? "text-xs sm:text-sm" : "text-sm sm:text-base"}`}
+      >
         <thead>
           <tr>
-            {head.map((cell) => (
+            {head.map((cell, i) => (
               <th
                 key={cell}
                 scope="col"
-                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+                className={`border border-border bg-surface-sunken ${cellPad} text-left font-semibold text-text-primary ${
+                  dense && i === 0 ? "sticky left-0" : ""
+                }`}
               >
                 {cell}
               </th>
@@ -120,8 +135,10 @@ function BmiGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
               {row.map((cell, i) => (
                 <td
                   key={cell}
-                  className={`border border-border px-3 py-2 ${
-                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                  className={`border border-border ${cellPad} ${
+                    i === 0
+                      ? `font-medium text-text-primary ${dense ? "sticky left-0 bg-surface" : ""}`
+                      : "text-text-secondary"
                   }`}
                 >
                   {cell}
@@ -448,7 +465,8 @@ export function BmiCalculator() {
           {t.bmiPage.guideMatrix.title}
         </h2>
         <p className={guideBodyClass}>{t.bmiPage.guideMatrix.intro}</p>
-        <BmiGuideTable head={t.bmiPage.guideMatrix.head} rows={t.bmiPage.guideMatrix.rows} />
+        <BmiGuideTable dense head={t.bmiPage.guideMatrix.head} rows={t.bmiPage.guideMatrix.rows} />
+        <p className="mt-2 text-xs text-text-tertiary sm:hidden">表は横にスクロールできます</p>
         <p className={guideBodyClass}>{t.bmiPage.guideMatrix.note}</p>
       </section>
 
