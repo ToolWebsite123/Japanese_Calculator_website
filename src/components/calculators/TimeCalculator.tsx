@@ -194,7 +194,7 @@ export function TimeCalculator() {
                 { value: "+", label: "+" },
                 { value: "-", label: "−" },
               ]}
-              className="w-full max-w-sm"
+              className="w-full max-w-[280px]"
               size="lg"
             />
           </div>
