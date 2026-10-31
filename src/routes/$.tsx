@@ -1,56 +1,30 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
-import type { ReactElement } from "react";
+import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from "react";
 
 import { PageLoading } from "@/components/layout/PageLoading";
 
-import AboutPage, { metadata as aboutMetadata } from "@/ported-pages/about/page";
-import AlgebraPage, { metadata as algebraMetadata } from "@/ported-pages/algebra-calculator/page";
-import BmiPage, { metadata as bmiMetadata } from "@/ported-pages/bmi-calculator/page";
-import CompoundInterestPage, {
-  metadata as compoundInterestMetadata,
-} from "@/ported-pages/compound-interest-calculator/page";
-import ContactPage, { metadata as contactMetadata } from "@/ported-pages/contact/page";
-import DisclaimerPage, { metadata as disclaimerMetadata } from "@/ported-pages/disclaimer/page";
-import EraPage, { metadata as eraMetadata } from "@/ported-pages/era-converter/page";
-import FactorizationPage, {
-  metadata as factorizationMetadata,
-} from "@/ported-pages/factorization-calculator/page";
-import FinancialPage, {
-  metadata as financialMetadata,
-} from "@/ported-pages/financial-calculator/page";
-import FractionPage, {
-  metadata as fractionMetadata,
-} from "@/ported-pages/fraction-calculator/page";
-import InterestPage, {
-  metadata as interestMetadata,
-} from "@/ported-pages/interest-calculator/page";
-import LongDivisionPage, {
-  metadata as longDivisionMetadata,
-} from "@/ported-pages/long-division-calculator/page";
-import PercentagePage, {
-  metadata as percentageMetadata,
-} from "@/ported-pages/percentage-calculator/page";
-import PrivacyPolicyPage, {
-  metadata as privacyPolicyMetadata,
-} from "@/ported-pages/privacy-policy/page";
-import RootPage, { metadata as rootMetadata } from "@/ported-pages/squareroot-calculator/page";
-import ScientificPage, {
-  metadata as scientificMetadata,
-} from "@/ported-pages/scientific-calculator/page";
-import SimultaneousEquationsPage, {
-  metadata as simultaneousEquationsMetadata,
-} from "@/ported-pages/simultaneous-equations-calculator/page";
-import SocialInsurancePage, {
-  metadata as socialInsuranceMetadata,
-} from "@/ported-pages/social-insurance-calculator/page";
-import TermsPage, { metadata as termsMetadata } from "@/ported-pages/terms/page";
-import TimePage, { metadata as timeMetadata } from "@/ported-pages/time-calculator/page";
-import UnitConverterPage, {
-  metadata as unitConverterMetadata,
-} from "@/ported-pages/unit-converter/page";
-import WebCalculatorPage, {
-  metadata as webCalculatorMetadata,
-} from "@/ported-pages/web-calculator/page";
+import { metadata as aboutMetadata } from "@/ported-pages/about/metadata";
+import { metadata as algebraMetadata } from "@/ported-pages/algebra-calculator/metadata";
+import { metadata as bmiMetadata } from "@/ported-pages/bmi-calculator/metadata";
+import { metadata as compoundInterestMetadata } from "@/ported-pages/compound-interest-calculator/metadata";
+import { metadata as contactMetadata } from "@/ported-pages/contact/metadata";
+import { metadata as disclaimerMetadata } from "@/ported-pages/disclaimer/metadata";
+import { metadata as eraMetadata } from "@/ported-pages/era-converter/metadata";
+import { metadata as factorizationMetadata } from "@/ported-pages/factorization-calculator/metadata";
+import { metadata as financialMetadata } from "@/ported-pages/financial-calculator/metadata";
+import { metadata as fractionMetadata } from "@/ported-pages/fraction-calculator/metadata";
+import { metadata as interestMetadata } from "@/ported-pages/interest-calculator/metadata";
+import { metadata as longDivisionMetadata } from "@/ported-pages/long-division-calculator/metadata";
+import { metadata as percentageMetadata } from "@/ported-pages/percentage-calculator/metadata";
+import { metadata as privacyPolicyMetadata } from "@/ported-pages/privacy-policy/metadata";
+import { metadata as rootMetadata } from "@/ported-pages/squareroot-calculator/metadata";
+import { metadata as scientificMetadata } from "@/ported-pages/scientific-calculator/metadata";
+import { metadata as simultaneousEquationsMetadata } from "@/ported-pages/simultaneous-equations-calculator/metadata";
+import { metadata as socialInsuranceMetadata } from "@/ported-pages/social-insurance-calculator/metadata";
+import { metadata as termsMetadata } from "@/ported-pages/terms/metadata";
+import { metadata as timeMetadata } from "@/ported-pages/time-calculator/metadata";
+import { metadata as unitConverterMetadata } from "@/ported-pages/unit-converter/metadata";
+import { metadata as webCalculatorMetadata } from "@/ported-pages/web-calculator/metadata";
 import type { Metadata } from "@/lib/seo/metadata";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
 import { absoluteUrl, LEGAL_PATHS } from "@/lib/seo/site";
@@ -247,30 +221,37 @@ export const Route = createFileRoute("/$")({
 
 // Canonical pages only. Alias short paths are NOT listed here on purpose:
 // beforeLoad redirects them (301) via aliasMap before any rendering happens.
-const pages: Record<string, () => ReactElement> = {
-  "/about": AboutPage,
-  "/algebra-calculator": AlgebraPage,
-  "/bmi-calculator": BmiPage,
-  "/compound-interest-calculator": CompoundInterestPage,
-  "/contact": ContactPage,
-  "/disclaimer": DisclaimerPage,
-  "/era-converter": EraPage,
-  "/factorization-calculator": FactorizationPage,
-  "/financial-calculator": FinancialPage,
-  "/fraction-calculator": FractionPage,
-  "/interest-calculator": InterestPage,
-  "/long-division-calculator": LongDivisionPage,
-  "/percentage-calculator": PercentagePage,
-  "/privacy-policy": PrivacyPolicyPage,
-  "/squareroot-calculator": RootPage,
-  "/scientific-calculator": ScientificPage,
-  "/simultaneous-equations-calculator": SimultaneousEquationsPage,
-  "/social-insurance-calculator": SocialInsurancePage,
-  "/terms": TermsPage,
-  "/time-calculator": TimePage,
-  "/unit-converter": UnitConverterPage,
-  "/web-calculator": WebCalculatorPage,
+const pageLoaders: Record<string, () => Promise<{ default: ComponentType }>> = {
+  "/about": () => import("@/ported-pages/about/page"),
+  "/algebra-calculator": () => import("@/ported-pages/algebra-calculator/page"),
+  "/bmi-calculator": () => import("@/ported-pages/bmi-calculator/page"),
+  "/compound-interest-calculator": () => import("@/ported-pages/compound-interest-calculator/page"),
+  "/contact": () => import("@/ported-pages/contact/page"),
+  "/disclaimer": () => import("@/ported-pages/disclaimer/page"),
+  "/era-converter": () => import("@/ported-pages/era-converter/page"),
+  "/factorization-calculator": () => import("@/ported-pages/factorization-calculator/page"),
+  "/financial-calculator": () => import("@/ported-pages/financial-calculator/page"),
+  "/fraction-calculator": () => import("@/ported-pages/fraction-calculator/page"),
+  "/interest-calculator": () => import("@/ported-pages/interest-calculator/page"),
+  "/long-division-calculator": () => import("@/ported-pages/long-division-calculator/page"),
+  "/percentage-calculator": () => import("@/ported-pages/percentage-calculator/page"),
+  "/privacy-policy": () => import("@/ported-pages/privacy-policy/page"),
+  "/squareroot-calculator": () => import("@/ported-pages/squareroot-calculator/page"),
+  "/scientific-calculator": () => import("@/ported-pages/scientific-calculator/page"),
+  "/simultaneous-equations-calculator": () => import("@/ported-pages/simultaneous-equations-calculator/page"),
+  "/social-insurance-calculator": () => import("@/ported-pages/social-insurance-calculator/page"),
+  "/terms": () => import("@/ported-pages/terms/page"),
+  "/time-calculator": () => import("@/ported-pages/time-calculator/page"),
+  "/unit-converter": () => import("@/ported-pages/unit-converter/page"),
+  "/web-calculator": () => import("@/ported-pages/web-calculator/page"),
 };
+
+// Each page component loads as its own chunk (React.lazy): a visitor only
+// downloads the code for the page they open, not all 22 pages at once.
+// SSR still renders the matched page on the server.
+const pages: Record<string, LazyExoticComponent<ComponentType>> = Object.fromEntries(
+  Object.entries(pageLoaders).map(([path, load]) => [path, lazy(load)]),
+);
 
 function CatchAllPage() {
   // Derive the path from THIS route's own params, not the global router
@@ -286,7 +267,9 @@ function CatchAllPage() {
   if (Component) {
     return (
       <div suppressHydrationWarning>
-        <Component />
+        <Suspense fallback={<PageLoading />}>
+          <Component />
+        </Suspense>
       </div>
     );
   }

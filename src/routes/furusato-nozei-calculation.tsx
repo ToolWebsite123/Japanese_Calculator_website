@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import FurusatoNozeiCalculationPage, {
-  metadata as furusatoMetadata,
-} from "@/ported-pages/furusato-nozei-calculation/page";
+import { metadata as furusatoMetadata } from "@/ported-pages/furusato-nozei-calculation/metadata";
 
 const title =
   typeof furusatoMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/furusato-nozei-calculation")({
-  component: FurusatoNozeiCalculationPage,
+  component: lazyRouteComponent(() => import("@/ported-pages/furusato-nozei-calculation/page")),
   head: () => ({
     meta: [
       { title },

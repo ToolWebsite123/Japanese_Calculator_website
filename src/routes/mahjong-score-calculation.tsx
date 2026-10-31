@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import MahjongScoreCalculationPage, {
-  metadata as mahjongMetadata,
-} from "@/ported-pages/mahjong-score-calculation/page";
+import { metadata as mahjongMetadata } from "@/ported-pages/mahjong-score-calculation/metadata";
 
 const title =
   typeof mahjongMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/mahjong-score-calculation")({
-  component: MahjongScoreCalculationPage,
+  component: lazyRouteComponent(() => import("@/ported-pages/mahjong-score-calculation/page")),
   head: () => ({
     meta: [
       { title },

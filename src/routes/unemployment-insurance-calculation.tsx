@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import UnemploymentInsurancePage, {
-  metadata as unemploymentMetadata,
-} from "@/ported-pages/unemployment-insurance-calculation/page";
+import { metadata as unemploymentMetadata } from "@/ported-pages/unemployment-insurance-calculation/metadata";
 
 const title =
   typeof unemploymentMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/unemployment-insurance-calculation")({
-  component: UnemploymentInsurancePage,
+  component: lazyRouteComponent(() => import("@/ported-pages/unemployment-insurance-calculation/page")),
   head: () => ({
     meta: [
       { title },

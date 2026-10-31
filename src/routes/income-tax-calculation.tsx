@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import IncomeTaxCalculationPage, {
-  metadata as incomeTaxMetadata,
-} from "@/ported-pages/income-tax-calculation/page";
+import { metadata as incomeTaxMetadata } from "@/ported-pages/income-tax-calculation/metadata";
 
 const title =
   typeof incomeTaxMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/income-tax-calculation")({
-  component: IncomeTaxCalculationPage,
+  component: lazyRouteComponent(() => import("@/ported-pages/income-tax-calculation/page")),
   head: () => ({
     meta: [
       { title },

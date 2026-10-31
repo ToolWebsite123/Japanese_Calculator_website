@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import DueDateCalculationPage, {
-  metadata as dueDateMetadata,
-} from "@/ported-pages/due-date-calculation/page";
+import { metadata as dueDateMetadata } from "@/ported-pages/due-date-calculation/metadata";
 
 const title =
   typeof dueDateMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/due-date-calculation")({
-  component: DueDateCalculationPage,
+  component: lazyRouteComponent(() => import("@/ported-pages/due-date-calculation/page")),
   head: () => ({
     meta: [
       { title },

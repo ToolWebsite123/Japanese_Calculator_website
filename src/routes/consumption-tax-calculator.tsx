@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import ConsumptionTaxCalculatorPage, {
-  metadata as consumptionTaxMetadata,
-} from "@/ported-pages/consumption-tax-calculator/page";
+import { metadata as consumptionTaxMetadata } from "@/ported-pages/consumption-tax-calculator/metadata";
 
 const title =
   typeof consumptionTaxMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/consumption-tax-calculator")({
-  component: ConsumptionTaxCalculatorPage,
+  component: lazyRouteComponent(() => import("@/ported-pages/consumption-tax-calculator/page")),
   head: () => ({
     meta: [
       { title },

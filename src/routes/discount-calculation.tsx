@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
-import DiscountCalculationPage, {
-  metadata as discountMetadata,
-} from "@/ported-pages/discount-calculation/page";
+import { metadata as discountMetadata } from "@/ported-pages/discount-calculation/metadata";
 
 const title =
   typeof discountMetadata.title === "string"
@@ -25,7 +23,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/discount-calculation")({
-  component: DiscountCalculationPage,
+  component: lazyRouteComponent(() => import("@/ported-pages/discount-calculation/page")),
   head: () => ({
     meta: [
       { title },
