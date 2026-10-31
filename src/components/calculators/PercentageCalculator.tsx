@@ -20,7 +20,7 @@ import {
 import { formatDisplayNumber } from "@/lib/format";
 
 const inlineInputClass =
-  "w-full rounded-[var(--radius-sm)] border border-border bg-surface-sunken px-3 py-2 text-lg text-text-primary outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 sm:w-28";
+  "rounded-[var(--radius-sm)] border border-border bg-surface-sunken px-3 py-2 text-lg text-text-primary outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20";
 
 const guideHeadingClass =
   "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
@@ -132,101 +132,125 @@ export function PercentageCalculator() {
       </h1>
       <CalculatorCard compact maxWidthClass="max-w-[520px]">
         <div className="space-y-3 sm:space-y-4">
-          <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
-            <InputWell
+          <div className="w-full">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="w-28 shrink-0">
+                <InputWell
               type="number"
               value={p1Y}
               onChange={(e) => setP1Y(e.target.value)}
               className={inlineInputClass}
               aria-label="基準となる数値"
             />
-            <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+              </div>
               <span className="text-text-secondary">の</span>
-              <InputWell
+              <div className="w-24 shrink-0">
+                <InputWell
                 type="number"
                 value={p1X}
                 onChange={(e) => setP1X(e.target.value)}
-                className={`${inlineInputClass} sm:w-24`}
+                className={inlineInputClass}
                 aria-label="パーセント"
               />
+              </div>
               <span className="text-text-secondary">% は</span>
             </div>
-            <ResultInline value={result1.value} />
+            <div className="mt-2.5">
+              <ResultInline value={result1.value} />
+            </div>
           </div>
           {result1.error && <ErrorMessage message={result1.error} />}
 
           <Divider className="pt-0" />
 
-          <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
-            <InputWell
+          <div className="w-full">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="w-28 shrink-0">
+                <InputWell
               type="number"
               value={p2Y}
               onChange={(e) => setP2Y(e.target.value)}
               className={inlineInputClass}
               aria-label="基準となる数値"
             />
-            <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+              </div>
               <span className="text-text-secondary">に対する</span>
-              <InputWell
+              <div className="w-24 shrink-0">
+                <InputWell
                 type="number"
                 value={p2X}
                 onChange={(e) => setP2X(e.target.value)}
-                className={`${inlineInputClass} sm:w-24`}
+                className={inlineInputClass}
                 aria-label="比較する数値"
               />
+              </div>
               <span className="text-text-secondary">の割合は</span>
             </div>
-            <ResultInline value={result2.value} />
+            <div className="mt-2.5">
+              <ResultInline value={result2.value} />
+            </div>
           </div>
           {result2.error && <ErrorMessage message={result2.error} />}
 
           <Divider className="pt-0" />
 
-          <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
-            <InputWell
+          <div className="w-full">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="w-28 shrink-0">
+                <InputWell
               type="number"
               value={p3X}
               onChange={(e) => setP3X(e.target.value)}
               className={inlineInputClass}
               aria-label="変化前の数値"
             />
-            <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+              </div>
               <span className="text-text-secondary">から</span>
-              <InputWell
+              <div className="w-24 shrink-0">
+                <InputWell
                 type="number"
                 value={p3Y}
                 onChange={(e) => setP3Y(e.target.value)}
-                className={`${inlineInputClass} sm:w-24`}
+                className={inlineInputClass}
                 aria-label="変化後の数値"
               />
+              </div>
               <span className="text-text-secondary">への変化は</span>
             </div>
-            <ResultInline value={result3.value} />
+            <div className="mt-2.5">
+              <ResultInline value={result3.value} />
+            </div>
           </div>
           {result3.error && <ErrorMessage message={result3.error} />}
 
           <Divider className="pt-0" />
 
-          <div className="grid gap-3 sm:grid-cols-3 sm:items-center w-full">
-            <InputWell
+          <div className="w-full">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="w-28 shrink-0">
+                <InputWell
               type="number"
               value={p4Part}
               onChange={(e) => setP4Part(e.target.value)}
               className={inlineInputClass}
               aria-label="部分の数値"
             />
-            <div className="flex items-center justify-center gap-2 whitespace-nowrap">
+              </div>
               <span className="text-text-secondary">は</span>
-              <InputWell
+              <div className="w-24 shrink-0">
+                <InputWell
                 type="number"
                 value={p4Pct}
                 onChange={(e) => setP4Pct(e.target.value)}
-                className={`${inlineInputClass} sm:w-24`}
+                className={inlineInputClass}
                 aria-label="パーセント"
               />
+              </div>
               <span className="text-text-secondary">% のとき全体は</span>
             </div>
-            <ResultInline value={result4.value} />
+            <div className="mt-2.5">
+              <ResultInline value={result4.value} />
+            </div>
           </div>
           {result4.error && <ErrorMessage message={result4.error} />}
 
