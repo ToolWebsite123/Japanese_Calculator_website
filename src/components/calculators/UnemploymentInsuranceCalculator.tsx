@@ -92,7 +92,7 @@ export function UnemploymentInsuranceCalculator() {
   return (
     <>
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
-        失業保険 計算
+        失業保険 受給額計算
       </h1>
       <CalculatorCard compact maxWidthClass="max-w-[500px]">
         <div className="space-y-2.5 sm:space-y-3">
@@ -243,6 +243,37 @@ export function UnemploymentInsuranceCalculator() {
       </p>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="unemp-mechanism-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="unemp-mechanism-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          基本手当の決まり方
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          基本手当日額は、離職前6か月の賃金総額を180で割った「賃金日額」に、給付率（50〜80%、賃金が低いほど高い割合）をかけて決まります。所定給付日数は、年齢・被保険者期間・離職理由（自己都合か会社都合か）で変わります。
+        </p>
+      </section>
+
+      <section aria-labelledby="unemp-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="unemp-example-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          計算例
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          離職前6か月の賃金総額180万円、年齢30〜34歳、被保険者期間5年以上10年未満、会社都合退職の場合、この計算機では基本手当日額{" "}
+          <strong className="text-text-primary">6,307円</strong>、所定給付日数{" "}
+          <strong className="text-text-primary">180日</strong>、受給総額の目安{" "}
+          <strong className="text-text-primary">1,135,260円</strong> となります。
+        </p>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          実際の受給額と日数はハローワークの認定で決まります。自己都合退職には給付制限期間があります。
+        </p>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/unemployment-insurance-calculation" />
     </>
