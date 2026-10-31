@@ -386,8 +386,6 @@ export function TimeCalculator() {
         <LinkedText text={t.timePage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection title={t.timePage.howToTitle} steps={t.timePage.howToSteps} />
-
       <section aria-labelledby="time-examples-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="time-examples-heading"
@@ -473,6 +471,8 @@ export function TimeCalculator() {
           </table>
         </div>
       </section>
+
+      <CalculatorHowToSection title={t.timePage.howToTitle} steps={t.timePage.howToSteps} />
 
       <CalculatorFaqSection title={t.timePage.faqTitle} items={t.timePage.faqItems} />
       <RelatedCalculators activeHref="/time-calculator" />
