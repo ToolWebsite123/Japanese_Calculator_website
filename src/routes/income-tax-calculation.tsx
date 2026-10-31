@@ -1,4 +1,5 @@
-import { createFileRoute, lazyRouteComponent } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import Page from "@/ported-pages/income-tax-calculation/page";
 import { absoluteUrl } from "@/lib/seo/site";
 import { buildPageSchemaScripts } from "@/lib/seo/page-schema";
 import { metadata as incomeTaxMetadata } from "@/ported-pages/income-tax-calculation/metadata";
@@ -23,7 +24,7 @@ function metaStr(v: unknown): string | undefined {
 }
 
 export const Route = createFileRoute("/income-tax-calculation")({
-  component: lazyRouteComponent(() => import("@/ported-pages/income-tax-calculation/page")),
+  component: Page,
   head: () => ({
     meta: [
       { title },

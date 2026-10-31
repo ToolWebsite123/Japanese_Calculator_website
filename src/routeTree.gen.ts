@@ -9,69 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as SplatRouteImport } from './routes/$'
-import { Route as CalculatorsRouteImport } from './routes/calculators'
-import { Route as ConsumptionTaxCalculatorRouteImport } from './routes/consumption-tax-calculator'
-import { Route as DiscountCalculationRouteImport } from './routes/discount-calculation'
-import { Route as DueDateCalculationRouteImport } from './routes/due-date-calculation'
-import { Route as FurusatoNozeiCalculationRouteImport } from './routes/furusato-nozei-calculation'
-import { Route as FurusatoNozeiSimulationCalculationRouteImport } from './routes/furusato-nozei-simulation-calculation'
-import { Route as IncomeTaxCalculationRouteImport } from './routes/income-tax-calculation'
-import { Route as MahjongScoreCalculationRouteImport } from './routes/mahjong-score-calculation'
+import { Route as WebCalculatorRouteImport } from './routes/web-calculator'
+import { Route as UnitConverterRouteImport } from './routes/unit-converter'
 import { Route as UnemploymentInsuranceCalculationRouteImport } from './routes/unemployment-insurance-calculation'
+import { Route as TimeCalculatorRouteImport } from './routes/time-calculator'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SquarerootCalculatorRouteImport } from './routes/squareroot-calculator'
+import { Route as SocialInsuranceCalculatorRouteImport } from './routes/social-insurance-calculator'
+import { Route as SimultaneousEquationsCalculatorRouteImport } from './routes/simultaneous-equations-calculator'
+import { Route as ScientificCalculatorRouteImport } from './routes/scientific-calculator'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as PercentageCalculatorRouteImport } from './routes/percentage-calculator'
+import { Route as MahjongScoreCalculationRouteImport } from './routes/mahjong-score-calculation'
+import { Route as LongDivisionCalculatorRouteImport } from './routes/long-division-calculator'
+import { Route as InterestCalculatorRouteImport } from './routes/interest-calculator'
+import { Route as IncomeTaxCalculationRouteImport } from './routes/income-tax-calculation'
+import { Route as FurusatoNozeiSimulationCalculationRouteImport } from './routes/furusato-nozei-simulation-calculation'
+import { Route as FurusatoNozeiCalculationRouteImport } from './routes/furusato-nozei-calculation'
+import { Route as FractionCalculatorRouteImport } from './routes/fraction-calculator'
+import { Route as FinancialCalculatorRouteImport } from './routes/financial-calculator'
+import { Route as FactorizationCalculatorRouteImport } from './routes/factorization-calculator'
+import { Route as EraConverterRouteImport } from './routes/era-converter'
+import { Route as DueDateCalculationRouteImport } from './routes/due-date-calculation'
+import { Route as DiscountCalculationRouteImport } from './routes/discount-calculation'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConsumptionTaxCalculatorRouteImport } from './routes/consumption-tax-calculator'
+import { Route as CompoundInterestCalculatorRouteImport } from './routes/compound-interest-calculator'
+import { Route as CalculatorsRouteImport } from './routes/calculators'
+import { Route as BmiCalculatorRouteImport } from './routes/bmi-calculator'
+import { Route as AlgebraCalculatorRouteImport } from './routes/algebra-calculator'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as IndexRouteImport } from './routes/index'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const WebCalculatorRoute = WebCalculatorRouteImport.update({
+  id: '/web-calculator',
+  path: '/web-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SplatRoute = SplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CalculatorsRoute = CalculatorsRouteImport.update({
-  id: '/calculators',
-  path: '/calculators',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConsumptionTaxCalculatorRoute =
-  ConsumptionTaxCalculatorRouteImport.update({
-    id: '/consumption-tax-calculator',
-    path: '/consumption-tax-calculator',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DiscountCalculationRoute = DiscountCalculationRouteImport.update({
-  id: '/discount-calculation',
-  path: '/discount-calculation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DueDateCalculationRoute = DueDateCalculationRouteImport.update({
-  id: '/due-date-calculation',
-  path: '/due-date-calculation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FurusatoNozeiCalculationRoute =
-  FurusatoNozeiCalculationRouteImport.update({
-    id: '/furusato-nozei-calculation',
-    path: '/furusato-nozei-calculation',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const FurusatoNozeiSimulationCalculationRoute =
-  FurusatoNozeiSimulationCalculationRouteImport.update({
-    id: '/furusato-nozei-simulation-calculation',
-    path: '/furusato-nozei-simulation-calculation',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const IncomeTaxCalculationRoute = IncomeTaxCalculationRouteImport.update({
-  id: '/income-tax-calculation',
-  path: '/income-tax-calculation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MahjongScoreCalculationRoute = MahjongScoreCalculationRouteImport.update({
-  id: '/mahjong-score-calculation',
-  path: '/mahjong-score-calculation',
+const UnitConverterRoute = UnitConverterRouteImport.update({
+  id: '/unit-converter',
+  path: '/unit-converter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnemploymentInsuranceCalculationRoute =
@@ -80,173 +59,427 @@ const UnemploymentInsuranceCalculationRoute =
     path: '/unemployment-insurance-calculation',
     getParentRoute: () => rootRouteImport,
   } as any)
+const TimeCalculatorRoute = TimeCalculatorRouteImport.update({
+  id: '/time-calculator',
+  path: '/time-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SquarerootCalculatorRoute = SquarerootCalculatorRouteImport.update({
+  id: '/squareroot-calculator',
+  path: '/squareroot-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialInsuranceCalculatorRoute =
+  SocialInsuranceCalculatorRouteImport.update({
+    id: '/social-insurance-calculator',
+    path: '/social-insurance-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SimultaneousEquationsCalculatorRoute =
+  SimultaneousEquationsCalculatorRouteImport.update({
+    id: '/simultaneous-equations-calculator',
+    path: '/simultaneous-equations-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ScientificCalculatorRoute = ScientificCalculatorRouteImport.update({
+  id: '/scientific-calculator',
+  path: '/scientific-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PercentageCalculatorRoute = PercentageCalculatorRouteImport.update({
+  id: '/percentage-calculator',
+  path: '/percentage-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MahjongScoreCalculationRoute = MahjongScoreCalculationRouteImport.update({
+  id: '/mahjong-score-calculation',
+  path: '/mahjong-score-calculation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LongDivisionCalculatorRoute = LongDivisionCalculatorRouteImport.update({
+  id: '/long-division-calculator',
+  path: '/long-division-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InterestCalculatorRoute = InterestCalculatorRouteImport.update({
+  id: '/interest-calculator',
+  path: '/interest-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IncomeTaxCalculationRoute = IncomeTaxCalculationRouteImport.update({
+  id: '/income-tax-calculation',
+  path: '/income-tax-calculation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FurusatoNozeiSimulationCalculationRoute =
+  FurusatoNozeiSimulationCalculationRouteImport.update({
+    id: '/furusato-nozei-simulation-calculation',
+    path: '/furusato-nozei-simulation-calculation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const FurusatoNozeiCalculationRoute =
+  FurusatoNozeiCalculationRouteImport.update({
+    id: '/furusato-nozei-calculation',
+    path: '/furusato-nozei-calculation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const FractionCalculatorRoute = FractionCalculatorRouteImport.update({
+  id: '/fraction-calculator',
+  path: '/fraction-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinancialCalculatorRoute = FinancialCalculatorRouteImport.update({
+  id: '/financial-calculator',
+  path: '/financial-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FactorizationCalculatorRoute = FactorizationCalculatorRouteImport.update({
+  id: '/factorization-calculator',
+  path: '/factorization-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EraConverterRoute = EraConverterRouteImport.update({
+  id: '/era-converter',
+  path: '/era-converter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DueDateCalculationRoute = DueDateCalculationRouteImport.update({
+  id: '/due-date-calculation',
+  path: '/due-date-calculation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscountCalculationRoute = DiscountCalculationRouteImport.update({
+  id: '/discount-calculation',
+  path: '/discount-calculation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsumptionTaxCalculatorRoute =
+  ConsumptionTaxCalculatorRouteImport.update({
+    id: '/consumption-tax-calculator',
+    path: '/consumption-tax-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const CompoundInterestCalculatorRoute =
+  CompoundInterestCalculatorRouteImport.update({
+    id: '/compound-interest-calculator',
+    path: '/compound-interest-calculator',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const CalculatorsRoute = CalculatorsRouteImport.update({
+  id: '/calculators',
+  path: '/calculators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BmiCalculatorRoute = BmiCalculatorRouteImport.update({
+  id: '/bmi-calculator',
+  path: '/bmi-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlgebraCalculatorRoute = AlgebraCalculatorRouteImport.update({
+  id: '/algebra-calculator',
+  path: '/algebra-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/about': typeof AboutRoute
+  '/algebra-calculator': typeof AlgebraCalculatorRoute
+  '/bmi-calculator': typeof BmiCalculatorRoute
   '/calculators': typeof CalculatorsRoute
+  '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
   '/consumption-tax-calculator': typeof ConsumptionTaxCalculatorRoute
+  '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/discount-calculation': typeof DiscountCalculationRoute
   '/due-date-calculation': typeof DueDateCalculationRoute
+  '/era-converter': typeof EraConverterRoute
+  '/factorization-calculator': typeof FactorizationCalculatorRoute
+  '/financial-calculator': typeof FinancialCalculatorRoute
+  '/fraction-calculator': typeof FractionCalculatorRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
   '/furusato-nozei-simulation-calculation': typeof FurusatoNozeiSimulationCalculationRoute
   '/income-tax-calculation': typeof IncomeTaxCalculationRoute
+  '/interest-calculator': typeof InterestCalculatorRoute
+  '/long-division-calculator': typeof LongDivisionCalculatorRoute
   '/mahjong-score-calculation': typeof MahjongScoreCalculationRoute
+  '/percentage-calculator': typeof PercentageCalculatorRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/scientific-calculator': typeof ScientificCalculatorRoute
+  '/simultaneous-equations-calculator': typeof SimultaneousEquationsCalculatorRoute
+  '/social-insurance-calculator': typeof SocialInsuranceCalculatorRoute
+  '/squareroot-calculator': typeof SquarerootCalculatorRoute
+  '/terms': typeof TermsRoute
+  '/time-calculator': typeof TimeCalculatorRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
+  '/unit-converter': typeof UnitConverterRoute
+  '/web-calculator': typeof WebCalculatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/about': typeof AboutRoute
+  '/algebra-calculator': typeof AlgebraCalculatorRoute
+  '/bmi-calculator': typeof BmiCalculatorRoute
   '/calculators': typeof CalculatorsRoute
+  '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
   '/consumption-tax-calculator': typeof ConsumptionTaxCalculatorRoute
+  '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/discount-calculation': typeof DiscountCalculationRoute
   '/due-date-calculation': typeof DueDateCalculationRoute
+  '/era-converter': typeof EraConverterRoute
+  '/factorization-calculator': typeof FactorizationCalculatorRoute
+  '/financial-calculator': typeof FinancialCalculatorRoute
+  '/fraction-calculator': typeof FractionCalculatorRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
   '/furusato-nozei-simulation-calculation': typeof FurusatoNozeiSimulationCalculationRoute
   '/income-tax-calculation': typeof IncomeTaxCalculationRoute
+  '/interest-calculator': typeof InterestCalculatorRoute
+  '/long-division-calculator': typeof LongDivisionCalculatorRoute
   '/mahjong-score-calculation': typeof MahjongScoreCalculationRoute
+  '/percentage-calculator': typeof PercentageCalculatorRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/scientific-calculator': typeof ScientificCalculatorRoute
+  '/simultaneous-equations-calculator': typeof SimultaneousEquationsCalculatorRoute
+  '/social-insurance-calculator': typeof SocialInsuranceCalculatorRoute
+  '/squareroot-calculator': typeof SquarerootCalculatorRoute
+  '/terms': typeof TermsRoute
+  '/time-calculator': typeof TimeCalculatorRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
+  '/unit-converter': typeof UnitConverterRoute
+  '/web-calculator': typeof WebCalculatorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/about': typeof AboutRoute
+  '/algebra-calculator': typeof AlgebraCalculatorRoute
+  '/bmi-calculator': typeof BmiCalculatorRoute
   '/calculators': typeof CalculatorsRoute
+  '/compound-interest-calculator': typeof CompoundInterestCalculatorRoute
   '/consumption-tax-calculator': typeof ConsumptionTaxCalculatorRoute
+  '/contact': typeof ContactRoute
+  '/disclaimer': typeof DisclaimerRoute
   '/discount-calculation': typeof DiscountCalculationRoute
   '/due-date-calculation': typeof DueDateCalculationRoute
+  '/era-converter': typeof EraConverterRoute
+  '/factorization-calculator': typeof FactorizationCalculatorRoute
+  '/financial-calculator': typeof FinancialCalculatorRoute
+  '/fraction-calculator': typeof FractionCalculatorRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
   '/furusato-nozei-simulation-calculation': typeof FurusatoNozeiSimulationCalculationRoute
   '/income-tax-calculation': typeof IncomeTaxCalculationRoute
+  '/interest-calculator': typeof InterestCalculatorRoute
+  '/long-division-calculator': typeof LongDivisionCalculatorRoute
   '/mahjong-score-calculation': typeof MahjongScoreCalculationRoute
+  '/percentage-calculator': typeof PercentageCalculatorRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/scientific-calculator': typeof ScientificCalculatorRoute
+  '/simultaneous-equations-calculator': typeof SimultaneousEquationsCalculatorRoute
+  '/social-insurance-calculator': typeof SocialInsuranceCalculatorRoute
+  '/squareroot-calculator': typeof SquarerootCalculatorRoute
+  '/terms': typeof TermsRoute
+  '/time-calculator': typeof TimeCalculatorRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
+  '/unit-converter': typeof UnitConverterRoute
+  '/web-calculator': typeof WebCalculatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$'
+    | '/about'
+    | '/algebra-calculator'
+    | '/bmi-calculator'
     | '/calculators'
+    | '/compound-interest-calculator'
     | '/consumption-tax-calculator'
+    | '/contact'
+    | '/disclaimer'
     | '/discount-calculation'
     | '/due-date-calculation'
+    | '/era-converter'
+    | '/factorization-calculator'
+    | '/financial-calculator'
+    | '/fraction-calculator'
     | '/furusato-nozei-calculation'
     | '/furusato-nozei-simulation-calculation'
     | '/income-tax-calculation'
+    | '/interest-calculator'
+    | '/long-division-calculator'
     | '/mahjong-score-calculation'
+    | '/percentage-calculator'
+    | '/privacy-policy'
+    | '/scientific-calculator'
+    | '/simultaneous-equations-calculator'
+    | '/social-insurance-calculator'
+    | '/squareroot-calculator'
+    | '/terms'
+    | '/time-calculator'
     | '/unemployment-insurance-calculation'
+    | '/unit-converter'
+    | '/web-calculator'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/$'
+    | '/about'
+    | '/algebra-calculator'
+    | '/bmi-calculator'
     | '/calculators'
+    | '/compound-interest-calculator'
     | '/consumption-tax-calculator'
+    | '/contact'
+    | '/disclaimer'
     | '/discount-calculation'
     | '/due-date-calculation'
+    | '/era-converter'
+    | '/factorization-calculator'
+    | '/financial-calculator'
+    | '/fraction-calculator'
     | '/furusato-nozei-calculation'
     | '/furusato-nozei-simulation-calculation'
     | '/income-tax-calculation'
+    | '/interest-calculator'
+    | '/long-division-calculator'
     | '/mahjong-score-calculation'
+    | '/percentage-calculator'
+    | '/privacy-policy'
+    | '/scientific-calculator'
+    | '/simultaneous-equations-calculator'
+    | '/social-insurance-calculator'
+    | '/squareroot-calculator'
+    | '/terms'
+    | '/time-calculator'
     | '/unemployment-insurance-calculation'
+    | '/unit-converter'
+    | '/web-calculator'
   id:
     | '__root__'
     | '/'
     | '/$'
+    | '/about'
+    | '/algebra-calculator'
+    | '/bmi-calculator'
     | '/calculators'
+    | '/compound-interest-calculator'
     | '/consumption-tax-calculator'
+    | '/contact'
+    | '/disclaimer'
     | '/discount-calculation'
     | '/due-date-calculation'
+    | '/era-converter'
+    | '/factorization-calculator'
+    | '/financial-calculator'
+    | '/fraction-calculator'
     | '/furusato-nozei-calculation'
     | '/furusato-nozei-simulation-calculation'
     | '/income-tax-calculation'
+    | '/interest-calculator'
+    | '/long-division-calculator'
     | '/mahjong-score-calculation'
+    | '/percentage-calculator'
+    | '/privacy-policy'
+    | '/scientific-calculator'
+    | '/simultaneous-equations-calculator'
+    | '/social-insurance-calculator'
+    | '/squareroot-calculator'
+    | '/terms'
+    | '/time-calculator'
     | '/unemployment-insurance-calculation'
+    | '/unit-converter'
+    | '/web-calculator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
+  AboutRoute: typeof AboutRoute
+  AlgebraCalculatorRoute: typeof AlgebraCalculatorRoute
+  BmiCalculatorRoute: typeof BmiCalculatorRoute
   CalculatorsRoute: typeof CalculatorsRoute
+  CompoundInterestCalculatorRoute: typeof CompoundInterestCalculatorRoute
   ConsumptionTaxCalculatorRoute: typeof ConsumptionTaxCalculatorRoute
+  ContactRoute: typeof ContactRoute
+  DisclaimerRoute: typeof DisclaimerRoute
   DiscountCalculationRoute: typeof DiscountCalculationRoute
   DueDateCalculationRoute: typeof DueDateCalculationRoute
+  EraConverterRoute: typeof EraConverterRoute
+  FactorizationCalculatorRoute: typeof FactorizationCalculatorRoute
+  FinancialCalculatorRoute: typeof FinancialCalculatorRoute
+  FractionCalculatorRoute: typeof FractionCalculatorRoute
   FurusatoNozeiCalculationRoute: typeof FurusatoNozeiCalculationRoute
   FurusatoNozeiSimulationCalculationRoute: typeof FurusatoNozeiSimulationCalculationRoute
   IncomeTaxCalculationRoute: typeof IncomeTaxCalculationRoute
+  InterestCalculatorRoute: typeof InterestCalculatorRoute
+  LongDivisionCalculatorRoute: typeof LongDivisionCalculatorRoute
   MahjongScoreCalculationRoute: typeof MahjongScoreCalculationRoute
+  PercentageCalculatorRoute: typeof PercentageCalculatorRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  ScientificCalculatorRoute: typeof ScientificCalculatorRoute
+  SimultaneousEquationsCalculatorRoute: typeof SimultaneousEquationsCalculatorRoute
+  SocialInsuranceCalculatorRoute: typeof SocialInsuranceCalculatorRoute
+  SquarerootCalculatorRoute: typeof SquarerootCalculatorRoute
+  TermsRoute: typeof TermsRoute
+  TimeCalculatorRoute: typeof TimeCalculatorRoute
   UnemploymentInsuranceCalculationRoute: typeof UnemploymentInsuranceCalculationRoute
+  UnitConverterRoute: typeof UnitConverterRoute
+  WebCalculatorRoute: typeof WebCalculatorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/web-calculator': {
+      id: '/web-calculator'
+      path: '/web-calculator'
+      fullPath: '/web-calculator'
+      preLoaderRoute: typeof WebCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$': {
-      id: '/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/calculators': {
-      id: '/calculators'
-      path: '/calculators'
-      fullPath: '/calculators'
-      preLoaderRoute: typeof CalculatorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/consumption-tax-calculator': {
-      id: '/consumption-tax-calculator'
-      path: '/consumption-tax-calculator'
-      fullPath: '/consumption-tax-calculator'
-      preLoaderRoute: typeof ConsumptionTaxCalculatorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/discount-calculation': {
-      id: '/discount-calculation'
-      path: '/discount-calculation'
-      fullPath: '/discount-calculation'
-      preLoaderRoute: typeof DiscountCalculationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/due-date-calculation': {
-      id: '/due-date-calculation'
-      path: '/due-date-calculation'
-      fullPath: '/due-date-calculation'
-      preLoaderRoute: typeof DueDateCalculationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/furusato-nozei-calculation': {
-      id: '/furusato-nozei-calculation'
-      path: '/furusato-nozei-calculation'
-      fullPath: '/furusato-nozei-calculation'
-      preLoaderRoute: typeof FurusatoNozeiCalculationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/furusato-nozei-simulation-calculation': {
-      id: '/furusato-nozei-simulation-calculation'
-      path: '/furusato-nozei-simulation-calculation'
-      fullPath: '/furusato-nozei-simulation-calculation'
-      preLoaderRoute: typeof FurusatoNozeiSimulationCalculationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/income-tax-calculation': {
-      id: '/income-tax-calculation'
-      path: '/income-tax-calculation'
-      fullPath: '/income-tax-calculation'
-      preLoaderRoute: typeof IncomeTaxCalculationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mahjong-score-calculation': {
-      id: '/mahjong-score-calculation'
-      path: '/mahjong-score-calculation'
-      fullPath: '/mahjong-score-calculation'
-      preLoaderRoute: typeof MahjongScoreCalculationRouteImport
+    '/unit-converter': {
+      id: '/unit-converter'
+      path: '/unit-converter'
+      fullPath: '/unit-converter'
+      preLoaderRoute: typeof UnitConverterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unemployment-insurance-calculation': {
@@ -256,22 +489,254 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnemploymentInsuranceCalculationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/time-calculator': {
+      id: '/time-calculator'
+      path: '/time-calculator'
+      fullPath: '/time-calculator'
+      preLoaderRoute: typeof TimeCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/squareroot-calculator': {
+      id: '/squareroot-calculator'
+      path: '/squareroot-calculator'
+      fullPath: '/squareroot-calculator'
+      preLoaderRoute: typeof SquarerootCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/social-insurance-calculator': {
+      id: '/social-insurance-calculator'
+      path: '/social-insurance-calculator'
+      fullPath: '/social-insurance-calculator'
+      preLoaderRoute: typeof SocialInsuranceCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/simultaneous-equations-calculator': {
+      id: '/simultaneous-equations-calculator'
+      path: '/simultaneous-equations-calculator'
+      fullPath: '/simultaneous-equations-calculator'
+      preLoaderRoute: typeof SimultaneousEquationsCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scientific-calculator': {
+      id: '/scientific-calculator'
+      path: '/scientific-calculator'
+      fullPath: '/scientific-calculator'
+      preLoaderRoute: typeof ScientificCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/percentage-calculator': {
+      id: '/percentage-calculator'
+      path: '/percentage-calculator'
+      fullPath: '/percentage-calculator'
+      preLoaderRoute: typeof PercentageCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mahjong-score-calculation': {
+      id: '/mahjong-score-calculation'
+      path: '/mahjong-score-calculation'
+      fullPath: '/mahjong-score-calculation'
+      preLoaderRoute: typeof MahjongScoreCalculationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/long-division-calculator': {
+      id: '/long-division-calculator'
+      path: '/long-division-calculator'
+      fullPath: '/long-division-calculator'
+      preLoaderRoute: typeof LongDivisionCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interest-calculator': {
+      id: '/interest-calculator'
+      path: '/interest-calculator'
+      fullPath: '/interest-calculator'
+      preLoaderRoute: typeof InterestCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/income-tax-calculation': {
+      id: '/income-tax-calculation'
+      path: '/income-tax-calculation'
+      fullPath: '/income-tax-calculation'
+      preLoaderRoute: typeof IncomeTaxCalculationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/furusato-nozei-simulation-calculation': {
+      id: '/furusato-nozei-simulation-calculation'
+      path: '/furusato-nozei-simulation-calculation'
+      fullPath: '/furusato-nozei-simulation-calculation'
+      preLoaderRoute: typeof FurusatoNozeiSimulationCalculationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/furusato-nozei-calculation': {
+      id: '/furusato-nozei-calculation'
+      path: '/furusato-nozei-calculation'
+      fullPath: '/furusato-nozei-calculation'
+      preLoaderRoute: typeof FurusatoNozeiCalculationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fraction-calculator': {
+      id: '/fraction-calculator'
+      path: '/fraction-calculator'
+      fullPath: '/fraction-calculator'
+      preLoaderRoute: typeof FractionCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/financial-calculator': {
+      id: '/financial-calculator'
+      path: '/financial-calculator'
+      fullPath: '/financial-calculator'
+      preLoaderRoute: typeof FinancialCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/factorization-calculator': {
+      id: '/factorization-calculator'
+      path: '/factorization-calculator'
+      fullPath: '/factorization-calculator'
+      preLoaderRoute: typeof FactorizationCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/era-converter': {
+      id: '/era-converter'
+      path: '/era-converter'
+      fullPath: '/era-converter'
+      preLoaderRoute: typeof EraConverterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/due-date-calculation': {
+      id: '/due-date-calculation'
+      path: '/due-date-calculation'
+      fullPath: '/due-date-calculation'
+      preLoaderRoute: typeof DueDateCalculationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discount-calculation': {
+      id: '/discount-calculation'
+      path: '/discount-calculation'
+      fullPath: '/discount-calculation'
+      preLoaderRoute: typeof DiscountCalculationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consumption-tax-calculator': {
+      id: '/consumption-tax-calculator'
+      path: '/consumption-tax-calculator'
+      fullPath: '/consumption-tax-calculator'
+      preLoaderRoute: typeof ConsumptionTaxCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compound-interest-calculator': {
+      id: '/compound-interest-calculator'
+      path: '/compound-interest-calculator'
+      fullPath: '/compound-interest-calculator'
+      preLoaderRoute: typeof CompoundInterestCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculators': {
+      id: '/calculators'
+      path: '/calculators'
+      fullPath: '/calculators'
+      preLoaderRoute: typeof CalculatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bmi-calculator': {
+      id: '/bmi-calculator'
+      path: '/bmi-calculator'
+      fullPath: '/bmi-calculator'
+      preLoaderRoute: typeof BmiCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/algebra-calculator': {
+      id: '/algebra-calculator'
+      path: '/algebra-calculator'
+      fullPath: '/algebra-calculator'
+      preLoaderRoute: typeof AlgebraCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
+  AboutRoute: AboutRoute,
+  AlgebraCalculatorRoute: AlgebraCalculatorRoute,
+  BmiCalculatorRoute: BmiCalculatorRoute,
   CalculatorsRoute: CalculatorsRoute,
+  CompoundInterestCalculatorRoute: CompoundInterestCalculatorRoute,
   ConsumptionTaxCalculatorRoute: ConsumptionTaxCalculatorRoute,
+  ContactRoute: ContactRoute,
+  DisclaimerRoute: DisclaimerRoute,
   DiscountCalculationRoute: DiscountCalculationRoute,
   DueDateCalculationRoute: DueDateCalculationRoute,
+  EraConverterRoute: EraConverterRoute,
+  FactorizationCalculatorRoute: FactorizationCalculatorRoute,
+  FinancialCalculatorRoute: FinancialCalculatorRoute,
+  FractionCalculatorRoute: FractionCalculatorRoute,
   FurusatoNozeiCalculationRoute: FurusatoNozeiCalculationRoute,
   FurusatoNozeiSimulationCalculationRoute:
     FurusatoNozeiSimulationCalculationRoute,
   IncomeTaxCalculationRoute: IncomeTaxCalculationRoute,
+  InterestCalculatorRoute: InterestCalculatorRoute,
+  LongDivisionCalculatorRoute: LongDivisionCalculatorRoute,
   MahjongScoreCalculationRoute: MahjongScoreCalculationRoute,
+  PercentageCalculatorRoute: PercentageCalculatorRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  ScientificCalculatorRoute: ScientificCalculatorRoute,
+  SimultaneousEquationsCalculatorRoute: SimultaneousEquationsCalculatorRoute,
+  SocialInsuranceCalculatorRoute: SocialInsuranceCalculatorRoute,
+  SquarerootCalculatorRoute: SquarerootCalculatorRoute,
+  TermsRoute: TermsRoute,
+  TimeCalculatorRoute: TimeCalculatorRoute,
   UnemploymentInsuranceCalculationRoute: UnemploymentInsuranceCalculationRoute,
+  UnitConverterRoute: UnitConverterRoute,
+  WebCalculatorRoute: WebCalculatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
