@@ -583,9 +583,10 @@ export function ScientificCalculator() {
       </h1>
       <CalculatorCard
         compact
-        maxWidthClass="max-w-[480px]"
+        maxWidthClass="max-w-[480px] lg:max-w-[880px]"
       >
-        <div className="space-y-1.5 sm:space-y-2">
+        <div className="lg:flex lg:gap-5">
+          <div className="space-y-1.5 sm:space-y-2 lg:w-[448px] lg:shrink-0">
           {/* Top Actions Row: Deg/Rad Pill & History Button */}
           <div className="flex items-center justify-between gap-2 pb-0.5">
             {/* Segmented Pill Toggle for Deg / Rad */}
@@ -690,10 +691,14 @@ export function ScientificCalculator() {
             </button>
           </div>
 
-          {/* Secondary Keypad: always visible on sm+ screens; on phones it
-              stays behind the toggle above so the basic keypad fits first. */}
+          </div>
+
+          {/* Secondary Keypad: on phones it stays behind the toggle above;
+              on sm+ it is always visible — stacked below the keypad, and on
+              lg screens it sits in a right-hand column so the whole
+              calculator fits the hero without scrolling. */}
           <div
-            className={`${advancedOpen ? "block" : "hidden sm:block"} border-t border-border/60 pt-1.5`}
+            className={`${advancedOpen ? "block" : "hidden sm:block"} mt-2 border-t border-border/60 pt-1.5 lg:mt-0 lg:flex-1 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0`}
           >
             <p className="pb-1.5 text-[11px] font-semibold tracking-wide text-text-secondary">
               高度な関数
