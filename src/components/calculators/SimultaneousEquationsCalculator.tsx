@@ -298,6 +298,30 @@ export function SimultaneousEquationsCalculator() {
         steps={t.simultaneousEquationsPage.howToSteps}
       />
 
+      <section aria-labelledby="simul-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="simul-example-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.simultaneousEquationsPage.guideExampleTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.simultaneousEquationsPage.guideExampleBody}
+        </p>
+      </section>
+
+      <section aria-labelledby="simul-usage-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="simul-usage-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.simultaneousEquationsPage.guideUsageTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.simultaneousEquationsPage.guideUsageBody}
+        </p>
+      </section>
+
       <CalculatorFaqSection
         title={t.simultaneousEquationsPage.faqTitle}
         items={t.simultaneousEquationsPage.faqItems}
