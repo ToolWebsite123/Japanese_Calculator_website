@@ -631,3 +631,56 @@ test("FURUSATO: expanded table anchors — ¥2,000,000 single and spouse+2 unive
   });
   assert.equal(uni2.donationLimit, 142557);
 });
+
+/* ------------- Time: clock modes + decimal (2026-10-31) ------------- */
+import {
+  addToClock,
+  clockDifference,
+  formatClockTime,
+  formatDecimalHoursFromMinutes,
+  formatDecimalHoursFromSeconds,
+  formatDurationMinutes,
+  parseClockTime,
+} from "../src/lib/calculators/time";
+
+test("TIME: parseClockTime accepts HH:MM and rejects junk", () => {
+  assert.equal(parseClockTime("09:00"), 540);
+  assert.equal(parseClockTime("17:30"), 1050);
+  assert.equal(parseClockTime("24:00"), null);
+  assert.equal(parseClockTime("9:99"), null);
+  assert.equal(parseClockTime(""), null);
+});
+
+test("TIME: clock difference 9:00 -> 17:30 is 510 minutes, same day", () => {
+  const d = clockDifference(540, 1050);
+  assert.equal(d.minutes, 510);
+  assert.equal(d.nextDay, false);
+});
+
+test("TIME: overnight difference 22:00 -> 6:00 is 480 minutes, next day", () => {
+  const d = clockDifference(1320, 360);
+  assert.equal(d.minutes, 480);
+  assert.equal(d.nextDay, true);
+});
+
+test("TIME: clock + duration — 9:00 + 7h30 = 16:30 same day; 22:00 + 3h = 01:00 next day", () => {
+  const a = addToClock(540, 450, "after");
+  assert.equal(formatClockTime(a.minutesOfDay), "16:30");
+  assert.equal(a.dayOffset, 0);
+  const b = addToClock(1320, 180, "after");
+  assert.equal(formatClockTime(b.minutesOfDay), "01:00");
+  assert.equal(b.dayOffset, 1);
+  const c = addToClock(60, 120, "before");
+  assert.equal(formatClockTime(c.minutesOfDay), "23:00");
+  assert.equal(c.dayOffset, -1);
+});
+
+test("TIME: decimal + duration formatting", () => {
+  assert.equal(formatDecimalHoursFromMinutes(450), "7.5");
+  assert.equal(formatDecimalHoursFromMinutes(255), "4.25");
+  assert.equal(formatDecimalHoursFromMinutes(480), "8");
+  assert.equal(formatDecimalHoursFromSeconds(2700), "0.75");
+  assert.equal(formatDurationMinutes(450), "7時間30分");
+  assert.equal(formatDurationMinutes(60), "1時間");
+  assert.equal(formatDurationMinutes(45), "45分");
+});
