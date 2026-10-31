@@ -70,8 +70,91 @@ export const FAQ = {
       answer:
         "5翻以上、または基本点が2000を超える場合は上限に達したとみなし、固定の点数表（満貫・跳満・倍満・三倍満・役満）を使用します。そのため翻数だけで点数が決まり、符は無視されます。",
     },
+    {
+      question: "七対子はなぜ25符なのですか？",
+      answer:
+        "七対子は通常の符計算を行わず、例外的に25符固定として扱います。符計算ヘルパーで数える必要はなく、本計算の符欄で25符を選んでください。",
+    },
+    {
+      question: "4翻でも満貫になることがありますか？",
+      answer:
+        "はい。子の40符4翻・50符4翻・60符4翻など、基本点が2000を超える組み合わせは「切り上げ満貫」として満貫扱いになります。上の早見表で「満貫」と表示しているセルが該当します。",
+    },
   ],
 };
+
+const SCORE_TABLE_HEAD = ["符＼翻", "1翻", "2翻", "3翻", "4翻"];
+const SCORE_TABLE_KO_RON: string[][] = [
+  ["30符", "1,000", "2,000", "3,900", "7,700"],
+  ["40符", "1,300", "2,600", "5,200", "満貫 8,000"],
+  ["50符", "1,600", "3,200", "6,400", "満貫 8,000"],
+  ["60符", "2,000", "3,900", "7,700", "満貫 8,000"],
+];
+const SCORE_TABLE_OYA_RON: string[][] = [
+  ["30符", "1,500", "2,900", "5,800", "11,600"],
+  ["40符", "2,000", "3,900", "7,700", "満貫 12,000"],
+  ["50符", "2,400", "4,800", "9,600", "満貫 12,000"],
+  ["60符", "2,900", "5,800", "11,600", "満貫 12,000"],
+];
+const LIMIT_LINES = [
+  "満貫（5翻）：子 8,000 / 親 12,000",
+  "跳満（6〜7翻）：子 12,000 / 親 18,000",
+  "倍満（8〜10翻）：子 16,000 / 親 24,000",
+  "三倍満（11〜12翻）：子 24,000 / 親 36,000",
+  "役満（13翻〜）：子 32,000 / 親 48,000",
+];
+const FU_BASICS = [
+  "基本符は20符が土台です（副底）。",
+  "面子の種類（刻子・槓子）、待ちの形、ツモ/ロンの別などで符が加算され、10符単位に切り上げます。",
+  "七対子は例外的に25符固定です。平和をツモでアガった場合は20符（符が付かない形）として扱われます。",
+];
+const MJ_MISTAKES = [
+  "七対子を通常の符計算で数えてしまう（25符固定です）。",
+  "親のツモを子と同じ金額だと思ってしまう（親は各家から2倍を受け取ります）。",
+  "符を合計する前に切り上げてしまう（合計してから10符単位に切り上げます）。",
+];
+
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
+
+function MahjongScoreTable({ rows }: { rows: string[][] }) {
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full border-collapse text-sm sm:text-base">
+        <thead>
+          <tr>
+            {SCORE_TABLE_HEAD.map((cell) => (
+              <th
+                key={cell}
+                scope="col"
+                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+              >
+                {cell}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell, i) => (
+                <td
+                  key={cell}
+                  className={`border border-border px-3 py-2 ${
+                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                  }`}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 export function MahjongCalculator() {
   // Main inputs
@@ -305,6 +388,71 @@ export function MahjongCalculator() {
       </p>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+
+      <section aria-labelledby="mj-tables-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="mj-tables-heading" className={guideHeadingClass}>
+          麻雀の点数早見表（ロン）
+        </h2>
+        <h3 className="mt-6 text-lg font-semibold text-text-primary">子（ロン）</h3>
+        <MahjongScoreTable rows={SCORE_TABLE_KO_RON} />
+        <h3 className="mt-8 text-lg font-semibold text-text-primary">親（ロン）</h3>
+        <MahjongScoreTable rows={SCORE_TABLE_OYA_RON} />
+        <h3 className="mt-8 text-lg font-semibold text-text-primary">満貫以上（共通）</h3>
+        <ul className="mt-3 list-disc space-y-1.5 pl-5">
+          {LIMIT_LINES.map((line) => (
+            <li key={line} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {line}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="mj-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="mj-example-heading" className={guideHeadingClass}>
+          点数計算の例
+        </h2>
+        <p className={guideBodyClass}>親が30符4翻をロンでアガった場合：</p>
+        <ol className="mt-3 list-decimal space-y-2 pl-5">
+          <li className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            早見表の「親（ロン）」から30符・4翻を探します。
+          </li>
+          <li className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            点数は <strong className="text-text-primary">11,600点</strong>{" "}
+            です。放銃した1人が全額を支払います。
+          </li>
+        </ol>
+        <p className={guideBodyClass}>
+          同じ手がツモなら、子3人から <strong className="text-text-primary">3,900点ずつ（3,900オール）</strong>{" "}
+          を受け取ります。
+        </p>
+      </section>
+
+      <section aria-labelledby="mj-fu-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="mj-fu-heading" className={guideHeadingClass}>
+          符計算の基本
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {FU_BASICS.map((line) => (
+            <li key={line} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {line}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="mj-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="mj-mistakes-heading" className={guideHeadingClass}>
+          よくある間違い
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {MJ_MISTAKES.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/mahjong-score-calculation" />
     </>
