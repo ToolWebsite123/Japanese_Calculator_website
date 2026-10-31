@@ -13,11 +13,10 @@ export function HomePage() {
       <Hero />
 
       {/* Popular-calculators cards section removed 2026-10-31 at the
-          owner's request (screenshot + tap confirmation). All 25 tools
-          remain reachable via the category showcase below, the guide's
-          links, and the /calculators hub. */}
-
-      <HomeCalculatorsShowcase />
+          owner's request (screenshot + tap confirmation). Homepage now
+          follows the BMI-page structure (same day, owner's order):
+          heading -> Web calculator (in the hero) -> guide -> intro ->
+          FAQ -> all-calculators showcase last, as the "related" block. */}
 
       <HomeCalculatorGuide />
 
@@ -27,6 +26,8 @@ export function HomePage() {
         <HomeFaqSection />
         <HomeTrustSection />
       </div>
+
+      <HomeCalculatorsShowcase />
     </div>
   );
 }
