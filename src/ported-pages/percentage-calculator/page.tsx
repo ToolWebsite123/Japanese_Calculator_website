@@ -4,9 +4,9 @@ import ja from "@/lib/i18n/ja";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "パーセント計算機｜割合の求め方・○％はいくつ｜電卓.online";
+const metaTitle = "パーセント計算｜割合・何%・増減率をすぐ計算｜電卓.online";
 const metaDescription =
-  "「Aの○％はいくつか」「AはBの何％か」「増減率は何％か」を1画面で計算できる無料のパーセント計算機。割合・比率・前年比の算出に対応し、消費税や割引の計算など日常の割合計算をステップ解説つきでサポートします。";
+  "「○の○%はいくつ」「○は○の何%」から増減率まで、割合の計算をまとめて自動計算。公式一覧と歩合（割・分・厘）の換算表つき。無料・登録不要。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

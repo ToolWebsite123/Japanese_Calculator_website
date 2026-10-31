@@ -14,6 +14,48 @@ import { useLocale } from "@/context/LocaleContext";
 const inlineInputClass =
   "w-full rounded-[var(--radius-sm)] border border-border bg-surface-sunken px-3 py-2 text-lg text-text-primary outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 sm:w-28";
 
+const guideHeadingClass =
+  "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
+
+function PercentGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
+  return (
+    <div className="mt-4 overflow-x-auto">
+      <table className="w-full border-collapse text-sm sm:text-base">
+        <thead>
+          <tr>
+            {head.map((cell) => (
+              <th
+                key={cell}
+                scope="col"
+                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
+              >
+                {cell}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell, i) => (
+                <td
+                  key={cell}
+                  className={`border border-border px-3 py-2 ${
+                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
+                  }`}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 function ResultInline({ value }: { value: string }) {
   return (
     <div className="tabular-display flex-1 rounded-[var(--radius-sm)] border border-brand/20 bg-brand-muted px-4 py-2 text-right text-xl font-bold text-brand">
@@ -196,6 +238,55 @@ export function PercentageCalculator() {
         title={t.percentagePage.howToTitle}
         steps={t.percentagePage.howToSteps}
       />
+
+      <section aria-labelledby="percent-formulas-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="percent-formulas-heading" className={guideHeadingClass}>
+          {t.percentagePage.guideFormulasTitle}
+        </h2>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+          {t.percentagePage.guideFormulas.map((f) => (
+            <div
+              key={f.title}
+              className="rounded-[var(--radius-md)] border border-border bg-surface px-4 py-4"
+            >
+              <h3 className="text-sm font-semibold text-text-primary sm:text-base">{f.title}</h3>
+              <p className="mt-2 text-base font-bold text-brand sm:text-lg">{f.formula}</p>
+              <p className="mt-2 text-sm text-text-secondary">{f.example}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="percent-buai-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="percent-buai-heading" className={guideHeadingClass}>
+          {t.percentagePage.guideBuaiTitle}
+        </h2>
+        <PercentGuideTable head={t.percentagePage.guideBuaiHead} rows={t.percentagePage.guideBuaiRows} />
+        <h3 className="mt-8 text-lg font-semibold text-text-primary">{t.percentagePage.guideCommonTitle}</h3>
+        <ul className="mt-3 flex flex-wrap gap-2">
+          {t.percentagePage.guideCommonItems.map((item) => (
+            <li
+              key={item}
+              className="rounded-full border border-border bg-surface-sunken px-3 py-1.5 text-sm text-text-primary"
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="percent-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="percent-mistakes-heading" className={guideHeadingClass}>
+          {t.percentagePage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.percentagePage.guideMistakes.map((m) => (
+            <li key={m} className={guideBodyClass.replace("mt-4 ", "")}>
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <CalculatorFaqSection title={t.percentagePage.faqTitle} items={t.percentagePage.faqItems} />
       <RelatedCalculators activeHref="/percentage-calculator" />
