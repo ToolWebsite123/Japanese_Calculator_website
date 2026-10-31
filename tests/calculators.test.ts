@@ -20,6 +20,13 @@ import {
 } from "../src/lib/calculators/social-insurance";
 import { getLongDivisionSteps } from "../src/lib/calculators/longDivision";
 import { calculateRoot, simplifySquareRoot } from "../src/lib/calculators/root";
+import {
+  buildDueDateResult,
+  calcFromIvf,
+  diffDays,
+  formatDate,
+  parseDate,
+} from "../src/lib/calculators/due-date";
 import { solveSimultaneousEquations } from "../src/lib/calculators/simultaneous-equations";
 import {
   calcFurusatoNozeiDetailed,
@@ -544,4 +551,41 @@ test("ROOT-SIMPLIFY: simplified value still equals the numeric root", () => {
     const rebuilt = s.coefficient * Math.sqrt(s.remaining);
     assert.ok(Math.abs(rebuilt - Math.sqrt(n)) < 1e-12, `mismatch for ${n}`);
   }
+});
+
+/* ------------- Due date: IVF mode + milestones + days remaining (2026-10-31) ------------- */
+
+test("DUE-IVF: blastocyst (day-5) transfer 2026-10-31 -> due 2027-07-19 (competitor-verified)", () => {
+  const transfer = parseDate("2026-10-31");
+  assert.ok(transfer);
+  const due = calcFromIvf(transfer, 5);
+  assert.ok(formatDate(due).startsWith("2027年7月19日"), formatDate(due));
+  assert.equal(diffDays(transfer, due), 261);
+});
+
+test("DUE-IVF: day-3 embryo -> +263 days, day-2 embryo -> +264 days", () => {
+  const transfer = parseDate("2026-10-31");
+  assert.ok(transfer);
+  assert.equal(diffDays(transfer, calcFromIvf(transfer, 3)), 263);
+  assert.equal(diffDays(transfer, calcFromIvf(transfer, 2)), 264);
+});
+
+test("DUE-IVF: invalid embryo age throws a Japanese error", () => {
+  const transfer = parseDate("2026-10-31");
+  assert.ok(transfer);
+  // @ts-expect-error deliberately invalid embryo age
+  assert.throws(() => calcFromIvf(transfer, 4), /胚の種類/);
+});
+
+test("DUE-RESULT: milestones are dated from the derived LMP and daysRemaining is exact", () => {
+  const due = parseDate("2027-07-19");
+  const today = parseDate("2026-10-31");
+  assert.ok(due && today);
+  const r = buildDueDateResult(due, today);
+  assert.equal(r.daysRemaining, 261);
+  assert.equal(r.milestones.length, 5);
+  // LMP = due - 280 = 2026-10-12; first milestone = LMP + 35 = 2026-11-16
+  assert.ok(formatDate(r.milestones[0].date).startsWith("2026年11月16日"), formatDate(r.milestones[0].date));
+  // last milestone (37w0d) equals the safe-window start
+  assert.equal(r.milestones[4].date.getTime(), r.safeWindowStart.getTime());
 });

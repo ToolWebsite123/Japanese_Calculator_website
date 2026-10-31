@@ -1,6 +1,8 @@
 // 出産予定日 計算 logic. All dates handled in local time (no TZ shifts).
 
-export type DueDateMode = "lmp" | "conception" | "reverse";
+export type DueDateMode = "lmp" | "conception" | "reverse" | "ivf";
+
+export type IvfEmbryoAge = 2 | 3 | 5;
 
 const MS_PER_DAY = 86_400_000;
 
@@ -62,6 +64,12 @@ export type Trimester = {
   endDate: Date;
 };
 
+export type Milestone = {
+  label: string;
+  weekLabel: string;
+  date: Date;
+};
+
 export type DueDateResult = {
   dueDate: Date; // 出産予定日 (40週0日)
   lmp: Date; // 最終月経開始日 (0週0日)
@@ -70,6 +78,8 @@ export type DueDateResult = {
   trimesters: Trimester[]; // 初期 / 中期 / 後期
   safeWindowStart: Date; // 37週0日
   safeWindowEnd: Date; // 41週6日
+  daysRemaining: number; // days from today until the due date (negative if passed)
+  milestones: Milestone[]; // dated pregnancy milestones (目安)
 };
 
 /**
@@ -102,6 +112,14 @@ export function buildDueDateResult(dueDate: Date, today: Date = new Date()): Due
     },
   ];
 
+  const milestones: Milestone[] = [
+    { label: "胎嚢（GS）確認の目安", weekLabel: "5週0日", date: addDays(lmp, 5 * 7) },
+    { label: "心拍確認の目安", weekLabel: "6週ごろ", date: addDays(lmp, 6 * 7) },
+    { label: "胎盤完成・安定期の目安", weekLabel: "16週0日", date: addDays(lmp, 16 * 7) },
+    { label: "胎動を感じ始める目安", weekLabel: "18週ごろ", date: addDays(lmp, 18 * 7) },
+    { label: "正期産の開始", weekLabel: "37週0日", date: addDays(lmp, 37 * 7) },
+  ];
+
   return {
     dueDate,
     lmp,
@@ -110,6 +128,8 @@ export function buildDueDateResult(dueDate: Date, today: Date = new Date()): Due
     trimesters,
     safeWindowStart: addDays(lmp, 37 * 7),
     safeWindowEnd: addDays(lmp, 42 * 7 - 1),
+    daysRemaining: diffDays(today, dueDate),
+    milestones,
   };
 }
 
@@ -129,4 +149,16 @@ export function calcFromConception(conceptionDate: Date): Date {
 /** Mode 3: reverse — target conception/intercourse date from desired due date. */
 export function calcTargetConception(desiredDueDate: Date): Date {
   return addDays(desiredDueDate, -266);
+}
+
+/**
+ * Mode 4: IVF — from embryo transfer date. Fertilisation is taken as
+ * (transfer date − embryo age in days); due date = fertilisation + 266 days.
+ * Day-5 blastocyst → +261, day-3 embryo → +263, day-2 embryo → +264.
+ */
+export function calcFromIvf(transferDate: Date, embryoAge: IvfEmbryoAge): Date {
+  if (embryoAge !== 2 && embryoAge !== 3 && embryoAge !== 5) {
+    throw new Error("胚の種類（2日目胚・3日目胚・胚盤胞）を選択してください");
+  }
+  return addDays(transferDate, 266 - embryoAge);
 }
