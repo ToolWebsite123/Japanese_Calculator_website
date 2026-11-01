@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -10,7 +10,6 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
   Divider,
-  PrimaryButton,
   SecondaryButton,
   SegmentedControl,
   SurfacePanel,
@@ -21,9 +20,18 @@ import { useHistory } from "@/context/HistoryContext";
 import {
   evaluateExpressionSafe,
   solveLinearEquationSafe,
-  type AlgebraMode,
 } from "@/lib/calculators/algebra";
+import {
+  simplifyExpression,
+  type SimplifyResult,
+} from "@/lib/calculators/polynomial";
 import { formatDisplayNumber } from "@/lib/format";
+
+const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
+const tableWrapClass = "mt-4 overflow-x-auto";
+const tableClass = "w-full border-collapse text-sm sm:text-base";
+const thClass = "border-b border-border bg-surface-sunken px-3 py-2.5 text-left font-semibold text-text-primary";
+const tdClass = "border-b border-border px-3 py-2.5 text-text-secondary";
 
 function formatTemplate(template: string, ...values: string[]): string {
   return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
@@ -308,52 +316,101 @@ function SolveSteps({
   );
 }
 
+function SimplifySteps({ input, data }: { input: string; data: SimplifyResult }) {
+  const steps = data.expansionSteps.filter(
+    (s, i) => !(i === data.expansionSteps.length - 1 && s === data.result),
+  );
+  return (
+    <SurfacePanel className="space-y-2">
+      <p className="font-semibold text-text-primary">{input.trim()}</p>
+      {steps.map((line) => (
+        <p key={line} className="text-sm text-text-secondary sm:text-base">
+          ＝ {line}
+          <span className="ml-2 text-xs text-text-tertiary">（展開）</span>
+        </p>
+      ))}
+      <p className="text-sm text-text-secondary sm:text-base">
+        ＝ <strong className="text-text-primary">{data.result}</strong>
+        {steps.length > 0 && (
+          <span className="ml-2 text-xs text-text-tertiary">（同類項をまとめる）</span>
+        )}
+      </p>
+    </SurfacePanel>
+  );
+}
+
 export function AlgebraCalculator() {
   const { t } = useLocale();
   const { addEntry } = useHistory();
-  const [mode, setMode] = useState<AlgebraMode>("evaluate");
+  const [mode, setMode] = useState<"simplify" | "evaluate" | "solve">("simplify");
+  const [simplifyExpr, setSimplifyExpr] = useState("(x + 2)(x + 3)");
   const [expression, setExpression] = useState("2x + 3");
   const [equation, setEquation] = useState("2x + 3 = 7");
   const [xValue, setXValue] = useState("5");
-  const [result, setResult] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  function handleCalculate() {
+  const computed = useMemo((): {
+    result: string | null;
+    simplify: SimplifyResult | null;
+    logExpression: string | null;
+    error: string | null;
+  } => {
     try {
-      let value: string;
+      if (mode === "simplify") {
+        const s = simplifyExpression(simplifyExpr);
+        return { result: s.result, simplify: s, logExpression: simplifyExpr, error: null };
+      }
       if (mode === "evaluate") {
-        const x = parseFloat(xValue);
-        const val = evaluateExpressionSafe(expression, x);
-        value = formatDisplayNumber(val, 8);
+        const val = evaluateExpressionSafe(expression, parseFloat(xValue));
+        return {
+          result: formatDisplayNumber(val, 8),
+          simplify: null,
+          logExpression: `${expression}, x=${xValue}`,
+          error: null,
+        };
+      }
+      const sol = solveLinearEquationSafe(equation);
+      return {
+        result: `x = ${formatDisplayNumber(sol, 8)}`,
+        simplify: null,
+        logExpression: equation,
+        error: null,
+      };
+    } catch (e) {
+      return {
+        result: null,
+        simplify: null,
+        logExpression: null,
+        error: e instanceof Error ? e.message : t.common.invalidInput,
+      };
+    }
+  }, [mode, simplifyExpr, expression, equation, xValue, t]);
+
+  const result = computed.result;
+  const error = computed.error;
+
+  // Log to history once a calculation settles, not on every keystroke.
+  const lastLogged = useRef<string | null>(null);
+  useEffect(() => {
+    if (!computed.result || !computed.logExpression) return;
+    const key = `${mode}:${computed.logExpression}`;
+    const timer = setTimeout(() => {
+      if (lastLogged.current !== key) {
+        lastLogged.current = key;
         addEntry({
-          expression: `${expression}, x=${xValue}`,
-          result: value,
-          route: "/algebra-calculator",
-        });
-      } else {
-        const sol = solveLinearEquationSafe(equation);
-        value = `x = ${formatDisplayNumber(sol, 8)}`;
-        addEntry({
-          expression: equation,
-          result: value,
+          expression: computed.logExpression!,
+          result: computed.result!,
           route: "/algebra-calculator",
         });
       }
-      setResult(value);
-      setError(null);
-    } catch (e) {
-      setResult(null);
-      setError(e instanceof Error ? e.message : t.common.invalidInput);
-    }
-  }
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [computed, mode, addEntry]);
 
   function handleClear() {
-    setMode("evaluate");
-    setExpression("2x + 3");
-    setEquation("2x + 3 = 7");
-    setXValue("5");
-    setResult(null);
-    setError(null);
+    setSimplifyExpr("");
+    setExpression("");
+    setEquation("");
+    setXValue("");
   }
 
   const page = t.algebraPage;
@@ -371,11 +428,21 @@ export function AlgebraCalculator() {
             value={mode}
             onChange={setMode}
             options={[
+              { value: "simplify", label: t.algebra.simplify },
               { value: "evaluate", label: t.algebra.evaluate },
               { value: "solve", label: t.algebra.solve },
             ]}
           />
 
+          {mode === "simplify" && (
+            <FormField
+              label={t.algebra.expression}
+              type="text"
+              value={simplifyExpr}
+              onChange={(e) => setSimplifyExpr(e.target.value)}
+              placeholder="例: (x + 2)(x + 3)"
+            />
+          )}
           {mode === "evaluate" ? (
             <>
               <FormField
@@ -394,7 +461,7 @@ export function AlgebraCalculator() {
                 placeholder={t.algebra.placeholderX}
               />
             </>
-          ) : (
+          ) : mode === "solve" ? (
             <FormField
               label={t.algebra.equation}
               type="text"
@@ -402,16 +469,11 @@ export function AlgebraCalculator() {
               onChange={(e) => setEquation(e.target.value)}
               placeholder={t.algebra.placeholderEq}
             />
-          )}
+          ) : null}
 
-          <div className="flex gap-4">
-            <SecondaryButton fullWidth onClick={handleClear} className="flex-1">
-              {t.common.clear}
-            </SecondaryButton>
-            <PrimaryButton onClick={handleCalculate} fullWidth className="flex-[2]">
-              {t.common.calculate}
-            </PrimaryButton>
-          </div>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            {t.common.clear}
+          </SecondaryButton>
 
           {error && <ErrorMessage message={error} />}
 
@@ -423,12 +485,12 @@ export function AlgebraCalculator() {
                 </h3>
                 <SurfacePanel className="flex items-center justify-center">
                   <MathEq>
-                    {mode === "evaluate" ? (
-                      <Num>{result}</Num>
-                    ) : (
+                    {mode === "solve" ? (
                       <>
                         <VarX /> <MathOp op="=" /> <Num>{result.replace(/^x\s*=\s*/, "")}</Num>
                       </>
+                    ) : (
+                      <Num>{result}</Num>
                     )}
                   </MathEq>
                 </SurfacePanel>
@@ -438,7 +500,9 @@ export function AlgebraCalculator() {
                 <h3 className="mb-4 text-xl font-semibold text-text-primary">
                   {page.stepsHeading}
                 </h3>
-                {mode === "evaluate" ? (
+                {mode === "simplify" && computed.simplify ? (
+                  <SimplifySteps input={simplifyExpr} data={computed.simplify} />
+                ) : mode === "evaluate" ? (
                   <EvaluateSteps
                     expression={expression}
                     xValue={xValue}
@@ -464,7 +528,37 @@ export function AlgebraCalculator() {
         <LinkedText text={t.algebraPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection title={t.algebraPage.howToTitle} steps={t.algebraPage.howToSteps} />
+      <section aria-labelledby="algebra-formula-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="algebra-formula-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.algebraPage.formulaTitle}
+        </h2>
+        {t.algebraPage.formulaLines.map((line) => (
+          <p key={line} className={guideBodyClass}>
+            {line}
+          </p>
+        ))}
+        <div className={tableWrapClass}>
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th scope="col" className={thClass}>展開する式</th>
+                <th scope="col" className={thClass}>展開した結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.algebraPage.formulaTableRows.map((row) => (
+                <tr key={row[0]}>
+                  <td className={tdClass}>{row[0]}</td>
+                  <td className={tdClass}>{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section aria-labelledby="algebra-examples-heading" className="mt-16 border-t border-border pt-16">
         <h2
@@ -480,6 +574,24 @@ export function AlgebraCalculator() {
             </li>
           ))}
         </ul>
+        <div className={tableWrapClass}>
+          <table className={tableClass}>
+            <thead>
+              <tr>
+                <th scope="col" className={thClass}>計算</th>
+                <th scope="col" className={thClass}>答え</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.algebraPage.examplesTableRows.map((row) => (
+                <tr key={row[0]}>
+                  <td className={tdClass}>{row[0]}</td>
+                  <td className={tdClass}>{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section aria-labelledby="algebra-mistakes-heading" className="mt-16 border-t border-border pt-16">
@@ -497,6 +609,8 @@ export function AlgebraCalculator() {
           ))}
         </ul>
       </section>
+
+      <CalculatorHowToSection title={t.algebraPage.howToTitle} steps={t.algebraPage.howToSteps} />
 
       <CalculatorFaqSection title={t.algebraPage.faqTitle} items={t.algebraPage.faqItems} />
       <RelatedCalculators activeHref="/algebra-calculator" />

@@ -1,8 +1,8 @@
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "方程式計算機｜文字式・一次方程式を途中式つきで解く｜電卓.online";
+const metaTitle = "文字式計算機｜式の展開・同類項・式の値・一次方程式を途中式つきで｜電卓.online";
 const metaDescription =
-  "xを含む文字式に値を代入して計算したり、一次方程式 ax+b=c を解ける無料の文字式・方程式計算機。展開・整理の手順もステップ表示するので、中学数学の授業の復習や宿題の答え合わせ、途中式の確認に使えます。";
+  "文字式を整理・展開できる無料の文字式計算機。同類項をまとめる、(x+2)(x+3)の展開、分配法則に加え、式の値（代入）と一次方程式にも対応し、途中式をステップ表示します。中学数学の復習や宿題の答え合わせに。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

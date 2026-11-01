@@ -11,7 +11,7 @@ function normalizeExpr(expr: string): string {
   return expr.replace(/\s+/g, "").replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
 }
 
-type AT =
+export type AT =
   | { type: "num"; value: number }
   | { type: "x" }
   | { type: "op"; value: string }
@@ -27,7 +27,7 @@ const PREC: Record<string, number> = {
   "u-": 4,
 };
 
-function tokenizeAlgebra(expr: string): AT[] {
+export function tokenizeAlgebra(expr: string): AT[] {
   const tokens: AT[] = [];
   let i = 0;
 
@@ -44,6 +44,9 @@ function tokenizeAlgebra(expr: string): AT[] {
       let num = "";
       while (i < expr.length && ((expr[i] >= "0" && expr[i] <= "9") || expr[i] === ".")) {
         num += expr[i++];
+      }
+      if (!/^\d+(\.\d+)?$/.test(num) && !/^\.\d+$/.test(num)) {
+        throw new AlgebraError("数値の形式が正しくありません");
       }
       tokens.push({ type: "num", value: parseFloat(num) });
       continue;
@@ -92,7 +95,7 @@ function tokenizeAlgebra(expr: string): AT[] {
   return withImplicit;
 }
 
-function toRpnAlgebra(tokens: AT[]): AT[] {
+export function toRpnAlgebra(tokens: AT[]): AT[] {
   const out: AT[] = [];
   const ops: AT[] = [];
   const rightAssoc = new Set(["^", "u-"]);
@@ -172,11 +175,6 @@ function evalWithX(expr: string, xVal: number): number {
   return stack[0];
 }
 
-function hasQuadratic(expr: string): boolean {
-  const normalized = normalizeExpr(expr);
-  return /x\s*\^?\s*2|x²|\^2/.test(normalized) || /x\*x/.test(normalized);
-}
-
 /** Evaluate expression with variable x at given value. */
 export function evaluateExpressionSafe(expr: string, xVal: number): number {
   if (!Number.isFinite(xVal)) throw new AlgebraError("xの値が無効です");
@@ -190,9 +188,6 @@ export function solveLinearEquationSafe(equation: string): number {
   const cleaned = equation.replace(/\s+/g, "");
   if (!cleaned) throw new AlgebraError("方程式を入力してください");
 
-  if (hasQuadratic(cleaned)) {
-    throw new AlgebraError("二次方程式には対応していません（一次方程式のみ）");
-  }
 
   const parts = cleaned.split("=");
   let left: string;
@@ -206,8 +201,27 @@ export function solveLinearEquationSafe(equation: string): number {
     throw new AlgebraError("方程式の形式が正しくありません");
   }
 
-  const at0 = evalWithX(normalizeExpr(left), 0) - evalWithX(normalizeExpr(right), 0);
-  const at1 = evalWithX(normalizeExpr(left), 1) - evalWithX(normalizeExpr(right), 1);
+  // Sample f(x) = left - right at x = 0, 1, 2 and verify the function is
+  // actually linear before solving. Sampling only 0 and 1 would silently
+  // return a wrong "answer" for disguised non-linear equations such as
+  // (x+1)(x+2)=6, whose second difference is non-zero.
+  const diff = (xVal: number) =>
+    evalWithX(normalizeExpr(left), xVal) - evalWithX(normalizeExpr(right), xVal);
+  let at0: number;
+  let at1: number;
+  let at2: number;
+  try {
+    at0 = diff(0);
+    at1 = diff(1);
+    at2 = diff(2);
+  } catch {
+    throw new AlgebraError("一次方程式の形式で入力してください");
+  }
+  const secondDifference = Math.abs(at2 - 2 * at1 + at0);
+  const scale = Math.max(1, Math.abs(at0), Math.abs(at1), Math.abs(at2));
+  if (secondDifference > 1e-9 * scale) {
+    throw new AlgebraError("一次方程式のみ対応しています（xの一次式で入力してください）");
+  }
   const a = at1 - at0;
   const b = at0;
 
