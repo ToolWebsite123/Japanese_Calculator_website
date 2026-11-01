@@ -1,8 +1,8 @@
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "連立方程式計算機｜解き方のステップ（途中式）つき｜電卓.online";
+const metaTitle = "連立方程式計算機｜加減法の途中式・分数の答え・3元にも対応｜電卓.online";
 const metaDescription =
-  "2元1次連立方程式の係数を入力するだけで、xとyの解を求める無料の連立方程式計算機。クラメルの公式による計算ステップ（途中式）も表示するので、中学数学の宿題の答え合わせや解き方の確認に役立ちます。";
+  "2元・3元1次連立方程式を解く無料の連立方程式計算機。加減法の途中式を表示し、答えは分数で正確に表示します。解なし・解が無数の場合も正しく判定。中学数学の宿題の答え合わせや解き方の確認に。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,
