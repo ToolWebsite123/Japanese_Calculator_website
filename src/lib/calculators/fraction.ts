@@ -282,3 +282,34 @@ export function getFractionSteps(
 
   return { steps, formulaSteps, finalResult: reduced };
 }
+
+/* ---------------- decimal -> fraction （小数を分数に変換) ---------------- */
+
+export type DecimalToFractionResult = {
+  /** Simplified improper fraction. */
+  fraction: Fraction;
+  /** How the decimal was first read, before reducing (e.g. 75/100). */
+  unreduced: { num: number; den: number };
+};
+
+/**
+ * Convert a typed decimal string to an exact fraction.
+ * Works from the string itself (never through binary float), so what the
+ * user typed is exactly what gets converted: "0.75" -> 75/100 -> 3/4,
+ * "0.333" -> 333/1000. Throws on anything that is not a plain decimal.
+ */
+export function decimalToFraction(input: string): DecimalToFractionResult {
+  const s = input.trim();
+  if (!/^[+-]?\d+(\.\d+)?$/.test(s)) {
+    throw new Error("小数の形式が正しくありません");
+  }
+  const negative = s.startsWith("-");
+  const body = s.replace(/^[+-]/, "");
+  const [intPart, fracPart = ""] = body.split(".");
+  const den = 10 ** fracPart.length;
+  const num = parseInt(intPart + fracPart, 10) * (negative ? -1 : 1);
+  if (!Number.isSafeInteger(num) || !Number.isSafeInteger(den)) {
+    throw new Error("桁数が大きすぎます");
+  }
+  return { fraction: simplify(num, den), unreduced: { num, den } };
+}

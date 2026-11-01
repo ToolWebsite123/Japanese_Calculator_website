@@ -51,6 +51,16 @@ import {
   solveLinearEquationSafe,
 } from "../src/lib/calculators/algebra";
 import { simplifyExpression } from "../src/lib/calculators/polynomial";
+import { convertToAllUnits, convertUnit, getUnits } from "../src/lib/calculators/units";
+import { buildFu, calcMahjong } from "../src/lib/calculators/mahjong";
+import {
+  eraDateToWestern,
+  eraToWestern,
+  westernDateToEra,
+  westernToEra,
+  westernToEras,
+  zodiacOf,
+} from "../src/lib/calculators/era";
 import {
   factorizeExpression,
   primeFactorSteps,
@@ -70,11 +80,18 @@ import { calculateLoan } from "../src/lib/calculators/loan";
 import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
 import { calcInterest, withholdingTax } from "../src/lib/calculators/interest";
 import { calcSocialInsurance } from "../src/lib/calculators/social-insurance";
+import { calculateUnemployment } from "../src/lib/calculators/unemployment-insurance";
+import { calcFromTaxExcluded, calcFromTaxIncluded } from "../src/lib/calculators/consumption-tax";
+import { calcIncomeTax, calcEmploymentDeduction, calcBasicDeduction } from "../src/lib/calculators/income-tax";
+import { calcFurusatoNozeiDetailed } from "../src/lib/calculators/furusato-nozei-detailed";
 import {
   calcFurusatoNozeiDetailed,
   type FurusatoDetailedInput,
 } from "../src/lib/calculators/furusato-nozei-detailed";
 import { calculateUnemployment } from "../src/lib/calculators/unemployment-insurance";
+import { calcFromTaxExcluded, calcFromTaxIncluded } from "../src/lib/calculators/consumption-tax";
+import { calcIncomeTax, calcEmploymentDeduction, calcBasicDeduction } from "../src/lib/calculators/income-tax";
+import { calcFurusatoNozeiDetailed } from "../src/lib/calculators/furusato-nozei-detailed";
 import {
   calculateBmi,
   getBmiCategory,
@@ -771,6 +788,10 @@ test("Step A: desk sqrt key", () => {
 import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
 import { calcInterest, withholdingTax } from "../src/lib/calculators/interest";
 import { calcSocialInsurance } from "../src/lib/calculators/social-insurance";
+import { calculateUnemployment } from "../src/lib/calculators/unemployment-insurance";
+import { calcFromTaxExcluded, calcFromTaxIncluded } from "../src/lib/calculators/consumption-tax";
+import { calcIncomeTax, calcEmploymentDeduction, calcBasicDeduction } from "../src/lib/calculators/income-tax";
+import { calcFurusatoNozeiDetailed } from "../src/lib/calculators/furusato-nozei-detailed";
 
 test("Compound: no contribution matches the legacy formula exactly", () => {
   const r = calcCompoundInterest({ principal: 1000000, annualRatePercent: 5, years: 10, frequency: 1 });
@@ -1400,3 +1421,288 @@ test("SI-04: bonus premiums use the standard bonus amount", () => {
   assert.equal(r.bonusPension, 45750);
   assert.equal(r.bonusEmployment, 2500);
 });
+
+/* ---------------- #16: unemployment insurance （失業保険・令和8年8月） ---------------- */
+
+test("UE-01: benchmark: 35yo, 5-10y insured, voluntary leaving", () => {
+  const r = calculateUnemployment({ sixMonthWageTotal: 1800000, age: "35-44", tenure: "5-10", reason: "self" });
+  assert.equal(r.wageDaily, 10000);
+  assert.equal(r.benefitDaily, 6307);
+  assert.equal(r.prescribedDays, 90);
+  assert.equal(r.totalBenefit, 567630);
+  assert.equal(r.monthlyBenefit, 6307 * 28);
+});
+
+test("UE-02: company reason doubles the days for the same case", () => {
+  const r = calculateUnemployment({ sixMonthWageTotal: 1800000, age: "35-44", tenure: "5-10", reason: "company" });
+  assert.equal(r.prescribedDays, 180);
+  assert.equal(r.totalBenefit, 1135260);
+});
+
+test("UE-03: zero wage means zero benefit (no minimum clamp-up)", () => {
+  const r = calculateUnemployment({ sixMonthWageTotal: 0, age: "30-34", tenure: "1-5", reason: "self" });
+  assert.equal(r.benefitDaily, 0);
+  assert.equal(r.totalBenefit, 0);
+});
+
+test("UE-04: age 65+ is a lump sum (50 days at 1-5y tenure)", () => {
+  const r = calculateUnemployment({ sixMonthWageTotal: 1800000, age: "65+", tenure: "1-5", reason: "retirement" });
+  assert.equal(r.isLumpSum, true);
+  assert.equal(r.prescribedDays, 50);
+  assert.equal(r.benefitDaily, 5348);
+  assert.equal(r.totalBenefit, 267400);
+});
+
+/* ---------------- #17: consumption tax （消費税） ---------------- */
+
+test("CTX-01: forward 10% and the reverse float case", () => {
+  const f = calcFromTaxExcluded({ amount: 10000, rate: 0.1, round: "floor" });
+  assert.equal(f.taxAmount, 1000);
+  assert.equal(f.totalAmount, 11000);
+  // 1080 / 1.08 = 999.9999999999999 in float — the snap guard must give 1000, not 999
+  const r = calcFromTaxIncluded({ amount: 1080, rate: 0.08, round: "floor" });
+  assert.equal(r.baseAmount, 1000);
+  assert.equal(r.taxAmount, 80);
+});
+
+test("CTX-02: rounding modes on 999 yen at 10%", () => {
+  assert.equal(calcFromTaxExcluded({ amount: 999, rate: 0.1, round: "floor" }).totalAmount, 1098);
+  assert.equal(calcFromTaxExcluded({ amount: 999, rate: 0.1, round: "round" }).totalAmount, 1099);
+  assert.equal(calcFromTaxExcluded({ amount: 999, rate: 0.1, round: "ceil" }).totalAmount, 1099);
+});
+
+test("CTX-03: breakdown always reconciles (base + tax = total)", () => {
+  const r = calcFromTaxIncluded({ amount: 2728, rate: 0.1, round: "floor" });
+  assert.equal(r.baseAmount + r.taxAmount, r.totalAmount);
+  assert.equal(r.baseAmount, 2480);
+  assert.equal(r.taxAmount, 248);
+});
+
+
+test("IT-01: 2025 employment deduction table (minimum 650,000)", () => {
+  assert.equal(calcEmploymentDeduction(1500000), 650000);
+  assert.equal(calcEmploymentDeduction(5000000), 1440000);
+  assert.equal(calcEmploymentDeduction(10000000), 1950000);
+});
+
+test("IT-02: 2025-26 basic deduction tiers", () => {
+  assert.equal(calcBasicDeduction(1320000), 950000);
+  assert.equal(calcBasicDeduction(4360000), 680000);
+  assert.equal(calcBasicDeduction(10000000), 580000);
+  assert.equal(calcBasicDeduction(26000000), 0);
+});
+
+test("IT-03: full case 6,000,000 employee, reconstruction tax truncated", () => {
+  const r = calcIncomeTax({ annualIncome: 6000000, employmentType: "employee", socialInsurance: 0, otherDeductions: 0 });
+  assert.equal(r.employmentIncome, 4360000);
+  assert.equal(r.taxableIncome, 3680000);
+  assert.equal(r.incomeTax, 308500);
+  // 308,500 x 2.1% = 6,478.5 -> truncation gives 6,478 (rounding would give 6,479)
+  assert.equal(r.reconstructionTax, 6478);
+  assert.equal(r.totalTax, 314978);
+});
+
+/* ---------------- #19: furusato nozei detailed （ふるさと納税詳細） ---------------- */
+
+const fndBase = {
+  spouseType: "none" as const,
+  spouseIncome: 0,
+  dependents: { under16: 0, age16to18: 0, age19to22: 0, age23to69: 0, age70coliving: 0, age70separate: 0 },
+  disability: { general: 0, special: 0, cohabitingSpecial: 0 },
+  socialInsurance: 0,
+  lifeInsurance: 0,
+  earthquakeInsurance: 0,
+  medical: 0,
+  singleParent: false,
+  housingLoanCredit: 0,
+  ideco: 0,
+};
+
+test("FND-01: standard family case matches the quick calculator exactly", () => {
+  const r = calcFurusatoNozeiDetailed({
+    ...fndBase,
+    annualIncome: 6000000,
+    spouseType: "under70",
+    dependents: { ...fndBase.dependents, age16to18: 1 },
+    socialInsurance: 900000,
+  });
+  assert.equal(r.donationLimit, 61405);
+});
+
+test("FND-02: iDeCo contributions lower the limit (full deduction)", () => {
+  const withIdeco = calcFurusatoNozeiDetailed({ ...fndBase, annualIncome: 8000000, socialInsurance: 1200000, ideco: 276000 });
+  const without = calcFurusatoNozeiDetailed({ ...fndBase, annualIncome: 8000000, socialInsurance: 1200000 });
+  assert.equal(without.donationLimit, 130485);
+  assert.equal(withIdeco.donationLimit, 122551);
+  assert.equal(withIdeco.ideco, 276000);
+});
+
+test("FND-03: zero income gives a zero limit", () => {
+  const r = calcFurusatoNozeiDetailed({ ...fndBase, annualIncome: 0 });
+  assert.equal(r.donationLimit, 0);
+});
+
+/* ---------------- #20: unit converter （単位変換） ---------------- */
+
+const approxEq = (actual: number, expected: number, tol = 1e-6) =>
+  assert.ok(Math.abs(actual - expected) <= tol, `${actual} != ${expected}`);
+
+test("UC-01: area benchmark — 10 tsubo is 33.0579 m2", () => {
+  approxEq(convertUnit("area", 10, "tsubo", "m2"), 33.057851, 1e-6);
+  approxEq(convertUnit("area", 1, "tsubo", "jo"), 2.040608, 1e-6);
+  approxEq(convertUnit("area", 6, "jo", "m2"), 9.72, 1e-9);
+});
+
+test("UC-02: length and temperature benchmarks", () => {
+  approxEq(convertUnit("length", 100, "cm", "in"), 39.370079, 1e-6);
+  approxEq(convertUnit("temperature", 36.5, "c", "f"), 97.7, 1e-9);
+  approxEq(convertUnit("temperature", 0, "c", "k"), 273.15, 1e-9);
+});
+
+test("UC-03: traditional volume units (shakkanho)", () => {
+  approxEq(convertUnit("volume", 1, "sho", "l"), 1.803907, 1e-6);
+  approxEq(convertUnit("volume", 1, "koku", "sho"), 100, 1e-9);
+  approxEq(convertUnit("volume", 1, "gou", "ml"), 180.390684, 1e-6);
+});
+
+test("UC-04: speed, pressure and energy benchmarks", () => {
+  approxEq(convertUnit("speed", 60, "kmh", "ms"), 16.666667, 1e-6);
+  approxEq(convertUnit("pressure", 1, "atm", "kpa"), 101.325, 1e-9);
+  approxEq(convertUnit("energy", 1, "kcal", "kj"), 4.184, 1e-9);
+});
+
+test("UC-05: exact ri and traditional length/weight factors", () => {
+  approxEq(convertUnit("length", 1, "ri", "m"), 3927.272727, 1e-6);
+  approxEq(convertUnit("length", 1, "shaku", "cm"), 30.30303, 1e-5);
+  approxEq(convertUnit("weight", 1, "kan", "kg"), 3.75, 1e-12);
+  approxEq(convertUnit("weight", 1, "kin", "g"), 600, 1e-9);
+});
+
+test("UC-06: invalid input and unknown units throw; all-units covers the category", () => {
+  assert.throws(() => convertUnit("length", Number.NaN, "cm", "in"));
+  assert.throws(() => convertUnit("length", 1, "cm", "nope"));
+  const all = convertToAllUnits("area", 10, "tsubo");
+  assert.equal(all.length, getUnits("area").length);
+  assert.ok(all.some((u) => u.id === "m2" && Math.abs(u.value - 33.057851) < 1e-6));
+});
+
+/* ---------------- #21: era converter （和暦西暦変換） ---------------- */
+
+test("ERA-01: year benchmarks both directions", () => {
+  assert.equal(westernToEra(2026)?.era.id, "reiwa");
+  assert.equal(westernToEra(2026)?.eraYear, 8);
+  assert.equal(eraToWestern("heisei", 20), 2008);
+  assert.equal(eraToWestern("showa", 64), 1989);
+  assert.equal(westernToEra(1868)?.era.id, "meiji");
+  assert.equal(westernToEra(1867), null);
+});
+
+test("ERA-02: final era years accepted, the year after rejected", () => {
+  assert.equal(eraToWestern("heisei", 31), 2019);
+  assert.equal(eraToWestern("heisei", 32), null);
+  assert.equal(eraToWestern("meiji", 45), 1912);
+  assert.equal(eraToWestern("meiji", 46), null);
+  assert.equal(eraToWestern("taisho", 15), 1926);
+  assert.equal(eraToWestern("reiwa", 1), 2019);
+});
+
+test("ERA-03: era-change years have two eras", () => {
+  for (const [year, ids] of [[2019, ["reiwa", "heisei"]], [1989, ["heisei", "showa"]], [1926, ["showa", "taisho"]], [1912, ["taisho", "meiji"]]] as const) {
+    assert.deepEqual(westernToEras(year).map((r) => r.era.id), [...ids]);
+  }
+  assert.equal(westernToEras(2026).length, 1);
+});
+
+test("ERA-04: date conversion applies the real era-change dates", () => {
+  assert.equal(westernDateToEra(1989, 1, 7)?.era.id, "showa");
+  assert.equal(westernDateToEra(1989, 1, 7)?.eraYear, 64);
+  assert.equal(westernDateToEra(1989, 1, 8)?.era.id, "heisei");
+  assert.equal(westernDateToEra(2019, 4, 30)?.era.id, "heisei");
+  assert.equal(westernDateToEra(2019, 4, 30)?.eraYear, 31);
+  assert.equal(westernDateToEra(2019, 5, 1)?.era.id, "reiwa");
+  assert.equal(westernDateToEra(1912, 7, 29)?.era.id, "meiji");
+  assert.equal(westernDateToEra(1912, 7, 30)?.era.id, "taisho");
+  assert.equal(westernDateToEra(2026, 2, 29), null);
+});
+
+test("ERA-05: impossible era dates are rejected", () => {
+  assert.deepEqual(eraDateToWestern("showa", 64, 1, 7), { year: 1989, month: 1, day: 7 });
+  assert.equal(eraDateToWestern("showa", 64, 1, 8), null);
+  assert.deepEqual(eraDateToWestern("heisei", 31, 4, 30), { year: 2019, month: 4, day: 30 });
+  assert.equal(eraDateToWestern("heisei", 31, 5, 1), null);
+  assert.equal(eraDateToWestern("reiwa", 1, 4, 30), null);
+  assert.deepEqual(eraDateToWestern("reiwa", 1, 5, 1), { year: 2019, month: 5, day: 1 });
+});
+
+test("ERA-06: zodiac of the year", () => {
+  assert.equal(zodiacOf(2026), "午");
+  assert.equal(zodiacOf(2008), "子");
+  assert.equal(zodiacOf(1989), "巳");
+});
+
+/* ---------------- #22: mahjong score （麻雀点数計算） ---------------- */
+
+test("MJ-01: standard ron benchmarks (DX + Socialrubik agree)", () => {
+  assert.equal(calcMahjong({ han: 4, fu: 30, seat: "nondealer", win: "ron" }).total, 7700);
+  assert.equal(calcMahjong({ han: 4, fu: 30, seat: "dealer", win: "ron" }).total, 11600);
+  // 1 han 70 fu child ron is 2,300 (3,400 is the dealer value)
+  assert.equal(calcMahjong({ han: 1, fu: 70, seat: "nondealer", win: "ron" }).total, 2300);
+  assert.equal(calcMahjong({ han: 1, fu: 70, seat: "dealer", win: "ron" }).total, 3400);
+});
+
+test("MJ-02: child tsumo split payments", () => {
+  const r = calcMahjong({ han: 3, fu: 30, seat: "nondealer", win: "tsumo" });
+  assert.equal(r.total, 4000);
+  assert.ok(r.breakdown.includes("2,000") && r.breakdown.includes("1,000"));
+});
+
+test("MJ-03: mangan cutoffs and fixed hands", () => {
+  assert.equal(calcMahjong({ han: 4, fu: 40, seat: "nondealer", win: "ron" }).label, "満貫");
+  assert.equal(calcMahjong({ han: 3, fu: 70, seat: "nondealer", win: "ron" }).total, 8000);
+  assert.equal(calcMahjong({ han: 5, fu: 30, seat: "dealer", win: "ron" }).total, 12000);
+  assert.equal(calcMahjong({ han: 13, fu: 30, seat: "nondealer", win: "ron" }).label, "役満");
+});
+
+test("MJ-04: chiitoitsu 25 fu and pinfu tsumo 20 fu", () => {
+  assert.equal(calcMahjong({ han: 2, fu: 25, seat: "nondealer", win: "ron" }).total, 1600);
+  const pinfu = calcMahjong({ han: 2, fu: 20, seat: "nondealer", win: "tsumo" });
+  assert.equal(pinfu.total, 1500);
+});
+
+test("MJ-05: fu builder — pinfu tsumo stays 20, open ron becomes 30", () => {
+  const none = [
+    { tile: "simple", shape: "none" },
+    { tile: "simple", shape: "none" },
+    { tile: "simple", shape: "none" },
+    { tile: "simple", shape: "none" },
+  ] as const;
+  const tsumo = buildFu({ method: "tsumo", wait: "ryanmenShanpon", pair: "other", melds: [...none] });
+  // A pinfu shape won by tsumo earns no tsumo fu: it stays at 20 fu.
+  assert.equal(tsumo.total, 20);
+  assert.equal(tsumo.rounded, 20);
+  assert.equal(tsumo.pinfuTsumo, true);
+  const openRon = buildFu({ method: "openRon", wait: "ryanmenShanpon", pair: "other", melds: [...none] });
+  assert.equal(openRon.total, 20);
+  assert.equal(openRon.rounded, 30);
+  assert.equal(openRon.openRonAdjusted, true);
+  const menzen = buildFu({ method: "menzenRon", wait: "ryanmenShanpon", pair: "other", melds: [...none] });
+  assert.equal(menzen.rounded, 30);
+  assert.equal(menzen.openRonAdjusted, false);
+});
+
+test("MJ-06: fu builder — a full 70 fu hand", () => {
+  const r = buildFu({
+    method: "menzenRon",
+    wait: "ryanmenShanpon",
+    pair: "other",
+    melds: [
+      { tile: "terminalHonor", shape: "closedKan" },
+      { tile: "terminalHonor", shape: "closedTriplet" },
+      { tile: "simple", shape: "none" },
+      { tile: "simple", shape: "none" },
+    ],
+  });
+  assert.equal(r.total, 70);
+  assert.equal(r.rounded, 70);
+});
+
