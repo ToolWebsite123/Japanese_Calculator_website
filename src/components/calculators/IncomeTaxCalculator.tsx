@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
+import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import { CopyResultButton } from "@/components/calculator/CopyResultButton";
+import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -11,7 +13,6 @@ import { formatYen } from "@/lib/format";
 import {
   calcIncomeTax,
   type EmploymentType,
-  type IncomeTaxResult,
 } from "@/lib/calculators/income-tax";
 
 const INTRO =
@@ -34,7 +35,7 @@ const HOW_TO = {
     },
     {
       title: "所得税額を計算する",
-      body: "「計算する」を押すと、給与所得控除・給与所得・基礎控除・課税所得・所得税・復興特別所得税・納税額合計が表示されます。",
+      body: "給与所得控除・給与所得・基礎控除・課税所得・所得税・復興特別所得税・納税額合計がその場で表示されます。",
     },
   ],
 };
@@ -160,13 +161,13 @@ const TAX_HAYAMI = {
     "会社員（給与所得のみ）で、社会保険料控除・その他の控除を入力しない場合の目安です。この計算機で実際に計算した値です。",
   head: ["年収", "課税所得", "所得税", "復興特別所得税", "納税額合計"],
   rows: [
-    ["200万円", "370,000円", "18,500円", "389円", "18,889円"],
+    ["200万円", "370,000円", "18,500円", "388円", "18,888円"],
     ["300万円", "1,140,000円", "57,000円", "1,197円", "58,197円"],
     ["400万円", "1,880,000円", "94,000円", "1,974円", "95,974円"],
-    ["500万円", "2,880,000円", "190,500円", "4,001円", "194,501円"],
-    ["600万円", "3,680,000円", "308,500円", "6,479円", "314,979円"],
-    ["700万円", "4,570,000円", "486,500円", "10,217円", "496,717円"],
-    ["800万円", "5,470,000円", "666,500円", "13,997円", "680,497円"],
+    ["500万円", "2,880,000円", "190,500円", "4,000円", "194,500円"],
+    ["600万円", "3,680,000円", "308,500円", "6,478円", "314,978円"],
+    ["700万円", "4,570,000円", "486,500円", "10,216円", "496,716円"],
+    ["800万円", "5,470,000円", "666,500円", "13,996円", "680,496円"],
     ["1,000万円", "7,470,000円", "1,082,100円", "22,724円", "1,104,824円"],
   ],
   note: "社会保険料控除などを入力すると、課税所得が下がり、実際の税額はこの表より少なくなります。ご自分の条件では上の計算機でご確認ください。",
@@ -178,8 +179,8 @@ const TAX_EXAMPLE = {
   steps: [
     "課税所得288万円は速算表の「195万円〜329万9,000円」の区分です（税率10%、控除額97,500円）。",
     "所得税額 ＝ 2,880,000円 × 10% − 97,500円 ＝ 190,500円",
-    "復興特別所得税 ＝ 190,500円 × 2.1% ＝ 4,001円（所得税額に対して別途かかります）",
-    "納税額合計 ＝ 190,500円 + 4,001円 ＝ 194,501円",
+    "復興特別所得税 ＝ 190,500円 × 2.1% ＝ 4,000円（1円未満切り捨て。所得税額に対して別途かかります）",
+    "納税額合計 ＝ 190,500円 + 4,000円 ＝ 194,500円",
   ],
 };
 
@@ -207,11 +208,9 @@ export function IncomeTaxCalculator() {
   const [employmentType, setEmploymentType] = useState<EmploymentType>("employee");
   const [socialInsurance, setSocialInsurance] = useState("0");
   const [otherDeductions, setOtherDeductions] = useState("0");
-  const [result, setResult] = useState<IncomeTaxResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { addEntry } = useHistory();
 
-  const handleCalculate = () => {
-    setError(null);
+  const computed = useMemo(() => {
     try {
       const r = calcIncomeTax({
         annualIncome: parseFloat(annualIncome) || 0,
@@ -219,19 +218,47 @@ export function IncomeTaxCalculator() {
         socialInsurance: parseFloat(socialInsurance) || 0,
         otherDeductions: parseFloat(otherDeductions) || 0,
       });
-      setResult(r);
+      return { result: r, error: null as string | null };
     } catch (e) {
-      setError(e instanceof Error ? e.message : "計算エラー");
-      setResult(null);
+      return { result: null, error: e instanceof Error ? e.message : "計算エラー" };
     }
-  };
+  }, [annualIncome, employmentType, socialInsurance, otherDeductions]);
+  const result = computed.result;
+  const error = computed.error;
+
+  const loggedKeyRef = useRef<string>("");
+  useEffect(() => {
+    if (!result) return;
+    const key = `${annualIncome}|${employmentType}|${socialInsurance}|${otherDeductions}`;
+    if (loggedKeyRef.current === key) return;
+    const timer = setTimeout(() => {
+      loggedKeyRef.current = key;
+      addEntry({
+        expression: `所得税 年収${annualIncome}円`,
+        result: formatYen(result.totalTax),
+        route: "/income-tax-calculation",
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [result, annualIncome, employmentType, socialInsurance, otherDeductions, addEntry]);
+
+  function handleClear() {
+    setAnnualIncome("6000000");
+    setEmploymentType("employee");
+    setSocialInsurance("0");
+    setOtherDeductions("0");
+  }
 
   return (
     <>
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         所得税 計算
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+      <CalculatorCard
+        compact
+        maxWidthClass="max-w-[500px]"
+        actions={result ? <CopyResultButton value={formatYen(result.totalTax)} /> : undefined}
+      >
         <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label="年収（円）"
@@ -279,7 +306,9 @@ export function IncomeTaxCalculator() {
             />
           </div>
 
-          <PrimaryButton onClick={handleCalculate}>計算する</PrimaryButton>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            クリア
+          </SecondaryButton>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
@@ -408,8 +437,6 @@ export function IncomeTaxCalculator() {
         </ul>
       </section>
 
-      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
-
       <section aria-labelledby="tax-flow-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="tax-flow-heading" className={guideHeadingClass}>
           {TAX_FLOW.title}
@@ -424,15 +451,6 @@ export function IncomeTaxCalculator() {
         <IncomeGuideTable head={TAX_FLOW.bracketHead} rows={TAX_FLOW.bracketRows} />
       </section>
 
-      <section aria-labelledby="tax-hayami-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="tax-hayami-heading" className={guideHeadingClass}>
-          {TAX_HAYAMI.title}
-        </h2>
-        <p className={guideBodyClass}>{TAX_HAYAMI.intro}</p>
-        <IncomeGuideTable head={TAX_HAYAMI.head} rows={TAX_HAYAMI.rows} />
-        <p className={guideBodyClass}>{TAX_HAYAMI.note}</p>
-      </section>
-
       <section aria-labelledby="tax-example-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="tax-example-heading" className={guideHeadingClass}>
           {TAX_EXAMPLE.title}
@@ -443,6 +461,15 @@ export function IncomeTaxCalculator() {
             <li key={step}>{step}</li>
           ))}
         </ol>
+      </section>
+
+      <section aria-labelledby="tax-hayami-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-hayami-heading" className={guideHeadingClass}>
+          {TAX_HAYAMI.title}
+        </h2>
+        <p className={guideBodyClass}>{TAX_HAYAMI.intro}</p>
+        <IncomeGuideTable head={TAX_HAYAMI.head} rows={TAX_HAYAMI.rows} />
+        <p className={guideBodyClass}>{TAX_HAYAMI.note}</p>
       </section>
 
       <section aria-labelledby="tax-uses-heading" className="mt-16 border-t border-border pt-16">
@@ -466,6 +493,8 @@ export function IncomeTaxCalculator() {
           ))}
         </ul>
       </section>
+
+<CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
 
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/income-tax-calculation" />

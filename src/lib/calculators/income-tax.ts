@@ -86,7 +86,8 @@ export function calcIncomeTax(input: IncomeTaxInput): IncomeTaxResult {
   const taxableIncome = Math.max(Math.floor(rawTaxable / 1000) * 1000, 0);
 
   const incomeTax = calcIncomeTaxFromTaxable(taxableIncome);
-  const reconstructionTax = Math.round(incomeTax * 0.021);
+  // 復興特別所得税は1円未満切り捨て（国税庁の計算方法）
+  const reconstructionTax = Math.floor(incomeTax * 0.021);
   const totalTax = incomeTax + reconstructionTax;
 
   return {
