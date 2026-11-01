@@ -1,8 +1,8 @@
 import { buildPageMetadata } from "@/lib/seo/metadata";
 
-const metaTitle = "割引計算機｜％オフ・割引後の価格と税込表示｜電卓.online";
+const metaTitle = "割引計算｜％オフ・割・元値の逆算・重ねがけまで計算｜電卓.online";
 const metaDescription =
-  "％オフや「○割引」から割引後の価格を求める無料の割引計算機。セール価格から元の定価を求める逆算にも対応し、消費税8％／10％の税込・税抜表示や端数処理（切り捨て・四捨五入・切り上げ）も選べます。";
+  "％オフや「○割引」から割引後の価格を求める無料の割引計算。「さらに○%オフ」の重ねがけ、セール価格から元値を求める逆算、割引率の計算にも対応。消費税8％／10％の税込・税抜と端数処理も選べます。";
 
 export const metadata = buildPageMetadata({
   title: metaTitle,

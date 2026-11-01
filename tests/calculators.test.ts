@@ -69,6 +69,7 @@ import {
 import { calculateLoan } from "../src/lib/calculators/loan";
 import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
 import { calcInterest, withholdingTax } from "../src/lib/calculators/interest";
+import { calcSocialInsurance } from "../src/lib/calculators/social-insurance";
 import {
   calcFurusatoNozeiDetailed,
   type FurusatoDetailedInput,
@@ -769,6 +770,7 @@ test("Step A: desk sqrt key", () => {
 /* ---------------- Compound interest + monthly contribution ---------------- */
 import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
 import { calcInterest, withholdingTax } from "../src/lib/calculators/interest";
+import { calcSocialInsurance } from "../src/lib/calculators/social-insurance";
 
 test("Compound: no contribution matches the legacy formula exactly", () => {
   const r = calcCompoundInterest({ principal: 1000000, annualRatePercent: 5, years: 10, frequency: 1 });
@@ -1364,4 +1366,37 @@ test("INT-04: withholding tax on 30,000 yen interest (individual, 20.315%)", () 
   assert.equal(tax.localTax, 1500);
   assert.equal(tax.total, 6094);
   assert.equal(tax.net, 23906);
+});
+
+/* ---------------- #15: social insurance （社会保険料・令和8年度） ---------------- */
+
+test("SI-01: market benchmark: salary 350,000, age 35, Tokyo, no bonus", () => {
+  const r = calcSocialInsurance({ monthlySalary: 350000, bonus: 0, age: 35, prefectureIndex: 12 });
+  assert.equal(r.standardMonthlyHealth, 360000);
+  assert.equal(r.standardMonthlyPension, 360000);
+  assert.equal(r.salaryHealth, 17730);
+  assert.equal(r.salaryPension, 32940);
+  assert.equal(r.salaryChild, 414);
+  assert.equal(r.salaryEmployment, 1750);
+  assert.equal(r.careValue, 0);
+  assert.equal(r.totalDeduction, 52834);
+});
+
+test("SI-02: age 45 adds care insurance (1.62% split)", () => {
+  const r = calcSocialInsurance({ monthlySalary: 350000, bonus: 0, age: 45, prefectureIndex: 12 });
+  assert.equal(r.salaryCare, 2916);
+  assert.equal(r.totalDeduction, 55750);
+});
+
+test("SI-03: pension standard amount caps at 650,000", () => {
+  const r = calcSocialInsurance({ monthlySalary: 1000000, bonus: 0, age: 35, prefectureIndex: 12 });
+  assert.equal(r.standardMonthlyPension, 650000);
+  assert.equal(r.salaryPension, 59475);
+});
+
+test("SI-04: bonus premiums use the standard bonus amount", () => {
+  const r = calcSocialInsurance({ monthlySalary: 300000, bonus: 500000, age: 35, prefectureIndex: 12 });
+  assert.equal(r.standardBonusPension, 500000);
+  assert.equal(r.bonusPension, 45750);
+  assert.equal(r.bonusEmployment, 2500);
 });
