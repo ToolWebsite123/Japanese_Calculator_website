@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
-import { SelectWell, PrimaryButton } from "@/components/ui/primitives";
+import { SecondaryButton, SelectWell } from "@/components/ui/primitives";
+import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
@@ -10,11 +11,9 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CompoundInterestWorkedExamples } from "@/components/calculator/CompoundInterestWorkedExamples";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { useLocale } from "@/context/LocaleContext";
+import { useHistory } from "@/context/HistoryContext";
 import { formatYen } from "@/lib/format";
-import {
-  calcCompoundInterest,
-  type CompoundInterestResult,
-} from "@/lib/calculators/compound-interest";
+import { calcCompoundInterest } from "@/lib/calculators/compound-interest";
 
 const guideHeadingClass =
   "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
@@ -22,47 +21,62 @@ const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text
 
 export function CompoundInterestCalculator() {
   const { t } = useLocale();
+  const { addEntry } = useHistory();
   const [principal, setPrincipal] = useState<string>("1000000");
   const [rate, setRate] = useState<string>("5");
   const [years, setYears] = useState<string>("10");
   const [frequency, setFrequency] = useState<number>(1);
   const [monthlyContribution, setMonthlyContribution] = useState<string>("0");
 
-  const [result, setResult] = useState<{
-    error: string | null;
-    calc: CompoundInterestResult | null;
-    submitted: { p: string; r: string; y: string; f: number; c: string } | null;
-  } | null>(null);
-
-  const handleCalculate = () => {
+  const computed = useMemo(() => {
     const p = parseFloat(principal);
     const r = parseFloat(rate);
     const y = parseFloat(years);
     const c = parseFloat(monthlyContribution);
-
     if (isNaN(p) || isNaN(r) || isNaN(y) || isNaN(c) || p < 0 || y < 0 || c < 0) {
-      setResult({
-        error: t.common.invalidInput as string | null,
-        calc: null,
-        submitted: null,
-      });
-      return;
+      return { calc: null, error: t.common.invalidInput as string };
     }
+    try {
+      return {
+        calc: calcCompoundInterest({
+          principal: p,
+          annualRatePercent: r,
+          years: y,
+          frequency,
+          monthlyContribution: c,
+        }),
+        error: null as string | null,
+      };
+    } catch {
+      return { calc: null, error: t.common.invalidInput as string };
+    }
+  }, [principal, rate, years, frequency, monthlyContribution, t.common.invalidInput]);
+  const calc = computed.calc;
+  const contributionNum = parseFloat(monthlyContribution) || 0;
 
-    const calc = calcCompoundInterest({
-      principal: p,
-      annualRatePercent: r,
-      years: y,
-      frequency,
-      monthlyContribution: c,
-    });
+  const loggedKeyRef = useRef<string>("");
+  useEffect(() => {
+    if (!calc) return;
+    const key = `${principal}|${rate}|${years}|${frequency}|${monthlyContribution}`;
+    if (loggedKeyRef.current === key) return;
+    const timer = setTimeout(() => {
+      loggedKeyRef.current = key;
+      addEntry({
+        expression: `複利 ${principal}円 ${rate}% ${years}年`,
+        result: formatYen(calc.futureValue),
+        route: "/compound-interest-calculator",
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [calc, principal, rate, years, frequency, monthlyContribution, addEntry]);
 
-    setResult({
-      error: null,
-      calc,
-      submitted: { p: principal, r: rate, y: years, f: frequency, c: monthlyContribution },
-    });
-  };
+  function handleClear() {
+    setPrincipal("1000000");
+    setRate("5");
+    setYears("10");
+    setFrequency(1);
+    setMonthlyContribution("0");
+  }
 
   return (
     <>
@@ -72,6 +86,7 @@ export function CompoundInterestCalculator() {
       <CalculatorCard
         compact
         maxWidthClass="max-w-[480px]"
+        actions={calc ? <CopyResultButton value={formatYen(calc.futureValue)} /> : undefined}
       >
         <div className="space-y-2.5 sm:space-y-3">
           <FormField
@@ -126,30 +141,32 @@ export function CompoundInterestCalculator() {
             className="text-lg"
           />
 
-          <PrimaryButton onClick={handleCalculate}>{t.common.calculate}</PrimaryButton>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            {t.common.clear}
+          </SecondaryButton>
 
-          {result?.error && <ErrorMessage message={result.error} />}
+          {computed.error && <ErrorMessage message={computed.error} />}
 
-          {!result?.error && result?.calc && result?.submitted && (
+          {calc && (
             <>
               <div className="grid gap-4 sm:grid-cols-2">
                 <ResultCard
                   label={t.compoundInterest.futureValue}
-                  value={formatYen(result.calc.futureValue)}
+                  value={formatYen(calc.futureValue)}
                   highlight
                 />
                 <ResultCard
                   label={t.compoundInterest.totalInterest}
-                  value={`+${formatYen(result.calc.totalInterest)}`}
+                  value={`+${formatYen(calc.totalInterest)}`}
                 />
               </div>
 
-              {parseFloat(result.submitted.c) > 0 && (
+              {contributionNum > 0 && (
                 <div className="space-y-1.5 rounded-[var(--radius-md)] border border-border bg-surface px-4 py-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-text-secondary">{t.compoundInterestPage.breakdownPrincipal}</span>
                     <span className="tabular-display font-medium text-text-primary">
-                      {formatYen(result.calc.principalFutureValue)}
+                      {formatYen(calc.principalFutureValue)}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -157,25 +174,25 @@ export function CompoundInterestCalculator() {
                       {t.compoundInterestPage.breakdownContribution}
                     </span>
                     <span className="tabular-display font-medium text-text-primary">
-                      {formatYen(result.calc.contributionFutureValue)}
+                      {formatYen(calc.contributionFutureValue)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-text-secondary">{t.compoundInterestPage.breakdownContributed}</span>
                     <span className="tabular-display font-medium text-text-primary">
-                      {formatYen(result.calc.totalContributions)}
+                      {formatYen(calc.totalContributions)}
                     </span>
                   </div>
                 </div>
               )}
 
-              {parseFloat(result.submitted.c) === 0 && (
+              {contributionNum === 0 && (
                 <div className="mt-8">
                   <CompoundInterestWorkedExamples
-                    principal={result.submitted.p}
-                    rate={result.submitted.r}
-                    years={result.submitted.y}
-                    frequency={result.submitted.f}
+                    principal={principal}
+                    rate={rate}
+                    years={years}
+                    frequency={frequency}
                   />
                 </div>
               )}
@@ -184,7 +201,7 @@ export function CompoundInterestCalculator() {
         </div>
       </CalculatorCard>
 
-      {!result?.error && result?.calc && result.calc.yearly.length > 0 && (
+      {calc && calc.yearly.length > 0 && (
         <section aria-labelledby="compound-projection-heading" className="mt-12">
           <h2 id="compound-projection-heading" className={guideHeadingClass}>
             {t.compoundInterestPage.projectionTitle}
@@ -205,7 +222,7 @@ export function CompoundInterestCalculator() {
                 </tr>
               </thead>
               <tbody>
-                {result.calc.yearly.map((row) => (
+                {calc.yearly.map((row) => (
                   <tr key={row.year}>
                     <td className="border border-border px-3 py-2 font-medium text-text-primary">
                       {row.year}年目
@@ -237,18 +254,6 @@ export function CompoundInterestCalculator() {
         <LinkedText text={t.compoundInterestPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection
-        title={t.compoundInterestPage.howToTitle}
-        steps={t.compoundInterestPage.howToSteps}
-      />
-
-      <section aria-labelledby="compound-72-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="compound-72-heading" className={guideHeadingClass}>
-          {t.compoundInterestPage.guide72Title}
-        </h2>
-        <p className={guideBodyClass}>{t.compoundInterestPage.guide72Body}</p>
-      </section>
-
       <section aria-labelledby="compound-compare-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="compound-compare-heading" className={guideHeadingClass}>
           {t.compoundInterestPage.guideCompareTitle}
@@ -256,6 +261,37 @@ export function CompoundInterestCalculator() {
         <p className={guideBodyClass}>
           <LinkedText text={t.compoundInterestPage.guideCompareBody} activeHref="/compound-interest-calculator" />
         </p>
+      </section>
+
+      <section aria-labelledby="compound-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="compound-examples-heading" className={guideHeadingClass}>
+          {t.compoundInterestPage.contentExamplesTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken text-left">
+                <th className="px-3 py-2.5 font-semibold text-text-primary">条件</th>
+                <th className="px-3 py-2.5 font-semibold text-text-primary">将来額</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.compoundInterestPage.contentExamplesRows.map((row) => (
+                <tr key={row[0]} className="border-b border-border">
+                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="compound-72-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="compound-72-heading" className={guideHeadingClass}>
+          {t.compoundInterestPage.guide72Title}
+        </h2>
+        <p className={guideBodyClass}>{t.compoundInterestPage.guide72Body}</p>
       </section>
 
       <section aria-labelledby="compound-notes-heading" className="mt-16 border-t border-border pt-16">
@@ -270,6 +306,11 @@ export function CompoundInterestCalculator() {
           ))}
         </ul>
       </section>
+
+      <CalculatorHowToSection
+        title={t.compoundInterestPage.howToTitle}
+        steps={t.compoundInterestPage.howToSteps}
+      />
 
       <CalculatorFaqSection
         title={t.compoundInterestPage.faqTitle}

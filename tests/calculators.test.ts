@@ -36,6 +36,39 @@ import {
 } from "../src/lib/calculators/furusato-nozei";
 import { solveSimultaneousEquations } from "../src/lib/calculators/simultaneous-equations";
 import {
+  calcForward,
+  calcRateFromPrices,
+  calcReverse,
+} from "../src/lib/calculators/discount-calc";
+import {
+  decimalToFraction,
+  formatFraction,
+  getFractionSteps,
+  operateFractions,
+} from "../src/lib/calculators/fraction";
+import {
+  evaluateExpressionSafe,
+  solveLinearEquationSafe,
+} from "../src/lib/calculators/algebra";
+import { simplifyExpression } from "../src/lib/calculators/polynomial";
+import {
+  factorizeExpression,
+  primeFactorSteps,
+} from "../src/lib/calculators/factorize";
+import {
+  cramerNumerators3,
+  eliminationSteps,
+  solveExactFractions,
+  solveSimultaneous3,
+  solveSimultaneousEquations,
+} from "../src/lib/calculators/simultaneous-equations";
+import {
+  solveTimeValueOfMoney,
+  tvmFutureValue,
+} from "../src/lib/calculators/financial";
+import { calculateLoan } from "../src/lib/calculators/loan";
+import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
+import {
   calcFurusatoNozeiDetailed,
   type FurusatoDetailedInput,
 } from "../src/lib/calculators/furusato-nozei-detailed";
@@ -297,6 +330,174 @@ test("LD-10: invalid inputs throw", () => {
   assert.throws(() => computeLongDivision(10, 3, -1));
   assert.throws(() => computeLongDivision(10, 3, 99));
   assert.throws(() => computeLongDivision(Number.NaN, 3, 2));
+});
+
+/* ---------------- #7: discount （割引計算） ---------------- */
+
+test("DC-01: 10,000 yen at 30% off, tax-excluded 10%, floor -> 7,700 total", () => {
+  const r = calcForward({
+    original: 10000,
+    discountValue: 30,
+    discountUnit: "percent",
+    taxMode: "excluded",
+    taxRate: 0.1,
+    round: "floor",
+  });
+  assert.equal(r.discountAmount, 3000);
+  assert.equal(r.discountedBase, 7000);
+  assert.equal(r.taxAmount, 700);
+  assert.equal(r.finalPrice, 7700);
+  assert.equal(r.effectiveRate, 0.3);
+});
+
+test("DC-02: float dust cannot steal a yen (170 yen, 70% off, floor)", () => {
+  // 170 * 0.7 is 118.99999999999999 in binary float; exact value is 119.
+  const r = calcForward({
+    original: 170,
+    discountValue: 70,
+    discountUnit: "percent",
+    taxMode: "none",
+    taxRate: 0.1,
+    round: "floor",
+  });
+  assert.equal(r.discountAmount, 119);
+  assert.equal(r.finalPrice, 51);
+});
+
+test("DC-03: float dust cannot steal a yen (165 yen, 70% off, round half-up)", () => {
+  // 165 * 0.7 = 115.49999999999999 in float; exact 115.5 rounds to 116.
+  const r = calcForward({
+    original: 165,
+    discountValue: 70,
+    discountUnit: "percent",
+    taxMode: "none",
+    taxRate: 0.1,
+    round: "round",
+  });
+  assert.equal(r.discountAmount, 116);
+});
+
+test("DC-04: wari unit — 3割引 of 10,000 is 7,000", () => {
+  const r = calcForward({
+    original: 10000,
+    discountValue: 3,
+    discountUnit: "wari",
+    taxMode: "included",
+    taxRate: 0.1,
+    round: "floor",
+  });
+  assert.equal(r.finalPrice, 7000);
+  assert.equal(r.wariEquivalent, 3);
+});
+
+test("DC-05: stacked discount 20% + 10% is 28% off, not 30%", () => {
+  const r = calcForward({
+    original: 10000,
+    discountValue: 20,
+    discountUnit: "percent",
+    secondValue: 10,
+    secondUnit: "percent",
+    taxMode: "none",
+    taxRate: 0.1,
+    round: "floor",
+  });
+  assert.equal(r.discountAmount, 2000);
+  assert.equal(r.secondDiscountAmount, 800);
+  assert.equal(r.discountedBase, 7200);
+  assert.equal(r.effectiveRate, 0.28);
+});
+
+test("DC-06: reverse — 7,000 yen after 30% off came from 10,000", () => {
+  const r = calcReverse({
+    discountedPrice: 7000,
+    discountValue: 30,
+    discountUnit: "percent",
+    round: "floor",
+  });
+  assert.equal(r.originalPrice, 10000);
+  assert.equal(r.discountAmount, 3000);
+});
+
+test("DC-07: rate from prices — 10,000 -> 7,000 is 30% (3割)", () => {
+  const r = calcRateFromPrices(10000, 7000);
+  assert.equal(r.discountAmount, 3000);
+  assert.equal(r.ratePercent, 30);
+  assert.equal(r.rateWari, 3);
+});
+
+test("DC-08: rate from prices — 3,980 -> 2,786 is 30%", () => {
+  const r = calcRateFromPrices(3980, 2786);
+  assert.equal(r.ratePercent, 30);
+  assert.equal(r.rateWari, 3);
+});
+
+/* ---------------- #8: fraction （分数計算） ---------------- */
+
+test("FR-01: 1/2 + 1/3 = 5/6 (through common denominator 6)", () => {
+  const r = operateFractions({ num: 1, den: 2 }, { num: 1, den: 3 }, "+");
+  assert.deepEqual(r, { num: 5, den: 6 });
+});
+
+test("FR-02: 2/3 x 3/4 reduces to 1/2", () => {
+  const r = operateFractions({ num: 2, den: 3 }, { num: 3, den: 4 }, "*");
+  assert.deepEqual(r, { num: 1, den: 2 });
+});
+
+test("FR-03: mixed numbers 1 1/2 + 2 1/3 = 23/6, formatted 3 5/6", () => {
+  const r = operateFractions(
+    { whole: 1, num: 1, den: 2 },
+    { whole: 2, num: 1, den: 3 },
+    "+",
+  );
+  assert.deepEqual(r, { num: 23, den: 6 });
+  assert.equal(formatFraction(r), "3 5/6");
+});
+
+test("FR-04: division flips the divisor: 3/4 / 2/5 = 15/8", () => {
+  const r = operateFractions({ num: 3, den: 4 }, { num: 2, den: 5 }, "/");
+  assert.deepEqual(r, { num: 15, den: 8 });
+});
+
+test("FR-05: steps end at the same result and mention the LCD", () => {
+  const { steps, finalResult } = getFractionSteps(
+    { num: 1, den: 2 },
+    { num: 1, den: 3 },
+    "+",
+  );
+  assert.deepEqual(finalResult, { num: 5, den: 6 });
+  assert.ok(steps.length >= 3);
+});
+
+test("FR-06: decimalToFraction is exact for typed decimals", () => {
+  assert.deepEqual(decimalToFraction("0.75").fraction, { num: 3, den: 4 });
+  assert.deepEqual(decimalToFraction("0.75").unreduced, { num: 75, den: 100 });
+  assert.deepEqual(decimalToFraction("1.25").fraction, { num: 5, den: 4 });
+  assert.deepEqual(decimalToFraction("0.333").fraction, { num: 333, den: 1000 });
+  assert.deepEqual(decimalToFraction("2.5").fraction, { num: 5, den: 2 });
+  assert.deepEqual(decimalToFraction("0.1").fraction, { num: 1, den: 10 });
+  assert.deepEqual(decimalToFraction("-0.5").fraction, { num: -1, den: 2 });
+});
+
+test("FR-07: invalid fraction inputs throw", () => {
+  assert.throws(() => operateFractions({ num: 1, den: 2 }, { num: 0, den: 5 }, "/"));
+  assert.throws(() => decimalToFraction("abc"));
+  assert.throws(() => decimalToFraction("1.2.3"));
+  assert.throws(() => decimalToFraction(""));
+});
+
+test("DC-09: invalid discount inputs throw", () => {
+  assert.throws(() =>
+    calcForward({
+      original: 1000,
+      discountValue: 120,
+      discountUnit: "percent",
+      taxMode: "none",
+      taxRate: 0.1,
+      round: "floor",
+    }),
+  );
+  assert.throws(() => calcRateFromPrices(1000, 1200));
+  assert.throws(() => calcRateFromPrices(0, 0));
 });
 
 /* ---------------- M-02: simultaneous equations ---------------- */
@@ -825,4 +1026,313 @@ test("PCT: worked-examples table values verify against the lib", () => {
   assert.equal(ratioPercent(80, 400), 20); // 400点中80点 -> 20%
   assert.equal(wholeFromPart(30, 20), 150); // 30は20% -> 全体150
   assert.equal(changePercent(100, 120), 20); // 100 -> 120 は +20%
+});
+
+/* ---------------- #9: algebra （文字式） ---------------- */
+
+test("ALG-01: solve 2x + 3 = 7 -> x = 2", () => {
+  assert.equal(solveLinearEquationSafe("2x + 3 = 7"), 2);
+});
+
+test("ALG-02: x on both sides: 3x + 2 = x + 8 -> x = 3", () => {
+  assert.equal(solveLinearEquationSafe("3x + 2 = x + 8"), 3);
+});
+
+test("ALG-03: disguised quadratic (x+1)(x+2) = 6 is rejected, not mis-solved", () => {
+  assert.throws(() => solveLinearEquationSafe("(x+1)(x+2) = 6"));
+});
+
+test("ALG-04: x^2 and x*x equations are rejected as non-linear", () => {
+  assert.throws(() => solveLinearEquationSafe("x^2 = 4"));
+  assert.throws(() => solveLinearEquationSafe("x*x = 9"));
+});
+
+test("ALG-05: constant powers are fine: 2^2 = x -> x = 4", () => {
+  assert.equal(solveLinearEquationSafe("2^2 = x"), 4);
+});
+
+test("ALG-06: malformed numbers throw instead of silently truncating", () => {
+  assert.throws(() => evaluateExpressionSafe("1.2.3 + x", 1));
+  assert.throws(() => evaluateExpressionSafe("x + .", 1));
+});
+
+test("ALG-07: evaluate still works: 2x + 3 at x = 5 -> 13", () => {
+  assert.equal(evaluateExpressionSafe("2x + 3", 5), 13);
+});
+
+test("POLY-01: combine like terms: 2x + 3x = 5x", () => {
+  assert.equal(simplifyExpression("2x + 3x").result, "5x");
+});
+
+test("POLY-02: distribution: 3(x + 2) = 3x + 6 with the expansion line", () => {
+  const r = simplifyExpression("3(x + 2)");
+  assert.equal(r.result, "3x + 6");
+  assert.ok(r.expansionSteps.includes("3x + 6"));
+});
+
+test("POLY-03: binomial expansion (x + 2)(x + 3) with schoolbook steps", () => {
+  const r = simplifyExpression("(x + 2)(x + 3)");
+  assert.equal(r.result, "x^2 + 5x + 6");
+  assert.ok(r.expansionSteps.includes("x^2 + 3x + 2x + 6"));
+});
+
+test("POLY-04: fraction coefficients: x/2 + x/3 = 5/6x", () => {
+  assert.equal(simplifyExpression("x/2 + x/3").result, "5/6x");
+});
+
+test("POLY-05: subtraction across brackets: 2(x - 1) - (x + 3) = x - 5", () => {
+  assert.equal(simplifyExpression("2(x - 1) - (x + 3)").result, "x - 5");
+});
+
+test("POLY-06: squared bracket (x + 2)^2 = x^2 + 4x + 4", () => {
+  const r = simplifyExpression("(x + 2)^2");
+  assert.equal(r.result, "x^2 + 4x + 4");
+  assert.ok(r.expansionSteps.includes("x^2 + 2x + 2x + 4"));
+});
+
+test("POLY-07: unsupported forms throw", () => {
+  assert.throws(() => simplifyExpression("1/x"));
+  assert.throws(() => simplifyExpression("x^x"));
+  assert.throws(() => simplifyExpression("(x + 1)/(x - 1)"));
+});
+
+/* ---------------- #10: factorization （因数分解） ---------------- */
+
+test("FACT-01: x^2 + 5x + 6 = (x + 2)(x + 3)", () => {
+  const r = factorizeExpression("x^2 + 5x + 6");
+  assert.equal(r.result, "(x + 2)(x + 3)");
+  assert.equal(r.irreducible, false);
+});
+
+test("FACT-02: difference of squares x^2 - 9 = (x + 3)(x - 3)", () => {
+  const r = factorizeExpression("x^2 - 9");
+  assert.equal(r.result, "(x + 3)(x - 3)");
+  assert.ok(r.steps.some((s) => s.includes("和と差の積")));
+});
+
+test("FACT-03: tasukigake 2x^2 + 7x + 3 = (x + 3)(2x + 1)", () => {
+  const r = factorizeExpression("2x^2 + 7x + 3");
+  assert.equal(r.result, "(x + 3)(2x + 1)");
+  assert.ok(r.steps.some((s) => s.includes("たすき掛け")));
+});
+
+test("FACT-04: common factor + quadratic: 2x^3 + 10x^2 + 12x = 2x(x + 2)(x + 3)", () => {
+  const r = factorizeExpression("2x^3 + 10x^2 + 12x");
+  assert.equal(r.result, "2x(x + 2)(x + 3)");
+});
+
+test("FACT-05: perfect square (x + 2)^2 and (2x - 1)^2 forms", () => {
+  assert.equal(factorizeExpression("x^2 + 4x + 4").result, "(x + 2)^2");
+  assert.equal(factorizeExpression("4x^2 - 4x + 1").result, "(2x - 1)^2");
+});
+
+test("FACT-06: fraction coefficients: x^2/2 + 3x/2 + 1 = 1/2(x + 1)(x + 2)", () => {
+  assert.equal(factorizeExpression("x^2/2 + 3/2*x + 1").result, "1/2(x + 1)(x + 2)");
+});
+
+test("FACT-07: irreducible quadratics stay whole and say so", () => {
+  const r = factorizeExpression("x^2 + 3x + 1");
+  assert.equal(r.irreducible, true);
+  assert.equal(r.result, "x^2 + 3x + 1");
+  assert.ok(r.steps.some((s) => s.includes("判別式")));
+});
+
+test("FACT-08: linear with common factor: 2x + 4 = 2(x + 2); plain x + 2 untouched", () => {
+  assert.equal(factorizeExpression("2x + 4").result, "2(x + 2)");
+  assert.equal(factorizeExpression("x + 2").result, "(x + 2)");
+});
+
+test("FACT-09: prime division steps for 360 and none for a prime", () => {
+  const steps = primeFactorSteps(360);
+  assert.equal(steps.length, 5);
+  assert.deepEqual(steps[0], { dividend: 360, prime: 2, quotient: 180 });
+  assert.deepEqual(steps[4], { dividend: 15, prime: 3, quotient: 5 });
+  assert.equal(primeFactorSteps(313).length, 0);
+});
+
+/* ---------------- #11: simultaneous equations （連立方程式） ---------------- */
+
+test("SIM-01: baseline solve with exact fractions: 2x+3y=8, 5x-y=3 -> (1, 2)", () => {
+  const r = solveSimultaneousEquations(2, 3, 8, 5, -1, 3);
+  assert.equal(r.status, "success");
+  const exact = solveExactFractions(2, 3, 8, 5, -1, 3);
+  assert.deepEqual(exact, { x: { num: 1, den: 1 }, y: { num: 2, den: 1 } });
+});
+
+test("SIM-02: fractional solution stays exact: 2x+3y=8, 3x-y=5 -> (23/11, 14/11)", () => {
+  const exact = solveExactFractions(2, 3, 8, 3, -1, 5);
+  assert.deepEqual(exact, { x: { num: 23, den: 11 }, y: { num: 14, den: 11 } });
+});
+
+test("SIM-03: classification: no solution vs infinite", () => {
+  assert.equal(solveSimultaneousEquations(1, 1, 1, 1, 1, 2).status, "no_solution");
+  assert.equal(solveSimultaneousEquations(1, 1, 3, 2, 2, 6).status, "infinite");
+  assert.equal(solveSimultaneousEquations(0, 0, 5, 1, 1, 1).status, "no_solution");
+});
+
+test("SIM-04: elimination steps for x+y=7, x-y=1 (add to cancel y)", () => {
+  const steps = eliminationSteps(1, 1, 7, 1, -1, 1);
+  assert.ok(steps.some((s) => s.includes("① + ②")));
+  assert.ok(steps.some((s) => s.includes("2x = 8")));
+  assert.ok(steps.some((s) => s.includes("x = 4")));
+  assert.ok(steps[steps.length - 1].includes("y = 3"));
+});
+
+test("SIM-05: elimination steps scale when needed: 2x+3y=8, 5x-y=3", () => {
+  const steps = eliminationSteps(2, 3, 8, 5, -1, 3);
+  assert.ok(steps.some((s) => s.includes("②×3")));
+  assert.ok(steps.some((s) => s.includes("17x = 17")));
+  assert.ok(steps[steps.length - 1].includes("y = 2"));
+});
+
+test("SIM-06: missing-y equation path and decimal inputs give no exact steps", () => {
+  const steps = eliminationSteps(2, 0, 6, 1, 1, 5);
+  assert.ok(steps.some((s) => s.includes("x = 3")));
+  assert.ok(steps[steps.length - 1].includes("y = 2"));
+  assert.equal(eliminationSteps(1.5, 1, 4, 1, 1, 3).length, 0);
+  assert.equal(solveExactFractions(1.5, 1, 4, 1, 1, 3), null);
+});
+
+test("SIM3-01: 3-variable unique solution (1, 2, 3)", () => {
+  const r = solveSimultaneous3([
+    [1, 1, 1, 6],
+    [2, 1, 1, 7],
+    [1, 2, 1, 8],
+  ]);
+  assert.equal(r.status, "success");
+  if (r.status === "success") {
+    assert.deepEqual([r.x, r.y, r.z], [
+      { num: 1, den: 1 },
+      { num: 2, den: 1 },
+      { num: 3, den: 1 },
+    ]);
+  }
+});
+
+test("SIM3-02: 3-variable fractional solution", () => {
+  // x + y + z = 1, 2x - y = 0, x + z = 0 -> x = z? solve: y = 2x, z = -x -> x + 2x - x = 1 -> x = 1/2, y = 1, z = -1/2
+  const r = solveSimultaneous3([
+    [1, 1, 1, 1],
+    [2, -1, 0, 0],
+    [1, 0, 1, 0],
+  ]);
+  assert.equal(r.status, "success");
+  if (r.status === "success") {
+    assert.deepEqual(r.x, { num: 1, den: 2 });
+    assert.deepEqual(r.y, { num: 1, den: 1 });
+    assert.deepEqual(r.z, { num: -1, den: 2 });
+  }
+});
+
+test("SIM3-03: 3-variable degenerate classification", () => {
+  assert.equal(
+    solveSimultaneous3([
+      [1, 1, 1, 3],
+      [1, 1, 1, 4],
+      [1, -1, 0, 0],
+    ]).status,
+    "no_solution",
+  );
+  assert.equal(
+    solveSimultaneous3([
+      [1, 1, 1, 3],
+      [2, 2, 2, 6],
+      [1, -1, 0, 1],
+    ]).status,
+    "infinite",
+  );
+});
+
+test("SIM-07: word-problem system (apples/oranges) solves to (3, 7)", () => {
+  const r = solveSimultaneousEquations(1, 1, 10, 150, 80, 1010);
+  assert.equal(r.status, "success");
+  if (r.status === "success") {
+    assert.equal(r.x, 3);
+    assert.equal(r.y, 7);
+  }
+});
+
+test("SIM3-04: Cramer numerators reproduce the solutions (x = Dx/D ...)", () => {
+  const rows: [number, number, number, number][] = [
+    [1, 1, 1, 6],
+    [2, 1, 1, 7],
+    [1, 2, 1, 8],
+  ];
+  const n = cramerNumerators3(rows);
+  // D = 1 for this system, so the numerators equal the solution itself.
+  assert.deepEqual(n.dx, { num: 1, den: 1 });
+  assert.deepEqual(n.dy, { num: 2, den: 1 });
+  assert.deepEqual(n.dz, { num: 3, den: 1 });
+
+  const rows2: [number, number, number, number][] = [
+    [1, 1, 1, 1],
+    [2, -1, 0, 0],
+    [1, 0, 1, 0],
+  ];
+  const n2 = cramerNumerators3(rows2);
+  // D = -2 here; solution (1/2, 1, -1/2) -> numerators (-1, -2, 1).
+  assert.deepEqual(n2.dx, { num: -1, den: 1 });
+  assert.deepEqual(n2.dy, { num: -2, den: 1 });
+  assert.deepEqual(n2.dz, { num: 1, den: 1 });
+});
+
+/* ---------------- #12: financial （金融計算・ローン） ---------------- */
+
+test("FIN-01: TVM future value: 100,000 at 5% for 10 periods", () => {
+  const r = solveTimeValueOfMoney("FV", { pv: 100000, fv: 0, pmt: 0, ratePercent: 5, periods: 10 });
+  assert.ok(Math.abs(r.solvedValue - 162889.4627) < 0.5);
+});
+
+test("FIN-02: TVM payment solve round-trips to the target FV", () => {
+  const r = solveTimeValueOfMoney("PMT", { pv: 0, fv: 1000000, pmt: 0, ratePercent: 3, periods: 36 });
+  const check = tvmFutureValue(0, r.solvedValue, 3, 36);
+  assert.ok(Math.abs(check - 1000000) < 1);
+});
+
+test("FIN-03: loan benchmark (equal payment): 3,000,000 at 3% for 5 years", () => {
+  const r = calculateLoan(3000000, 3, 5);
+  assert.equal(r.monthlyPayment, 53906);
+  assert.ok(r.totalPayment >= 3234300 && r.totalPayment <= 3234400);
+  assert.equal(r.scheduleMode, "monthly");
+  assert.equal(r.schedule.length, 60);
+  assert.equal(r.schedule[59].balance, 0);
+});
+
+test("FIN-04: equal-principal loan: first payment 57,500 and shrinking payments", () => {
+  const r = calculateLoan(3000000, 3, 5, "equal_principal");
+  assert.equal(r.firstPayment, 57500);
+  assert.ok(Math.abs(r.totalInterest - 228750) <= 150);
+  assert.equal(r.schedule.length, 60);
+  assert.ok(r.schedule[0].payment > r.schedule[59].payment);
+  assert.equal(r.schedule[59].balance, 0);
+});
+
+test("FIN-05: long loan (35 years) uses the yearly schedule summary", () => {
+  const r = calculateLoan(30000000, 1.5, 35);
+  assert.equal(r.scheduleMode, "yearly");
+  assert.equal(r.schedule.length, 35);
+  assert.equal(r.schedule[34].balance, 0);
+});
+
+/* ---------------- #13: compound interest （複利） ---------------- */
+
+test("CI-01: one-time deposit benchmark: 1,000,000 at 5% for 10 years (yearly)", () => {
+  const r = calcCompoundInterest({ principal: 1000000, annualRatePercent: 5, years: 10, frequency: 1 });
+  assert.equal(Math.round(r.futureValue), 1628895);
+  assert.equal(Math.round(r.totalInterest), 628895);
+  assert.equal(r.yearly.length, 10);
+  assert.equal(Math.round(r.yearly[9].futureValue), 1628895);
+});
+
+test("CI-02: monthly saving benchmark: 30,000/month at 3% for 20 years", () => {
+  const r = calcCompoundInterest({ principal: 0, annualRatePercent: 3, years: 20, frequency: 12, monthlyContribution: 30000 });
+  assert.equal(Math.round(r.futureValue), 9849060);
+  assert.equal(r.totalContributions, 7200000);
+  assert.equal(Math.round(r.totalInterest), 2649060);
+});
+
+test("CI-03: zero rate keeps contributions exact", () => {
+  const r = calcCompoundInterest({ principal: 100000, annualRatePercent: 0, years: 5, frequency: 1, monthlyContribution: 10000 });
+  assert.equal(r.futureValue, 700000);
+  assert.equal(r.totalInterest, 0);
 });
