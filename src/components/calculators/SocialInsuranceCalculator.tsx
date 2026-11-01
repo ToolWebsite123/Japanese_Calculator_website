@@ -1,20 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
+import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
+import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useLocale } from "@/context/LocaleContext";
+import { useHistory } from "@/context/HistoryContext";
 import { formatYen } from "@/lib/format";
 import { MathEq, MathOp } from "@/components/ui/MathDisplay";
 import {
   PREFECTURES,
   RATES_BASIS_LABEL,
   calcSocialInsurance,
-  type SocialInsuranceResult,
 } from "@/lib/calculators/social-insurance";
 
 function percentLabel(rate: number): string {
@@ -23,6 +24,7 @@ function percentLabel(rate: number): string {
 
 export function SocialInsuranceCalculator() {
   const { t } = useLocale();
+  const { addEntry } = useHistory();
 
   const [salary, setSalary] = useState<string>("300000");
   const [age, setAge] = useState<string>("30");
@@ -30,26 +32,50 @@ export function SocialInsuranceCalculator() {
   const [includeBonus, setIncludeBonus] = useState<boolean>(false);
   const [bonus, setBonus] = useState<string>("500000");
 
-  const [submittedResult, setSubmittedResult] = useState<SocialInsuranceResult | null>(null);
+  const r = useMemo(
+    () =>
+      calcSocialInsurance({
+        monthlySalary: parseFloat(salary) || 0,
+        bonus: includeBonus ? parseFloat(bonus) || 0 : 0,
+        age: parseInt(age, 10) || 0,
+        prefectureIndex: prefectureIdx,
+      }),
+    [salary, bonus, includeBonus, age, prefectureIdx],
+  );
 
-  const handleCalculate = () => {
-    const s = parseFloat(salary) || 0;
-    const a = parseInt(age, 10) || 0;
-    const b = includeBonus ? parseFloat(bonus) || 0 : 0;
+  const loggedKeyRef = useRef<string>("");
+  useEffect(() => {
+    const key = `${salary}|${age}|${prefectureIdx}|${includeBonus ? bonus : ""}`;
+    if (loggedKeyRef.current === key) return;
+    const timer = setTimeout(() => {
+      loggedKeyRef.current = key;
+      addEntry({
+        expression: `社会保険料 月給${salary}円 ${age}歳`,
+        result: formatYen(r.totalDeduction),
+        route: "/social-insurance-calculator",
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [r, salary, age, prefectureIdx, includeBonus, bonus, addEntry]);
 
-    setSubmittedResult(
-      calcSocialInsurance({ monthlySalary: s, bonus: b, age: a, prefectureIndex: prefectureIdx }),
-    );
-  };
-
-  const r = submittedResult;
+  function handleClear() {
+    setSalary("300000");
+    setAge("30");
+    setPrefectureIdx(12);
+    setIncludeBonus(false);
+    setBonus("500000");
+  }
 
   return (
     <>
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.socialInsurancePage?.title || "社会保険料 計算"}
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+      <CalculatorCard
+        compact
+        maxWidthClass="max-w-[500px]"
+        actions={<CopyResultButton value={formatYen(r.totalDeduction)} />}
+      >
         <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label="月額給与（報酬月額）"
@@ -106,19 +132,19 @@ export function SocialInsuranceCalculator() {
             />
           )}
 
-          <PrimaryButton onClick={handleCalculate}>
-            {t.common.calculate || "計算する"}
-          </PrimaryButton>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            {t.common.clear}
+          </SecondaryButton>
 
           <p className="text-xs leading-relaxed text-text-tertiary">{RATES_BASIS_LABEL}</p>
 
-          {r && (
+          {(
             <>
               <SurfacePanel className="border-brand/20 bg-brand-muted space-y-4 animate-in fade-in slide-in-from-top-2">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <div className="text-sm font-medium text-text-tertiary">
-                      健康保険プレミアム (<span>{r.prefName}</span>)
+                      健康保険料 (<span>{r.prefName}</span>)
                     </div>
                     <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
                       {formatYen(r.healthValue)}
@@ -127,7 +153,7 @@ export function SocialInsuranceCalculator() {
                   {r.careRate > 0 && (
                     <div>
                       <div className="text-sm font-medium text-text-tertiary">
-                        介護保険プレミアム (40〜64歳)
+                        介護保険料 (40〜64歳)
                       </div>
                       <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
                         {formatYen(r.careValue)}
@@ -144,14 +170,14 @@ export function SocialInsuranceCalculator() {
                   </div>
                   <div>
                     <div className="text-sm font-medium text-text-tertiary">
-                      厚生年金保険プレミアム
+                      厚生年金保険料
                     </div>
                     <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
                       {formatYen(r.pensionValue)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-text-tertiary">雇用保険プレミアム</div>
+                    <div className="text-sm font-medium text-text-tertiary">雇用保険料</div>
                     <div className="tabular-display mt-1 text-lg font-semibold text-text-primary">
                       {formatYen(r.employmentValue)}
                     </div>
@@ -183,7 +209,7 @@ export function SocialInsuranceCalculator() {
                   </p>
 
                   <div>
-                    <p className="font-medium text-text-primary mb-2">健康保険プレミアム</p>
+                    <p className="font-medium text-text-primary mb-2">健康保険料</p>
                     <MathEq>
                       <span className="text-text-tertiary text-xs mr-2">給与:</span>
                       <span>{r.standardMonthlyHealth.toLocaleString()}</span>
@@ -211,7 +237,7 @@ export function SocialInsuranceCalculator() {
                   {r.careRate > 0 && (
                     <div>
                       <p className="font-medium text-text-primary mb-2">
-                        介護保険プレミアム (年齢40〜64歳)
+                        介護保険料 (年齢40〜64歳)
                       </p>
                       <MathEq>
                         <span className="text-text-tertiary text-xs mr-2">給与:</span>
@@ -265,7 +291,7 @@ export function SocialInsuranceCalculator() {
                   </div>
 
                   <div>
-                    <p className="font-medium text-text-primary mb-2">厚生年金保険プレミアム</p>
+                    <p className="font-medium text-text-primary mb-2">厚生年金保険料</p>
                     <MathEq>
                       <span className="text-text-tertiary text-xs mr-2">給与:</span>
                       <span>{r.standardMonthlyPension.toLocaleString()}</span>
@@ -292,7 +318,7 @@ export function SocialInsuranceCalculator() {
 
                   <div>
                     <p className="font-medium text-text-primary mb-2">
-                      雇用保険プレミアム (一般の事業・本人負担、折半ではありません)
+                      雇用保険料 (一般の事業・本人負担、折半ではありません)
                     </p>
                     <MathEq>
                       <span className="text-text-tertiary text-xs mr-2">給与:</span>
@@ -360,13 +386,6 @@ export function SocialInsuranceCalculator() {
         )}
       </p>
 
-      {t.socialInsurancePage?.howToTitle && t.socialInsurancePage?.howToSteps && (
-        <CalculatorHowToSection
-          title={t.socialInsurancePage.howToTitle}
-          steps={t.socialInsurancePage.howToSteps}
-        />
-      )}
-
       <section aria-labelledby="social-mechanism-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="social-mechanism-heading"
@@ -377,6 +396,32 @@ export function SocialInsuranceCalculator() {
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           {t.socialInsurancePage.guideMechanismBody}
         </p>
+      </section>
+
+      <section aria-labelledby="social-rates-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="social-rates-heading" className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]">
+          {t.socialInsurancePage.ratesTableTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken text-left">
+                {t.socialInsurancePage.ratesTableHead.map((cell) => (
+                  <th key={cell} className="px-3 py-2.5 font-semibold text-text-primary">{cell}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {t.socialInsurancePage.ratesTableRows.map((row) => (
+                <tr key={row[0]} className="border-b border-border">
+                  <td className="px-3 py-2.5 font-medium text-text-primary">{row[0]}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row[1]}</td>
+                  <td className="px-3 py-2.5 text-text-secondary">{row[2]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section aria-labelledby="social-example-heading" className="mt-16 border-t border-border pt-16">
@@ -392,7 +437,48 @@ export function SocialInsuranceCalculator() {
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           {t.socialInsurancePage.guideNoteBody}
         </p>
+        <h3 className="mt-8 text-xl font-semibold text-text-primary">
+          {t.socialInsurancePage.contentExamplesTitle}
+        </h3>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken text-left">
+                <th className="px-3 py-2.5 font-semibold text-text-primary">条件</th>
+                <th className="px-3 py-2.5 font-semibold text-text-primary">本人負担の合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              {t.socialInsurancePage.contentExamplesRows.map((row) => (
+                <tr key={row[0]} className="border-b border-border">
+                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
+
+      <section aria-labelledby="social-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="social-mistakes-heading" className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]">
+          {t.socialInsurancePage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.socialInsurancePage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {t.socialInsurancePage?.howToTitle && t.socialInsurancePage?.howToSteps && (
+        <CalculatorHowToSection
+          title={t.socialInsurancePage.howToTitle}
+          steps={t.socialInsurancePage.howToSteps}
+        />
+      )}
 
       {t.socialInsurancePage?.faqTitle && t.socialInsurancePage?.faqItems && (
         <CalculatorFaqSection
