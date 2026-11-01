@@ -13,8 +13,14 @@ export type LoanChartPoint = {
   balance: number;
 };
 
+export type RepaymentType = "equal_payment" | "equal_principal";
+
 export type LoanResult = {
+  repaymentType: RepaymentType;
+  /** Level payment （元利均等） or first payment （元金均等）. */
   monthlyPayment: number;
+  firstPayment: number;
+  lastPayment: number;
   totalPayment: number;
   totalInterest: number;
   scheduleMode: "monthly" | "yearly";
@@ -26,6 +32,7 @@ export function calculateLoan(
   principal: number,
   annualRatePercent: number,
   termYears: number,
+  repaymentType: RepaymentType = "equal_payment",
 ): LoanResult {
   if (!Number.isFinite(principal) || principal <= 0) {
     throw new Error("借入額が無効です");
@@ -50,22 +57,37 @@ export function calculateLoan(
 
   monthlyPayment = Math.round(monthlyPayment);
 
+  // 元金均等: the principal part is (nearly) constant; the payment shrinks
+  // as the balance falls. Base principal is rounded, final month adjusts.
+  const basePrincipal = Math.round(principal / months);
+
   const monthlySchedule: AmortizationRow[] = [];
   let balance = principal;
   let totalPayment = 0;
+  let firstPayment = 0;
+  let lastPayment = 0;
 
   for (let month = 1; month <= months; month++) {
     const interest = Math.round(balance * monthlyRate);
-    let principalPart = monthlyPayment - interest;
-    let payment = monthlyPayment;
+    let principalPart: number;
+    let payment: number;
 
-    if (month === months || principalPart > balance) {
-      principalPart = balance;
+    if (repaymentType === "equal_principal") {
+      principalPart = month === months ? balance : Math.min(basePrincipal, balance);
       payment = principalPart + interest;
+    } else {
+      principalPart = monthlyPayment - interest;
+      payment = monthlyPayment;
+      if (month === months || principalPart > balance) {
+        principalPart = balance;
+        payment = principalPart + interest;
+      }
     }
 
     balance = Math.max(0, balance - principalPart);
     totalPayment += payment;
+    if (month === 1) firstPayment = payment;
+    lastPayment = payment;
 
     monthlySchedule.push({
       period: month,
@@ -79,7 +101,11 @@ export function calculateLoan(
     if (balance === 0) break;
   }
 
-  const scheduleMode = months < 60 ? "monthly" : "yearly";
+  if (repaymentType === "equal_principal") {
+    monthlyPayment = firstPayment;
+  }
+
+  const scheduleMode = months <= 120 ? "monthly" : "yearly";
   const schedule =
     scheduleMode === "monthly" ? monthlySchedule : summarizeYearlySchedule(monthlySchedule);
   const chartPoints = schedule.map((row) => ({
@@ -89,7 +115,10 @@ export function calculateLoan(
   }));
 
   return {
+    repaymentType,
     monthlyPayment,
+    firstPayment,
+    lastPayment,
     totalPayment,
     totalInterest: totalPayment - principal,
     schedule,

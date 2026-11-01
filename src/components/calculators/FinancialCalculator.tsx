@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -10,7 +10,6 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
   Divider,
-  PrimaryButton,
   SecondaryButton,
   SegmentedControl,
   SurfacePanel,
@@ -25,6 +24,7 @@ import {
   type TvmSolveTarget,
 } from "@/lib/calculators/financial";
 import { formatDisplayNumber, formatYen } from "@/lib/format";
+import { calculateLoan, type RepaymentType } from "@/lib/calculators/loan";
 
 const SOLVE_TARGETS: TvmSolveTarget[] = ["PV", "FV", "PMT", "IY", "N"];
 
@@ -678,8 +678,11 @@ export function FinancialCalculator() {
   const [pmt, setPmt] = useState("0");
   const [rate, setRate] = useState("5");
   const [periods, setPeriods] = useState("10");
-  const [result, setResult] = useState<TvmResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<"tvm" | "loan">("tvm");
+  const [loanPrincipal, setLoanPrincipal] = useState("3000000");
+  const [loanRate, setLoanRate] = useState("3");
+  const [loanYears, setLoanYears] = useState("5");
+  const [repaymentType, setRepaymentType] = useState<RepaymentType>("equal_payment");
 
   const values: Record<TvmSolveTarget, string> = {
     PV: pv,
@@ -697,39 +700,87 @@ export function FinancialCalculator() {
     N: setPeriods,
   };
 
-  function handleCalculate() {
+  const computed = useMemo(() => {
     try {
-      const inputs = {
+      const res = solveTimeValueOfMoney(solveFor, {
         pv: parseFloat(pv),
         fv: parseFloat(fv),
         pmt: parseFloat(pmt),
         ratePercent: parseFloat(rate),
         periods: parseFloat(periods),
+      });
+      return { result: res as TvmResult, error: null as string | null };
+    } catch (e) {
+      return {
+        result: null,
+        error: e instanceof Error ? e.message : t.common.invalidInput,
       };
+    }
+  }, [solveFor, pv, fv, pmt, rate, periods, t.common.invalidInput]);
+  const result = computed.result;
+  const error = mode === "tvm" ? computed.error : null;
 
-      const res = solveTimeValueOfMoney(solveFor, inputs);
-      setResult(res);
-      setError(null);
+  const loanComputed = useMemo(() => {
+    try {
+      const res = calculateLoan(
+        parseFloat(loanPrincipal),
+        parseFloat(loanRate),
+        parseFloat(loanYears),
+        repaymentType,
+      );
+      return { result: res, error: null as string | null };
+    } catch (e) {
+      return {
+        result: null,
+        error: e instanceof Error ? e.message : t.common.invalidInput,
+      };
+    }
+  }, [loanPrincipal, loanRate, loanYears, repaymentType, t.common.invalidInput]);
+
+  const loggedKeyRef = useRef<string>("");
+  useEffect(() => {
+    if (mode === "tvm") {
+      if (!computed.result) return;
+      const key = `TVM|${solveFor}|${pv}|${fv}|${pmt}|${rate}|${periods}`;
+      if (loggedKeyRef.current === key) return;
+      const timer = setTimeout(() => {
+        loggedKeyRef.current = key;
+        addEntry({
+          expression: `TVM solve ${solveFor}`,
+          result: formatTvmValue(solveFor, computed.result!.solvedValue),
+          route: "/financial-calculator",
+        });
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+    if (!loanComputed.result) return;
+    const key = `LOAN|${loanPrincipal}|${loanRate}|${loanYears}|${repaymentType}`;
+    if (loggedKeyRef.current === key) return;
+    const timer = setTimeout(() => {
+      loggedKeyRef.current = key;
       addEntry({
-        expression: `TVM solve ${solveFor}`,
-        result: formatTvmValue(solveFor, res.solvedValue),
+        expression: `ローン ${loanPrincipal}円 ${loanRate}% ${loanYears}年`,
+        result: formatYen(loanComputed.result!.monthlyPayment),
         route: "/financial-calculator",
       });
-    } catch (e) {
-      setResult(null);
-      setError(e instanceof Error ? e.message : t.common.invalidInput);
-    }
-  }
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [mode, computed, loanComputed, solveFor, pv, fv, pmt, rate, periods, loanPrincipal, loanRate, loanYears, repaymentType, addEntry]);
 
   function handleClear() {
+    if (mode === "loan") {
+      setLoanPrincipal("3000000");
+      setLoanRate("3");
+      setLoanYears("5");
+      setRepaymentType("equal_payment");
+      return;
+    }
     setSolveFor("FV");
     setPv("100000");
     setFv("0");
     setPmt("0");
     setRate("5");
     setPeriods("10");
-    setResult(null);
-    setError(null);
   }
 
   const solveLabels: Record<TvmSolveTarget, string> = {
@@ -754,12 +805,128 @@ export function FinancialCalculator() {
       <CalculatorCard
         compact
         actions={
-          result ? (
+          mode === "tvm" && result ? (
             <CopyResultButton value={formatTvmValue(solveFor, result.solvedValue)} />
+          ) : mode === "loan" && loanComputed.result ? (
+            <CopyResultButton value={formatYen(loanComputed.result.monthlyPayment)} />
           ) : undefined
         }
       >
         <div className="space-y-4">
+          <SegmentedControl
+            value={mode}
+            onChange={setMode}
+            columns={2}
+            options={[
+              { value: "tvm" as const, label: tFin.modeTvm },
+              { value: "loan" as const, label: tFin.modeLoan },
+            ]}
+          />
+          {mode === "loan" ? (
+            <>
+              <FormField
+                label={tFin.loanPrincipal}
+                type="number"
+                inputMode="decimal"
+                value={loanPrincipal}
+                onChange={(e) => setLoanPrincipal(e.target.value)}
+              />
+              <FormField
+                label={tFin.loanRate}
+                type="number"
+                inputMode="decimal"
+                value={loanRate}
+                onChange={(e) => setLoanRate(e.target.value)}
+              />
+              <FormField
+                label={tFin.loanYears}
+                type="number"
+                inputMode="decimal"
+                value={loanYears}
+                onChange={(e) => setLoanYears(e.target.value)}
+              />
+              <div>
+                <span className="mb-2 block text-sm font-medium text-text-secondary">
+                  {tFin.repaymentType}
+                </span>
+                <SegmentedControl
+                  value={repaymentType}
+                  onChange={setRepaymentType}
+                  columns={2}
+                  options={[
+                    { value: "equal_payment" as const, label: tFin.equalPayment },
+                    { value: "equal_principal" as const, label: tFin.equalPrincipal },
+                  ]}
+                />
+              </div>
+              <SecondaryButton fullWidth onClick={handleClear}>
+                {t.common.clear}
+              </SecondaryButton>
+              {loanComputed.error && <ErrorMessage message={loanComputed.error} />}
+              {loanComputed.result && (
+                <div className="mt-8 space-y-6">
+                  <div className="space-y-3">
+                    <ResultCard
+                      label={
+                        repaymentType === "equal_payment"
+                          ? tFin.monthlyPayment
+                          : tFin.firstPayment
+                      }
+                      value={formatYen(loanComputed.result.monthlyPayment)}
+                      highlight
+                    />
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <ResultCard
+                        label={tFin.loanTotalPayment}
+                        value={formatYen(loanComputed.result.totalPayment)}
+                      />
+                      <ResultCard
+                        label={tFin.loanTotalInterest}
+                        value={formatYen(loanComputed.result.totalInterest)}
+                      />
+                      <ResultCard
+                        label={tFin.lastPayment}
+                        value={formatYen(loanComputed.result.lastPayment)}
+                      />
+                    </div>
+                  </div>
+                  <Divider>
+                    <h3 className="mb-4 text-xl font-semibold text-text-primary">
+                      {tFin.scheduleTitle}
+                    </h3>
+                    <div className="max-h-96 overflow-auto">
+                      <table className="w-full border-collapse text-sm">
+                        <thead>
+                          <tr className="border-b border-border bg-surface-sunken text-left">
+                            <th className="px-3 py-2.5 font-semibold text-text-primary">回</th>
+                            <th className="px-3 py-2.5 font-semibold text-text-primary">返済額</th>
+                            <th className="px-3 py-2.5 font-semibold text-text-primary">元金</th>
+                            <th className="px-3 py-2.5 font-semibold text-text-primary">利息</th>
+                            <th className="px-3 py-2.5 font-semibold text-text-primary">残高</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {loanComputed.result.schedule.map((row) => (
+                            <tr key={row.period} className="border-b border-border">
+                              <td className="px-3 py-2 text-text-secondary">{row.label}</td>
+                              <td className="px-3 py-2 text-text-primary">{formatYen(row.payment)}</td>
+                              <td className="px-3 py-2 text-text-secondary">{formatYen(row.principal)}</td>
+                              <td className="px-3 py-2 text-text-secondary">{formatYen(row.interest)}</td>
+                              <td className="px-3 py-2 text-text-secondary">{formatYen(row.balance)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {loanComputed.result.scheduleMode === "yearly" && (
+                      <p className="mt-3 text-sm text-text-secondary">{tFin.scheduleNote}</p>
+                    )}
+                  </Divider>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
           <div>
             <span className="mb-2 block text-sm font-medium text-text-secondary">
               {tFin.solveFor}
@@ -789,14 +956,9 @@ export function FinancialCalculator() {
             );
           })}
 
-          <div className="flex gap-4">
-            <SecondaryButton fullWidth onClick={handleClear} className="flex-1">
-              {t.common.clear}
-            </SecondaryButton>
-            <PrimaryButton onClick={handleCalculate} fullWidth className="flex-[2]">
-              {t.common.calculate}
-            </PrimaryButton>
-          </div>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            {t.common.clear}
+          </SecondaryButton>
 
           {error && <ErrorMessage message={error} />}
 
@@ -854,6 +1016,8 @@ export function FinancialCalculator() {
               {tFin.explanationText}
             </p>
           </SurfacePanel>
+            </>
+          )}
         </div>
       </CalculatorCard>
 
@@ -867,7 +1031,48 @@ export function FinancialCalculator() {
         <LinkedText text={tPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection title={tPage.howToTitle} steps={tPage.howToSteps} />
+      <section aria-labelledby="financial-formula-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="financial-formula-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {tPage.contentFormulaTitle}
+        </h2>
+        <div className="mt-4 space-y-3">
+          {tPage.contentFormulaLines.map((line) => (
+            <p key={line} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {line}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="financial-examples-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="financial-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {tPage.contentExamplesTitle}
+        </h2>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken text-left">
+                <th className="px-3 py-2.5 font-semibold text-text-primary">条件</th>
+                <th className="px-3 py-2.5 font-semibold text-text-primary">結果</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tPage.contentExamplesRows.map((row) => (
+                <tr key={row[0]} className="border-b border-border">
+                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section aria-labelledby="financial-terms-heading" className="mt-16 border-t border-border pt-16">
         <h2
@@ -888,6 +1093,22 @@ export function FinancialCalculator() {
           ))}
         </div>
       </section>
+
+      <section aria-labelledby="financial-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="financial-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {tPage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {tPage.guideMistakes.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+
+      <CalculatorHowToSection title={tPage.howToTitle} steps={tPage.howToSteps} />
 
       <CalculatorFaqSection title={tPage.faqTitle} items={tPage.faqItems} />
       <RelatedCalculators activeHref="/financial-calculator" />
