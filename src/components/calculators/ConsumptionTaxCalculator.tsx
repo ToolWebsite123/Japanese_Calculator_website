@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
+import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import { CopyResultButton } from "@/components/calculator/CopyResultButton";
+import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -11,7 +13,6 @@ import { formatYen } from "@/lib/format";
 import {
   calcFromTaxExcluded,
   calcFromTaxIncluded,
-  type ConsumptionTaxResult,
   type RoundMode,
 } from "@/lib/calculators/consumption-tax";
 
@@ -35,7 +36,7 @@ const HOW_TO = {
     },
     {
       title: "税額と合計を確認する",
-      body: "「計算する」を押すと、消費税額と税込価格（逆算の場合は税抜価格）が表示されます。",
+      body: "消費税額と税込価格（逆算の場合は税抜価格）がその場で表示されます。",
     },
   ],
 };
@@ -220,32 +221,57 @@ export function ConsumptionTaxCalculator() {
   const [customRatePercent, setCustomRatePercent] = useState("10");
   const [round, setRound] = useState<RoundMode>("floor");
 
-  const [result, setResult] = useState<ConsumptionTaxResult | null>(null);
-  const [resultMode, setResultMode] = useState<Mode>("fromExcluded");
-  const [resultKey, setResultKey] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const { addEntry } = useHistory();
 
-  const handleCalculate = () => {
-    setError(null);
+  const computed = useMemo(() => {
     try {
       const rate =
         rateChoice === "custom" ? parseFloat(customRatePercent) / 100 : parseFloat(rateChoice);
       const input = { amount: parseFloat(amount) || 0, rate, round };
       const r = mode === "fromExcluded" ? calcFromTaxExcluded(input) : calcFromTaxIncluded(input);
-      setResult(r);
-      setResultMode(mode);
-      setResultKey((k) => k + 1);
+      return { result: r, error: null as string | null };
     } catch (e) {
-      setError(e instanceof Error ? e.message : "計算エラー");
+      return { result: null, error: e instanceof Error ? e.message : "計算エラー" };
     }
-  };
+  }, [mode, amount, rateChoice, customRatePercent, round]);
+  const result = computed.result;
+  const error = computed.error;
+  const resultMode = mode;
+
+  const loggedKeyRef = useRef<string>("");
+  useEffect(() => {
+    if (!result) return;
+    const key = `${mode}|${amount}|${rateChoice}|${customRatePercent}|${round}`;
+    if (loggedKeyRef.current === key) return;
+    const timer = setTimeout(() => {
+      loggedKeyRef.current = key;
+      addEntry({
+        expression: `消費税 ${amount}円`,
+        result: formatYen(mode === "fromExcluded" ? result.totalAmount : result.baseAmount),
+        route: "/consumption-tax-calculator",
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [result, mode, amount, rateChoice, customRatePercent, round, addEntry]);
+
+  function handleClear() {
+    setMode("fromExcluded");
+    setAmount("1000");
+    setRateChoice("0.10");
+    setCustomRatePercent("10");
+    setRound("floor");
+  }
 
   return (
     <>
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         消費税 計算
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+      <CalculatorCard
+        compact
+        maxWidthClass="max-w-[500px]"
+        actions={result ? <CopyResultButton value={formatYen(resultMode === "fromExcluded" ? result.totalAmount : result.baseAmount)} /> : undefined}
+      >
         <div className="space-y-2.5 sm:space-y-3">
           <label className="block space-y-1.5">
             <span className="text-sm font-medium text-text-secondary">計算方向</span>
@@ -307,12 +333,14 @@ export function ConsumptionTaxCalculator() {
             </SelectWell>
           </label>
 
-          <PrimaryButton onClick={handleCalculate}>計算する</PrimaryButton>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            クリア
+          </SecondaryButton>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
           {result && (
-            <div key={`res-${resultKey}`} translate="no" className="space-y-6">
+            <div translate="no" className="space-y-6">
               <SurfacePanel className="border-brand/20 bg-brand-muted space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -407,7 +435,18 @@ export function ConsumptionTaxCalculator() {
         </p>
       </Divider>
 
-      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+      <section aria-labelledby="tax-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="tax-example-heading" className={guideHeadingClass}>
+          {TAX_EXAMPLE.title}
+        </h2>
+        <p className={guideBodyClass}>{TAX_EXAMPLE.intro}</p>
+        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {TAX_EXAMPLE.steps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+        <p className={guideBodyClass}>{TAX_EXAMPLE.reverse}</p>
+      </section>
 
       <section aria-labelledby="tax-tables-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="tax-tables-heading" className={guideHeadingClass}>
@@ -422,19 +461,6 @@ export function ConsumptionTaxCalculator() {
         <TaxGuideTable head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded10Rows} />
         <h3 className={guideSubHeadingClass}>{TAX_TABLES.includedToExcluded8Title}</h3>
         <TaxGuideTable head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded8Rows} />
-      </section>
-
-      <section aria-labelledby="tax-example-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="tax-example-heading" className={guideHeadingClass}>
-          {TAX_EXAMPLE.title}
-        </h2>
-        <p className={guideBodyClass}>{TAX_EXAMPLE.intro}</p>
-        <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
-          {TAX_EXAMPLE.steps.map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-        <p className={guideBodyClass}>{TAX_EXAMPLE.reverse}</p>
       </section>
 
       <section aria-labelledby="tax-reduced-heading" className="mt-16 border-t border-border pt-16">
@@ -467,6 +493,8 @@ export function ConsumptionTaxCalculator() {
           ))}
         </ul>
       </section>
+
+<CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
 
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/consumption-tax-calculator" />
