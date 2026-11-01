@@ -29,6 +29,7 @@ export type FurusatoDetailedInput = {
   medical: number;
   singleParent: boolean;
   housingLoanCredit: number; // 住宅ローン控除額 (税額控除, yen)
+  ideco: number; // iDeCo掛金（小規模企業共済等掛金控除・全額控除, yen/year)
 };
 
 export type FurusatoDetailedResult = {
@@ -58,6 +59,7 @@ export type FurusatoDetailedResult = {
   residenceTaxIncomePortion: number; // 住民税所得割額 (housing loan差引後)
   incomeTaxRate: number;
   housingLoanCredit: number;
+  ideco: number;
   donationLimit: number;
 };
 
@@ -130,6 +132,8 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
   );
   const medical = Math.max(Math.floor(input.medical || 0), 0);
   const housingLoanCredit = Math.max(Math.floor(input.housingLoanCredit || 0), 0);
+  // iDeCo掛金は全額が小規模企業共済等掛金控除として所得税・住民税の両方から控除される
+  const ideco = Math.max(Math.floor(input.ideco || 0), 0);
 
   const employmentDeduction = calcEmploymentDeduction(annualIncome);
   const employmentIncome = Math.max(annualIncome - employmentDeduction, 0);
@@ -172,6 +176,7 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
   const totalDeductionResidence =
     basicDeductionResidence +
     socialInsurance +
+    ideco +
     lifeInsuranceResidence +
     earthquakeInsuranceResidence +
     medical +
@@ -183,6 +188,7 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
   const totalDeductionIncomeTax =
     basicDeductionIncomeTax +
     socialInsurance +
+    ideco +
     lifeInsurance +
     earthquakeInsurance +
     medical +
@@ -204,7 +210,9 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
   const rate = marginalIncomeTaxRate(taxableIncomeIncomeTax);
   const denom = 0.9 - rate * 1.021;
   const donationLimit =
-    denom > 0 ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000 : 0;
+    residenceTaxIncomePortion > 0 && denom > 0
+      ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000
+      : 0;
 
   return {
     annualIncome,
@@ -233,6 +241,7 @@ export function calcFurusatoNozeiDetailed(input: FurusatoDetailedInput): Furusat
     residenceTaxIncomePortion,
     incomeTaxRate: rate,
     housingLoanCredit,
+    ideco,
     donationLimit,
   };
 }

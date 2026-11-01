@@ -119,7 +119,9 @@ export function calcFurusatoNozei(input: FurusatoInput): FurusatoResult {
   // = 住民税所得割額 × 20% ÷ (90% − 所得税率×1.021) + 2,000
   const denom = 0.9 - rate * 1.021;
   const donationLimit =
-    denom > 0 ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000 : 0;
+    residenceTaxIncomePortion > 0 && denom > 0
+      ? Math.floor((residenceTaxIncomePortion * 0.2) / denom) + 2000
+      : 0;
 
   return {
     annualIncome,

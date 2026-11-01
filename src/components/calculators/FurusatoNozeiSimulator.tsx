@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
+import { SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import { CopyResultButton } from "@/components/calculator/CopyResultButton";
+import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -26,7 +28,7 @@ const HOW_TO = {
     { title: "給与収入を入力", body: "額面年収を入力します。入力の瞬間に結果が更新されます。" },
     {
       title: "配偶者の状況を選ぶ",
-      body: "なし／69歳以下／70歳以上を選び、配偶者の給与収入を入力します（103万円以下で配偶者控除の対象）。",
+      body: "なし／69歳以下／70歳以上を選び、配偶者の給与収入を入力します（給与収入123万円以下で配偶者控除の対象・令和7年分〜）。",
     },
     {
       title: "同居・別居まで分けて扶養情報を登録",
@@ -34,7 +36,7 @@ const HOW_TO = {
     },
     {
       title: "各種控除の実額を入力",
-      body: "社会保険料等・生命保険料控除・地震保険料控除・医療費控除・住宅ローン控除を、源泉徴収票や控除証明書の実額で入力します。",
+      body: "社会保険料等・生命保険料控除・地震保険料控除・医療費控除・iDeCo掛金・住宅ローン控除を、源泉徴収票や控除証明書の実額で入力します。",
     },
     {
       title: "障害者・ひとり親を反映",
@@ -57,7 +59,7 @@ export const FAQ = {
     {
       question: "簡単版（ふるさと納税ページ）とどう違うの？",
       answer:
-        "簡単版は「年収・配偶者・扶養」の3項目に絞り、社会保険料は年収×15％で推計する目安ツールです。詳細版は生命保険料控除・地震保険料控除・医療費控除・障害者控除・ひとり親控除・住宅ローン控除まで含めて計算し、furusato-tax.jp のExcelシミュレーションと同じ結果を目指します。",
+        "簡単版は「年収・配偶者・扶養」の3項目に絞り、社会保険料は年収×15％で推計する目安ツールです。詳細版は生命保険料控除・地震保険料控除・医療費控除・障害者控除・ひとり親控除・iDeCo掛金・住宅ローン控除まで含めて計算し、furusato-tax.jp のExcelシミュレーションと同じ結果を目指します。",
     },
     {
       question: "furusato-tax.jp の詳細版との違いは？",
@@ -79,8 +81,40 @@ export const FAQ = {
       answer:
         "本ツールは給与所得のみを対象としています。株式の譲渡益・配当・不動産所得などがある場合は上限額が変わるため、税理士やお住まいの自治体にご確認ください。",
     },
+    {
+      question: "iDeCo（イデコ）をしています。上限額はどうなりますか？",
+      answer:
+        "iDeCoの掛金は全額が小規模企業共済等掛金控除として所得から差し引かれるため、課税所得と住民税所得割が下がり、ふるさと納税の控除上限額も下がります。本ツールでは「iDeCo掛金（年間）」欄に入力すると反映されます。iDeCoの節税効果と上限額の減少を合わせて考えることが大切です。",
+    },
+    {
+      question: "ワンストップ特例を使う場合も上限額は同じですか？",
+      answer:
+        "はい。上限額の計算方法は確定申告でもワンストップ特例でも同じです。違いは控除の受け方で、ワンストップ特例では所得税分も含めて全額が住民税から控除されます。",
+    },
   ],
 };
+
+const FORMULA = {
+  title: "控除上限額の計算式",
+  body: "控除上限額は、住民税所得割額をもとに次の式で求めます（総務省の計算方法に基づく）。",
+  lines: [
+    "住民税所得割額 ＝（給与所得 − 所得控除の合計）× 10% − 住宅ローン控除",
+    "控除上限額 ＝ 住民税所得割額 × 20% ÷（90% − 所得税の限界税率 × 1.021）＋ 2,000円",
+  ],
+  note: "所得税の限界税率に1.021を掛けるのは、復興特別所得税（2.1%）を織り込むためです。自己負担2,000円を超える部分が、所得税と住民税から控除されます。",
+};
+
+const EXAMPLE_ROWS: [string, string][] = [
+  ["年収600万円・配偶者（収入なし）・扶養1人（18歳）・社会保険料90万円", "61,405円"],
+  ["年収500万円・単身・社会保険料75万円", "61,656円"],
+  ["年収800万円・単身・社会保険料120万円・iDeCo掛金 年27.6万円", "122,551円（iDeCoなしでは130,485円）"],
+];
+
+const MISTAKES: string[] = [
+  "iDeCoや医療費控除を入れ忘れて上限を高く見積もり、自己負担2,000円を超えてしまう（所得控除が増えるほど上限額は下がります）。",
+  "配偶者の収入しきい値を103万円のまま考える（令和7年分からは給与収入123万円以下が配偶者控除の対象です）。",
+  "上限額ちょうどを狙いすぎる（年収や控除額が想定と変わると上限も変わります。余裕を持った金額設定が安全です）。",
+];
 
 const DEP: Array<{ key: DetailedDependentKey; label: string }> = [
   { key: "under16", label: "16歳未満（控除対象外）" },
@@ -123,7 +157,8 @@ export function FurusatoNozeiSimulator() {
   const [medical, setMedical] = useState("0");
   const [singleParent, setSingleParent] = useState(false);
   const [housingLoanCredit, setHousingLoanCredit] = useState("0");
-  const [showResults, setShowResults] = useState(false);
+  const [ideco, setIdeco] = useState("0");
+  const { addEntry } = useHistory();
 
   const { result, error } = useMemo<{
     result: FurusatoDetailedResult | null;
@@ -153,6 +188,7 @@ export function FurusatoNozeiSimulator() {
         medical: num(medical),
         singleParent,
         housingLoanCredit: num(housingLoanCredit),
+        ideco: num(ideco),
       });
       return { result: r, error: null };
     } catch (e) {
@@ -173,14 +209,49 @@ export function FurusatoNozeiSimulator() {
     medical,
     singleParent,
     housingLoanCredit,
+    ideco,
   ]);
+
+  const loggedKeyRef = useRef<string>("");
+  useEffect(() => {
+    if (!result) return;
+    const key = `${annualIncome}|${spouseType}|${socialInsurance}|${ideco}|${housingLoanCredit}`;
+    if (loggedKeyRef.current === key) return;
+    const timer = setTimeout(() => {
+      loggedKeyRef.current = key;
+      addEntry({
+        expression: `ふるさと納税詳細 年収${annualIncome}円`,
+        result: formatYen(result.donationLimit),
+        route: "/furusato-nozei-simulation-calculation",
+      });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [result, annualIncome, spouseType, socialInsurance, ideco, housingLoanCredit, addEntry]);
+
+  function handleClear() {
+    setAnnualIncome("6000000");
+    setSpouseType("none");
+    setSpouseIncome("0");
+    setDeps({ under16: "0", age16to18: "0", age19to22: "0", age23to69: "0", age70coliving: "0", age70separate: "0" });
+    setDis({ general: "0", special: "0", cohabitingSpecial: "0" });
+    setSocialInsurance("900000");
+    setLifeInsurance("0");
+    setEarthquakeInsurance("0");
+    setMedical("0");
+    setSingleParent(false);
+    setHousingLoanCredit("0");
+    setIdeco("0");
+  }
 
   return (
     <>
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         ふるさと納税 控除上限額 詳細シミュレーション
       </h1>
-      <CalculatorCard compact>
+      <CalculatorCard
+        compact
+        actions={result ? <CopyResultButton value={formatYen(result.donationLimit)} /> : undefined}
+      >
         <div className="space-y-6">
           <FormField
             label="給与収入（円・額面年収）"
@@ -275,6 +346,13 @@ export function FurusatoNozeiSimulator() {
                 value={housingLoanCredit}
                 onChange={(e) => setHousingLoanCredit(e.target.value)}
               />
+              <FormField
+                label="iDeCo掛金（円/年・任意）"
+                type="number"
+                min={0}
+                value={ideco}
+                onChange={(e) => setIdeco(e.target.value)}
+              />
             </div>
           </div>
 
@@ -303,11 +381,13 @@ export function FurusatoNozeiSimulator() {
             </label>
           </div>
 
-          <PrimaryButton onClick={() => setShowResults(true)}>結果を確認する</PrimaryButton>
+          <SecondaryButton fullWidth onClick={handleClear}>
+            クリア
+          </SecondaryButton>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 
-          {showResults && result && (
+          {result && (
             <div className="space-y-6">
               <SurfacePanel className="border-brand/20 bg-brand-muted space-y-4">
                 <div>
@@ -320,6 +400,20 @@ export function FurusatoNozeiSimulator() {
                   <p className="mt-1 text-xs text-text-tertiary">
                     自己負担額 2,000円を含みます。入力を変更すると即座に更新されます。
                   </p>
+                  {result.donationLimit > 2000 && (
+                    <p className="mt-2 text-xs leading-relaxed text-text-tertiary">
+                      上限額まで寄付した場合の控除の内訳（目安）：所得税分{" "}
+                      {formatYen(Math.floor((result.donationLimit - 2000) * result.incomeTaxRate * 1.021))}／
+                      住民税・基本分 {formatYen(Math.floor((result.donationLimit - 2000) * 0.1))}／
+                      住民税・特例分{" "}
+                      {formatYen(
+                        result.donationLimit -
+                          2000 -
+                          Math.floor((result.donationLimit - 2000) * result.incomeTaxRate * 1.021) -
+                          Math.floor((result.donationLimit - 2000) * 0.1),
+                      )}
+                    </p>
+                  )}
                 </div>
               </SurfacePanel>
 
@@ -346,20 +440,21 @@ export function FurusatoNozeiSimulator() {
                       <Row label="⑥ 生命保険料控除" value={formatYen(result.lifeInsurance)} />
                       <Row label="⑦ 地震保険料控除" value={formatYen(result.earthquakeInsurance)} />
                       <Row label="⑧ 医療費控除" value={formatYen(result.medical)} />
+                      <Row label="⑨ iDeCo掛金（小規模企業共済等掛金控除）" value={formatYen(result.ideco)} />
                       <Row
-                        label="⑨ 配偶者控除（住民税）"
+                        label="⑩ 配偶者控除（住民税）"
                         value={formatYen(result.spouseDeductionResidence)}
                       />
                       <Row
-                        label="⑩ 扶養控除（住民税）"
+                        label="⑪ 扶養控除（住民税）"
                         value={formatYen(result.dependentsDeductionResidence)}
                       />
                       <Row
-                        label="⑪ 障害者控除（住民税）"
+                        label="⑫ 障害者控除（住民税）"
                         value={formatYen(result.disabilityDeductionResidence)}
                       />
                       <Row
-                        label="⑫ ひとり親控除（住民税）"
+                        label="⑬ ひとり親控除（住民税）"
                         value={formatYen(result.singleParentDeductionResidence)}
                       />
                       <Row
@@ -368,29 +463,29 @@ export function FurusatoNozeiSimulator() {
                         strong
                       />
                       <Row
-                        label="⑬ 住民税課税所得 (③−合計)"
+                        label="⑭ 住民税課税所得 (③−合計)"
                         value={formatYen(result.taxableIncomeResidence)}
                         strong
                       />
                       <Row
-                        label="⑭ 住民税所得割額 (⑬×10% − 住宅ローン控除)"
+                        label="⑮ 住民税所得割額 (⑭×10% − 住宅ローン控除)"
                         value={formatYen(result.residenceTaxIncomePortion)}
                         strong
                       />
                       <Row
-                        label="⑮ 所得税課税所得（1,000円未満切捨）"
+                        label="⑯ 所得税課税所得（1,000円未満切捨）"
                         value={formatYen(result.taxableIncomeIncomeTax)}
                       />
                       <Row
-                        label="⑯ 所得税の限界税率"
+                        label="⑰ 所得税の限界税率"
                         value={`${(result.incomeTaxRate * 100).toFixed(0)}%`}
                       />
                       <Row
-                        label="⑰ 住宅ローン控除（差引）"
+                        label="⑱ 住宅ローン控除（差引）"
                         value={formatYen(result.housingLoanCredit)}
                       />
                       <Row
-                        label="⑱ 控除上限額 = ⑭×20% ÷ (90% − ⑯×1.021) + 2,000"
+                        label="⑲ 控除上限額 = ⑮×20% ÷ (90% − ⑰×1.021) + 2,000"
                         value={formatYen(result.donationLimit)}
                         highlight
                       />
@@ -403,7 +498,7 @@ export function FurusatoNozeiSimulator() {
 
           <p className="text-xs leading-relaxed text-text-tertiary">
             ※
-            本シミュレーションはあくまで目安です。株式の譲渡益・配当所得・不動産所得など給与以外の所得や、iDeCo・小規模企業共済等掛金控除など、本ツールで扱わない控除がある場合は控除上限額が変わります。最終的な金額はお住まいの自治体または税理士にご確認ください。
+            本シミュレーションはあくまで目安です。株式の譲渡益・配当所得・不動産所得など給与以外の所得や、本ツールで扱わない控除がある場合は控除上限額が変わります。最終的な金額はお住まいの自治体または税理士にご確認ください。
           </p>
         </div>
       </CalculatorCard>
@@ -417,6 +512,46 @@ export function FurusatoNozeiSimulator() {
       <p className="mt-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={INTRO} activeHref="/furusato-nozei-simulation-calculation" />
       </p>
+
+      <section aria-labelledby="furusato-detail-formula-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-detail-formula-heading" className={guideHeadingClass}>
+          {FORMULA.title}
+        </h2>
+        <p className={guideBodyClass}>{FORMULA.body}</p>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {FORMULA.lines.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <p className={guideBodyClass}>{FORMULA.note}</p>
+      </section>
+
+      <section aria-labelledby="furusato-detail-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-detail-example-heading" className={guideHeadingClass}>
+          計算例
+        </h2>
+        <p className={guideBodyClass}>
+          このシミュレーションで実際に計算した控除上限額の例です。所得控除の入力が1つでも変わると上限額は変わります。
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken text-left">
+                <th className="px-3 py-2.5 font-semibold text-text-primary">条件</th>
+                <th className="px-3 py-2.5 font-semibold text-text-primary">控除上限額</th>
+              </tr>
+            </thead>
+            <tbody>
+              {EXAMPLE_ROWS.map((row) => (
+                <tr key={row[0]} className="border-b border-border">
+                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="mt-8 space-y-3 text-sm leading-relaxed text-text-secondary sm:text-base">
         <h2 className="text-xl font-semibold text-text-primary">クイック版と詳細版の使い分け</h2>
@@ -432,7 +567,16 @@ export function FurusatoNozeiSimulator() {
         </p>
       </section>
 
-      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
+      <section aria-labelledby="furusato-detail-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-detail-mistakes-heading" className={guideHeadingClass}>
+          よくある間違い
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {MISTAKES.map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
+      </section>
 
       <section aria-labelledby="furusato-detail-note-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="furusato-detail-note-heading" className={guideHeadingClass}>
@@ -446,6 +590,8 @@ export function FurusatoNozeiSimulator() {
           もあわせてご利用ください。
         </p>
       </section>
+
+<CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
 
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/furusato-nozei-simulation-calculation" />
