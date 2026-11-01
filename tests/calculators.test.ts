@@ -68,6 +68,7 @@ import {
 } from "../src/lib/calculators/financial";
 import { calculateLoan } from "../src/lib/calculators/loan";
 import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
+import { calcInterest, withholdingTax } from "../src/lib/calculators/interest";
 import {
   calcFurusatoNozeiDetailed,
   type FurusatoDetailedInput,
@@ -767,6 +768,7 @@ test("Step A: desk sqrt key", () => {
 
 /* ---------------- Compound interest + monthly contribution ---------------- */
 import { calcCompoundInterest } from "../src/lib/calculators/compound-interest";
+import { calcInterest, withholdingTax } from "../src/lib/calculators/interest";
 
 test("Compound: no contribution matches the legacy formula exactly", () => {
   const r = calcCompoundInterest({ principal: 1000000, annualRatePercent: 5, years: 10, frequency: 1 });
@@ -1335,4 +1337,31 @@ test("CI-03: zero rate keeps contributions exact", () => {
   const r = calcCompoundInterest({ principal: 100000, annualRatePercent: 0, years: 5, frequency: 1, monthlyContribution: 10000 });
   assert.equal(r.futureValue, 700000);
   assert.equal(r.totalInterest, 0);
+});
+
+/* ---------------- #14: interest （利息・単利複利＋税） ---------------- */
+
+test("INT-01: deposit benchmark: 1,000,000 at 1% for 3 years", () => {
+  const r = calcInterest(1000000, 1, 3, "years");
+  assert.equal(Math.round(r.simpleInterest), 30000);
+  assert.equal(Math.round(r.compoundInterest), 30301);
+  assert.equal(Math.round(r.difference), 301);
+});
+
+test("INT-02: daily interest: 500,000 at 5% for 100 days (365-day basis)", () => {
+  const r = calcInterest(500000, 5, 100, "days");
+  assert.equal(Math.round(r.simpleInterest), 6849);
+});
+
+test("INT-03: months convert to fractional years", () => {
+  const r = calcInterest(120000, 6, 6, "months");
+  assert.equal(Math.round(r.simpleInterest), 3600);
+});
+
+test("INT-04: withholding tax on 30,000 yen interest (individual, 20.315%)", () => {
+  const tax = withholdingTax(30000);
+  assert.equal(tax.incomeTax, 4594);
+  assert.equal(tax.localTax, 1500);
+  assert.equal(tax.total, 6094);
+  assert.equal(tax.net, 23906);
 });
