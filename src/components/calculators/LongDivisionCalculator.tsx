@@ -241,14 +241,11 @@ export function LongDivisionCalculator() {
 
   return (
     <div>
-      <p className="mx-auto max-w-2xl text-center text-base text-text-secondary sm:text-lg">
-        <LinkedText text={page.description} activeHref={HREF} />
-      </p>
-      <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
-        <LinkedText text={page.introParagraph} activeHref={HREF} />
-      </p>
+      <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
+        {page.title}
+      </h1>
 
-      <div className="mx-auto mt-10 max-w-2xl">
+      <div className="mx-auto max-w-2xl">
         <SurfacePanel>
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="block">
@@ -387,6 +384,13 @@ export function LongDivisionCalculator() {
           )}
         </SurfacePanel>
       </div>
+
+      <p className="mx-auto mt-12 max-w-2xl text-center text-base text-text-secondary sm:text-lg">
+        <LinkedText text={page.description} activeHref={HREF} />
+      </p>
+      <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+        <LinkedText text={page.introParagraph} activeHref={HREF} />
+      </p>
 
       <section
         aria-labelledby="long-division-method-heading"
