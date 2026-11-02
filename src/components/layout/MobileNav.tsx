@@ -186,11 +186,65 @@ export function MobileNav({
               </IconButton>
             </div>
 
-            <div className="mb-4 sm:hidden">
+            <div className="mb-4 md:hidden">
               <SearchInput size="compact" />
             </div>
 
             <nav className="space-y-2" aria-label="計算機メニュー" suppressHydrationWarning>
+              <Link
+                href="/"
+                onClick={onMenuClose}
+                className={[
+                  "group relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium transition-all duration-150",
+                  pathsEqual(pathname, "/")
+                    ? "bg-brand-muted text-brand"
+                    : "text-brand hover:bg-surface-sunken hover:opacity-80 dark:text-[#d6ccf0]",
+                ].join(" ")}
+              >
+                <span
+                  className={[
+                    "flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)]",
+                    pathsEqual(pathname, "/")
+                      ? "bg-brand text-white"
+                      : "bg-surface-sunken text-brand",
+                  ].join(" ")}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                  </svg>
+                </span>
+                {t.nav.home}
+              </Link>
+
+              <Link
+                href="/#how-to"
+                onClick={onMenuClose}
+                className="group relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium text-brand transition-all duration-150 hover:bg-surface-sunken hover:opacity-80 dark:text-[#d6ccf0]"
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] bg-surface-sunken text-brand">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </span>
+                {t.nav.howToUse}
+              </Link>
+
               <Link
                 href="/calculators"
                 onClick={onMenuClose}
