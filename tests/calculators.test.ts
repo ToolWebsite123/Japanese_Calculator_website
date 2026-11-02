@@ -23,6 +23,9 @@ import {
   getLongDivisionSteps,
 } from "../src/lib/calculators/longDivision";
 import { calculateRoot, simplifySquareRoot } from "../src/lib/calculators/root";
+import { evaluateExpression } from "../src/lib/calculators/standard";
+import { convertArea, tsuboToSqm, sqmToTsubo } from "../src/lib/calculators/tsubo";
+import { evaluateFunction, sampleFunction } from "../src/lib/calculators/graph";
 import {
   buildDueDateResult,
   calcFromIvf,
@@ -1875,4 +1878,66 @@ test("CC-09: manuscript paper conversion (400 chars per sheet, spaces excluded)"
   assert.equal(countCharacters("あ".repeat(200)).manuscriptSheets, 0.5);
   // Whitespace does not fill manuscript paper in this conversion.
   assert.equal(countCharacters("あ ".repeat(400)).manuscriptSheets, 1);
+});
+
+test("CC-10: Markdown exclusion strips syntax, keeps text", () => {
+  const md = "# 見出し\n\n**太字**と[リンク](https://example.com)と`code`です。";
+  const plain = countCharacters(md);
+  const stripped = countCharacters(md, { excludeMarkdown: true });
+  // "# ", "**" x2, "](url)" syntax and backticks are not counted.
+  assert.ok(stripped.characters < plain.characters);
+  assert.equal(stripped.characters, [..."見出し\n\n太字とリンクとcodeです。"].length);
+  // snake_case words are not treated as emphasis.
+  assert.equal(countCharacters("foo_bar_baz", { excludeMarkdown: true }).characters, 11);
+});
+
+test("CC-11: HTML exclusion strips tags and comments, keeps inner text", () => {
+  const html = "<p>こんにちは<strong>世界</strong></p><!-- note -->";
+  const stripped = countCharacters(html, { excludeHtml: true });
+  assert.equal(stripped.characters, [..."こんにちは世界"].length);
+  assert.equal(countCharacters(html).characters, [...html].length);
+});
+
+test("STD-chain: chain mode evaluates strictly left-to-right, math mode keeps precedence", () => {
+  assert.equal(evaluateExpression("2+2*2"), 6);
+  assert.equal(evaluateExpression("2+2*2", "math"), 6);
+  assert.equal(evaluateExpression("2+2*2", "chain"), 8);
+  assert.equal(evaluateExpression("10-4/2", "math"), 8);
+  assert.equal(evaluateExpression("10-4/2", "chain"), 3);
+  // Parentheses still group in chain mode.
+  assert.equal(evaluateExpression("(2+2)*2", "chain"), 8);
+  assert.equal(evaluateExpression("2*(3+4)", "chain"), 14);
+  // Unary minus still binds in chain mode.
+  assert.equal(evaluateExpression("-2+3*2", "chain"), 2);
+});
+
+test("TS-01: tsubo/sqm/jo conversion uses exact definitions", () => {
+  // 1 tsubo = 400/121 sqm exactly.
+  assert.ok(Math.abs(tsuboToSqm(1) - 400 / 121) < 1e-12);
+  assert.ok(Math.abs(sqmToTsubo(400 / 121) - 1) < 1e-9);
+  const r = convertArea(30, "tsubo", "fudosan");
+  assert.ok(Math.abs(r.sqm - 99.1735) < 0.001);
+  assert.ok(Math.abs(r.jo - 61.2182) < 0.001);
+  // Tatami types: 6 jo of chukyoma (1.652) is 9.912 sqm = ~3 tsubo.
+  const j = convertArea(6, "jo", "chukyoma");
+  assert.ok(Math.abs(j.sqm - 9.912) < 1e-9);
+  assert.ok(Math.abs(j.tsubo - 2.9982) < 0.001);
+  assert.throws(() => convertArea(-1, "sqm", "fudosan"));
+});
+
+test("GR-01: graph evaluator — powers, implicit multiplication, functions, unary minus", () => {
+  assert.equal(evaluateFunction("x^2", 3), 9);
+  assert.equal(evaluateFunction("2x+1", 4), 9);
+  assert.equal(evaluateFunction("2(x+1)", 3), 8);
+  assert.equal(evaluateFunction("(x+1)(x-1)", 4), 15);
+  assert.equal(evaluateFunction("x^2-2x+1", 3), 4);
+  assert.ok(Math.abs(evaluateFunction("sin(x)", Math.PI / 2) - 1) < 1e-12);
+  assert.equal(evaluateFunction("log(x)", 100), 2);
+  assert.equal(evaluateFunction("sqrt(x)", 9), 3);
+  assert.equal(evaluateFunction("-x^2", 2), -4);
+  assert.equal(evaluateFunction("2^-2", 0), 0.25);
+  assert.throws(() => evaluateFunction("1/x", 0));
+  assert.throws(() => evaluateFunction("foo(x)", 1));
+  const pts = sampleFunction("1/x", -2, 2, 8);
+  assert.equal(pts[4].y, null);
 });
