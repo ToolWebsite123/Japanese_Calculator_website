@@ -305,7 +305,7 @@ export function GraphCalculator() {
                       y
                     </th>
                     {tableRows.map((row) => (
-                      <td key={row.x} className={tableCellClass}>
+                      <td key={row.x} data-label={`x = ${row.x}`} className={tableCellClass}>
                         {row.y}
                       </td>
                     ))}
@@ -341,8 +341,8 @@ export function GraphCalculator() {
             <tbody>
               {FUNCTION_ROWS.map((row) => (
                 <tr key={row[0]}>
-                  <td className={`${tableCellClass} font-medium text-text-primary`}>{row[0]}</td>
-                  <td className={tableCellClass}>{row[1]}</td>
+                  <td data-label="種類" className={`${tableCellClass} font-medium text-text-primary`}>{row[0]}</td>
+                  <td data-label="書き方" className={tableCellClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
