@@ -11,7 +11,7 @@ export function HomeMobileNote() {
       >
         スマートフォンでの利用
       </h2>
-      <p className="mt-3 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mt-3 text-sm leading-relaxed text-text-secondary sm:text-base">
         スマートフォンやタブレットでも、PCと同じWeb電卓と全27種の計算機をそのまま使えます。画面の大きさに合わせてキーの配置が調整されるため、外出先の買い物や移動中の確認にも便利です。アプリのインストールは不要で、ブラウザで開くだけですべての機能が使えます。
       </p>
     </section>
