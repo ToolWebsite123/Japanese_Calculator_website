@@ -54,7 +54,7 @@ export function HomeUsageGuide() {
   return (
     <section
       aria-labelledby="home-usage-heading"
-      className="border-y border-border bg-brand-muted/25"
+      className=""
     >
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14">
         <h2
