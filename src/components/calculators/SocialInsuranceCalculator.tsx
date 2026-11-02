@@ -187,7 +187,7 @@ export function SocialInsuranceCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     合計控除額（月額目安）
                   </div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(r.totalDeduction)}
                   </div>
                 </div>
@@ -357,7 +357,7 @@ export function SocialInsuranceCalculator() {
                       <MathOp op="+" />
                       <span>{r.employmentValue.toLocaleString()}</span>
                       <MathOp op="=" />
-                      <span className="font-bold text-brand">{r.totalDeduction.toLocaleString()}</span>
+                      <span className="font-bold text-brand dark:text-[#d6ccf0]">{r.totalDeduction.toLocaleString()}</span>
                     </MathEq>
                   </div>
                 </SurfacePanel>
