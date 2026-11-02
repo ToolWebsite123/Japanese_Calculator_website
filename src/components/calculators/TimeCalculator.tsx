@@ -7,7 +7,12 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { InputWell, SegmentedControl, SurfacePanel } from "@/components/ui/primitives";
+import {
+  InputWell,
+  PrimaryButton,
+  SegmentedControl,
+  SurfacePanel,
+} from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import {
   addToClock,
@@ -135,36 +140,70 @@ export function TimeCalculator() {
     return { error: null, isNegative, h, m, s, absSeconds };
   };
 
-  const { error, isNegative, h, m, s, absSeconds } = calculateTime();
+  // Results appear only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Each of the three modes
+  // keeps its own snapshot, exactly as the live computations did.
+  const [durationResult, setDurationResult] = useState<ReturnType<
+    typeof calculateTime
+  > | null>(null);
+  const [clockResult, setClockResult] = useState<{
+    diff: ReturnType<typeof clockDifference>;
+    breakMin: number;
+    workingMinutes: number;
+  } | null>(null);
+  const [offsetResult, setOffsetResult] = useState<ReturnType<typeof addToClock> | null>(
+    null,
+  );
+  const [offsetDaySuffix, setOffsetDaySuffix] = useState("");
+
+  const error = durationResult?.error ?? null;
+  const isNegative = durationResult?.isNegative ?? false;
+  const h = durationResult?.h ?? 0;
+  const m = durationResult?.m ?? 0;
+  const s = durationResult?.s ?? 0;
+  const absSeconds = durationResult?.absSeconds ?? 0;
   const pad = (num: number) => num.toString().padStart(2, "0");
 
-  // Clock mode, computed live
-  const clockStartMin = parseClockTime(clockStart);
-  const clockEndMin = parseClockTime(clockEnd);
-  const clockDiff =
-    clockStartMin !== null && clockEndMin !== null
-      ? clockDifference(clockStartMin, clockEndMin)
-      : null;
-  const breakMin = Math.max(parseInt(breakMinutes, 10) || 0, 0);
-  const workingMinutes = clockDiff ? Math.max(clockDiff.minutes - breakMin, 0) : 0;
+  function handleCalculate() {
+    setDurationResult(calculateTime());
 
-  // Offset mode, computed live
-  const offsetBaseMin = parseClockTime(offsetBase);
-  const offsetDuration =
-    Math.max(parseInt(offsetHours, 10) || 0, 0) * 60 + Math.max(parseInt(offsetMinutes, 10) || 0, 0);
-  const offsetResult =
-    offsetBaseMin !== null ? addToClock(offsetBaseMin, offsetDuration, offsetDirection) : null;
-  const offsetDaySuffix = offsetResult
-    ? offsetResult.dayOffset === 1
-      ? t.timePage.nextDaySuffix
-      : offsetResult.dayOffset === -1
-        ? t.timePage.prevDaySuffix
-        : offsetResult.dayOffset > 1
-          ? `（${offsetResult.dayOffset}日後）`
-          : offsetResult.dayOffset < -1
-            ? `（${-offsetResult.dayOffset}日前）`
-            : ""
-    : "";
+    const clockStartMin = parseClockTime(clockStart);
+    const clockEndMin = parseClockTime(clockEnd);
+    if (clockStartMin !== null && clockEndMin !== null) {
+      const diff = clockDifference(clockStartMin, clockEndMin);
+      const bMin = Math.max(parseInt(breakMinutes, 10) || 0, 0);
+      setClockResult({
+        diff,
+        breakMin: bMin,
+        workingMinutes: Math.max(diff.minutes - bMin, 0),
+      });
+    } else {
+      setClockResult(null);
+    }
+
+    const offsetBaseMin = parseClockTime(offsetBase);
+    const offsetDuration =
+      Math.max(parseInt(offsetHours, 10) || 0, 0) * 60 +
+      Math.max(parseInt(offsetMinutes, 10) || 0, 0);
+    const res =
+      offsetBaseMin !== null
+        ? addToClock(offsetBaseMin, offsetDuration, offsetDirection)
+        : null;
+    setOffsetResult(res);
+    setOffsetDaySuffix(
+      res
+        ? res.dayOffset === 1
+          ? t.timePage.nextDaySuffix
+          : res.dayOffset === -1
+            ? t.timePage.prevDaySuffix
+            : res.dayOffset > 1
+              ? `（${res.dayOffset}日後）`
+              : res.dayOffset < -1
+                ? `（${-res.dayOffset}日前）`
+                : ""
+        : "",
+    );
+  }
 
   return (
     <>
@@ -220,7 +259,7 @@ export function TimeCalculator() {
 
           {error && <ErrorMessage message={error} />}
 
-          {!error && (
+          {durationResult && !error && (
             <SurfacePanel className="border-brand/20 bg-brand-muted text-center">
               <div className="text-sm font-medium text-text-tertiary">結果</div>
               <div className="tabular-display mt-2 break-all text-3xl font-bold tracking-tight text-brand dark:text-[#d6ccf0] sm:text-4xl">
@@ -283,36 +322,36 @@ export function TimeCalculator() {
                 />
               </label>
 
-              {clockDiff && (
+              {clockResult && (
                 <SurfacePanel className="border-brand/20 bg-brand-muted text-center">
                   <div className="text-sm font-medium text-text-tertiary">
                     {t.timePage.elapsedTime}
                   </div>
                   <div className="tabular-display mt-2 break-all text-3xl font-bold tracking-tight text-brand dark:text-[#d6ccf0] sm:text-4xl">
-                    {formatDurationMinutes(clockDiff.minutes)}
+                    {formatDurationMinutes(clockResult.diff.minutes)}
                   </div>
                   <div className="tabular-display mt-2 text-sm text-text-tertiary">
-                    {t.timePage.decimalLabel}：{formatDecimalHoursFromMinutes(clockDiff.minutes)}
+                    {t.timePage.decimalLabel}：{formatDecimalHoursFromMinutes(clockResult.diff.minutes)}
                     時間（{t.timePage.totalLabel}
-                    {clockDiff.minutes}分）
+                    {clockResult.diff.minutes}分）
                   </div>
-                  {breakMin > 0 && (
+                  {clockResult.breakMin > 0 && (
                     <div className="mt-4 border-t border-brand/20 pt-4">
                       <div className="text-sm font-medium text-text-tertiary">
                         {t.timePage.workingTime}
                       </div>
                       <div className="tabular-display mt-1 text-2xl font-bold text-text-primary">
-                        {formatDurationMinutes(workingMinutes)}
+                        {formatDurationMinutes(clockResult.workingMinutes)}
                       </div>
                       <div className="tabular-display mt-1 text-sm text-text-tertiary">
                         {t.timePage.decimalLabel}：
-                        {formatDecimalHoursFromMinutes(workingMinutes)}時間（
+                        {formatDecimalHoursFromMinutes(clockResult.workingMinutes)}時間（
                         {t.timePage.totalLabel}
-                        {workingMinutes}分）
+                        {clockResult.workingMinutes}分）
                       </div>
                     </div>
                   )}
-                  {clockDiff.nextDay && (
+                  {clockResult.diff.nextDay && (
                     <p className="mt-3 text-xs text-text-tertiary">{t.timePage.nextDayNote}</p>
                   )}
                 </SurfacePanel>
@@ -382,6 +421,10 @@ export function TimeCalculator() {
               )}
             </>
           )}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
         </div>
       </CalculatorCard>
 
@@ -440,9 +483,9 @@ export function TimeCalculator() {
             <tbody>
               {t.timePage.examplesTable.map((row) => (
                 <tr key={row.calc} className="border-b border-border">
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.calc}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.mode}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.result}</td>
+                  <td data-label="計算" className="px-3 py-2.5 font-medium text-text-primary">{row.calc}</td>
+                  <td data-label="モード" className="px-3 py-2.5 text-text-secondary">{row.mode}</td>
+                  <td data-label="結果" className="px-3 py-2.5 text-text-secondary">{row.result}</td>
                 </tr>
               ))}
             </tbody>
@@ -475,8 +518,8 @@ export function TimeCalculator() {
             <tbody>
               {t.timePage.decimalTable.map((row) => (
                 <tr key={row.minutes} className="border-b border-border">
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.minutes}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.value}</td>
+                  <td data-label="分" className="px-3 py-2.5 font-medium text-text-primary">{row.minutes}</td>
+                  <td data-label="小数（時間）" className="px-3 py-2.5 text-text-secondary">{row.value}</td>
                 </tr>
               ))}
             </tbody>
