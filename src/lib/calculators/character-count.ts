@@ -28,6 +28,8 @@ export type ScriptBreakdown = {
 export type CharacterStats = {
   characters: number;
   charactersWithoutSpaces: number;
+  bytesUtf8: number;
+  manuscriptSheets: number;
   lines: number;
   wordCount: number;
   uniqueWordCount: number;
@@ -38,6 +40,8 @@ export type CharacterStats = {
 };
 
 export const READING_CHARS_PER_MINUTE = 500;
+/** Characters per sheet of 400-character manuscript paper （原稿用紙）. */
+export const MANUSCRIPT_CHARS_PER_SHEET = 400;
 
 const WHITESPACE = /\s/u;
 
@@ -119,6 +123,8 @@ export function countCharacters(text: string): CharacterStats {
   return {
     characters: chars.length,
     charactersWithoutSpaces,
+    bytesUtf8: new TextEncoder().encode(text).length,
+    manuscriptSheets: charactersWithoutSpaces / MANUSCRIPT_CHARS_PER_SHEET,
     lines,
     wordCount: words.length,
     uniqueWordCount: new Set(words).size,
