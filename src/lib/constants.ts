@@ -48,14 +48,6 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
 
 export const SECONDARY_NAV_ITEMS: NavItem[] = [
   {
-    href: "/web-calculator",
-    labelKey: "nav.webCalculator",
-    icon: "W",
-    category: "basic",
-    descriptionKey: "webCalculator.description",
-    secondary: true,
-  },
-  {
     href: "/financial-calculator",
     labelKey: "nav.financial",
     icon: "金",
