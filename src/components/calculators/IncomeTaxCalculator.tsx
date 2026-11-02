@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import {
+  SelectWell,
+  SurfacePanel,
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -110,6 +116,8 @@ function IncomeGuideTable({ head, rows }: { head: string[]; rows: string[][] }) 
               {row.map((cell, i) => (
                 <td
                   key={cell}
+                  data-label={head[i]}
+                  data-wide={cell.length > 40 ? true : undefined}
                   className={`border border-border px-3 py-2 ${
                     i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
                   }`}
@@ -210,7 +218,12 @@ export function IncomeTaxCalculator() {
   const [otherDeductions, setOtherDeductions] = useState("0");
   const { addEntry } = useHistory();
 
-  const computed = useMemo(() => {
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator).
+  const [result, setResult] = useState<ReturnType<typeof calcIncomeTax> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function handleCalculate() {
     try {
       const r = calcIncomeTax({
         annualIncome: parseFloat(annualIncome) || 0,
@@ -218,35 +231,26 @@ export function IncomeTaxCalculator() {
         socialInsurance: parseFloat(socialInsurance) || 0,
         otherDeductions: parseFloat(otherDeductions) || 0,
       });
-      return { result: r, error: null as string | null };
-    } catch (e) {
-      return { result: null, error: e instanceof Error ? e.message : "計算エラー" };
-    }
-  }, [annualIncome, employmentType, socialInsurance, otherDeductions]);
-  const result = computed.result;
-  const error = computed.error;
-
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    if (!result) return;
-    const key = `${annualIncome}|${employmentType}|${socialInsurance}|${otherDeductions}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+      setResult(r);
+      setError(null);
       addEntry({
         expression: `所得税 年収${annualIncome}円`,
-        result: formatYen(result.totalTax),
+        result: formatYen(r.totalTax),
         route: "/income-tax-calculation",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [result, annualIncome, employmentType, socialInsurance, otherDeductions, addEntry]);
+    } catch (e) {
+      setResult(null);
+      setError(e instanceof Error ? e.message : "計算エラー");
+    }
+  }
 
   function handleClear() {
     setAnnualIncome("6000000");
     setEmploymentType("employee");
     setSocialInsurance("0");
     setOtherDeductions("0");
+    setResult(null);
+    setError(null);
   }
 
   return (
@@ -305,6 +309,10 @@ export function IncomeTaxCalculator() {
               className="text-lg"
             />
           </div>
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            計算する
+          </PrimaryButton>
 
           <SecondaryButton fullWidth onClick={handleClear}>
             クリア
