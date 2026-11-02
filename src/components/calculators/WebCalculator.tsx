@@ -186,12 +186,19 @@ export function WebCalculator() {
         steps={t.webCalculatorPage.howToSteps}
       />
 
-      <ButtonGuideTable title={t.webCalculatorPage.buttonGuideTitle} rows={WEB_BUTTON_GUIDE} />
+      <ButtonGuideTable
+        title={t.webCalculatorPage.buttonGuideTitle}
+        rows={WEB_BUTTON_GUIDE}
+        headingAs="h3"
+      />
 
-      <section aria-labelledby="webcalc-shortcuts-heading" className={sectionClass}>
-        <h2 id="webcalc-shortcuts-heading" className={headingClass}>
+      <section aria-labelledby="webcalc-shortcuts-heading" className="mt-10">
+        <h3
+          id="webcalc-shortcuts-heading"
+          className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
+        >
           {t.webCalculatorPage.shortcutsTitle}
-        </h2>
+        </h3>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full border-collapse text-sm sm:text-base">
             <thead>
