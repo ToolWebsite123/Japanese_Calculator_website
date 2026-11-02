@@ -169,7 +169,7 @@ export function FactorizationCalculator() {
                   <Divider>
                     <h3 className="mb-4 text-xl font-semibold text-text-primary">答え</h3>
                     <SurfacePanel className="flex items-center justify-center">
-                      <span className="text-xl font-bold text-brand sm:text-2xl">
+                      <span className="text-xl font-bold text-brand dark:text-[#d6ccf0] sm:text-2xl">
                         {polyComputed.data.result}
                       </span>
                     </SurfacePanel>
@@ -205,7 +205,7 @@ export function FactorizationCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     {t.factorization.primeFactors}
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-brand">{primeComputed.factorDisplay ?? "—"}</div>
+                  <div className="mt-2 text-2xl font-bold text-brand dark:text-[#d6ccf0]">{primeComputed.factorDisplay ?? "—"}</div>
                 </div>
 
                 {primeComputed.steps.length > 0 && (
