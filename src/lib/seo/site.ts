@@ -1,10 +1,10 @@
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.xn--2kr778m.online";
 export const SITE_NAME = "電卓.Online";
 export const HOME_META_TITLE =
-  "Web電卓｜無料のオンライン電卓・計算機 — 関数電卓・税金・BMIなど26種の計算ツール｜電卓.online";
+  "Web電卓｜無料のオンライン電卓・計算機 — 関数電卓・税金・BMIなど28種の計算ツール｜電卓.online";
 
 export const HOME_META_DESCRIPTION =
-  "無料で使えるWeb電卓・計算機サイト。関数電卓・消費税（税込・税抜）・BMI・複利・所得税・単位変換など全26種の計算ツールを登録不要で提供。スマホ対応で、入力データは外部に送信されません。";
+  "無料で使えるWeb電卓・計算機サイト。関数電卓・消費税（税込・税抜）・BMI・複利・所得税・単位変換など全28種の計算ツールを登録不要で提供。スマホ対応で、入力データは外部に送信されません。";
 
 export const LEGAL_PATHS = [
   "/about",
