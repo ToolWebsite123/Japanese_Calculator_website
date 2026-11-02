@@ -14,7 +14,7 @@ export function HomeIntro() {
       >
         Web電卓（オンライン電卓）とは
       </h2>
-      <div className="mt-3 max-w-3xl space-y-3 text-sm leading-relaxed text-text-secondary sm:text-base">
+      <div className="mt-3 space-y-3 text-sm leading-relaxed text-text-secondary sm:text-base">
         <p>
           <LinkedText text="電卓.onlineのWeb電卓は、ブラウザで開いてすぐ使える無料のオンライン電卓です。アプリのインストールや会員登録は必要ありません。買い物の合計、税込価格の確認、仕事の概算、学習の答え合わせまで、日常の計算をその場で済ませられます。" />
         </p>
