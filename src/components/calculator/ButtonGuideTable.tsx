@@ -17,7 +17,7 @@ export function ButtonGuideTable({ title, rows, headingAs = "h2" }: ButtonGuideT
         {title}
       </Heading>
       <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[320px] border-collapse text-sm">
+        <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b border-border bg-surface-sunken">
               <th className="px-3 py-2.5 text-left font-semibold text-text-primary">ボタン</th>
@@ -27,10 +27,15 @@ export function ButtonGuideTable({ title, rows, headingAs = "h2" }: ButtonGuideT
           <tbody>
             {rows.map((row, index) => (
               <tr key={index} className="border-b border-border last:border-b-0">
-                <td className="px-3 py-2.5 whitespace-nowrap font-medium text-text-primary">
+                <td
+                  data-label="ボタン"
+                  className="px-3 py-2.5 whitespace-nowrap font-medium text-text-primary"
+                >
                   {row.button}
                 </td>
-                <td className="px-3 py-2.5 text-text-secondary">{row.description}</td>
+                <td data-label="機能説明" data-wide className="px-3 py-2.5 text-text-secondary">
+                  {row.description}
+                </td>
               </tr>
             ))}
           </tbody>
