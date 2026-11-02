@@ -61,13 +61,13 @@ export function RelatedCalculators({
             href={item.href}
             className="group flex h-full items-center gap-3.5 rounded-[var(--radius-xl)] border border-border bg-surface-raised p-4 transition duration-200 hover:border-brand/30 hover:shadow-[var(--shadow-card)] sm:p-5"
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-brand-muted text-brand transition group-hover:bg-brand group-hover:text-white">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-brand-muted text-brand transition group-hover:bg-brand group-hover:text-white dark:text-[#d6ccf0]">
               <CalculatorIcon className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-bold text-text-primary group-hover:text-brand">
+              <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-bold text-text-primary group-hover:text-brand dark:group-hover:text-[#d6ccf0]">
                 {getNavLabel(item)}
-                <span className="rounded-full bg-brand-muted px-2 py-0.5 text-[10px] font-bold text-brand">
+                <span className="rounded-full bg-brand-muted px-2 py-0.5 text-[10px] font-bold text-brand dark:text-[#d6ccf0]">
                   {ja.categories[CATEGORY_META[item.category].nameKey]}
                 </span>
               </h3>
