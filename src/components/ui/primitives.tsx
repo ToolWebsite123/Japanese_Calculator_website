@@ -103,9 +103,9 @@ export function SegmentedControl<T extends string>({
         cols === 2
           ? "grid-cols-2"
           : cols === 3
-            ? "grid-cols-3"
+            ? "grid-cols-2 sm:grid-cols-3"
             : cols === 4
-              ? "grid-cols-4"
+              ? "grid-cols-2 sm:grid-cols-4"
               : cols === 5
                 ? "grid-cols-2 sm:grid-cols-5"
                 : "grid-cols-2",
@@ -114,7 +114,7 @@ export function SegmentedControl<T extends string>({
       role="group"
       aria-label="選択"
     >
-      {options.map((opt) => {
+      {options.map((opt, i) => {
         const active = opt.value === value;
         return (
           <button
@@ -123,7 +123,10 @@ export function SegmentedControl<T extends string>({
             onClick={() => onChange(opt.value)}
             className={[
               "btn-interactive font-semibold",
-              size === "lg" ? "min-h-12 py-3 text-xl" : "min-h-11 py-3 text-sm",
+              size === "lg" ? "min-h-12 py-3 text-xl" : "min-h-11 px-2 py-2.5 text-[13px] leading-tight sm:py-3 sm:text-sm",
+              cols === 3 && options.length === 3 && i === options.length - 1
+                ? "max-sm:col-span-2"
+                : "",
               active
                 ? "bg-gradient-to-b from-brand to-brand-hover text-white"
                 : "border border-border bg-surface-sunken text-[#231942] hover:bg-border-subtle dark:text-[#d6ccf0]",
