@@ -86,8 +86,54 @@ export function segmentWords(text: string): string[] {
     .filter((w) => w.length > 0);
 }
 
-export function countCharacters(text: string): CharacterStats {
-  const chars = [...text];
+export type CountOptions = {
+  /** Remove Markdown syntax (headings, emphasis, links, …) before counting. */
+  excludeMarkdown?: boolean;
+  /** Remove HTML tags and comments before counting (inner text is kept). */
+  excludeHtml?: boolean;
+};
+
+/** Remove HTML comments and tags, keeping the text between tags. */
+export function stripHtmlTags(text: string): string {
+  return text.replace(/<!--[\s\S]*?-->/g, "").replace(/<[^>]*>/g, "");
+}
+
+/**
+ * Remove Markdown syntax while keeping the readable text: link and image
+ * syntax collapses to its text/alt text, emphasis markers, heading and
+ * list markers, blockquote markers, code fences and table pipes are
+ * dropped. Underscore emphasis is only unwrapped at word boundaries, so
+ * snake_case words are left intact.
+ */
+export function stripMarkdown(text: string): string {
+  let out = text;
+  out = out.replace(/^\s*```.*$/gm, "");
+  out = out.replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1");
+  out = out.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
+  out = out.replace(/\[([^\]]*)\]\[[^\]]*\]/g, "$1");
+  out = out.replace(/`([^`]*)`/g, "$1");
+  for (let i = 0; i < 3; i++) {
+    out = out
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .replace(/~~([^~]+)~~/g, "$1")
+      .replace(/(?<![A-Za-z0-9])__([^_]+)__(?![A-Za-z0-9])/g, "$1")
+      .replace(/(?<![A-Za-z0-9])_([^_]+)_(?![A-Za-z0-9])/g, "$1");
+  }
+  out = out.replace(/^\s*\|?[\s:|-]+\|[\s:|-]*$/gm, "");
+  out = out.replace(/^#{1,6}\s+/gm, "");
+  out = out.replace(/^\s*>\s?/gm, "");
+  out = out.replace(/^\s*(?:[-*+]|\d+\.)\s+/gm, "");
+  out = out.replace(/^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/gm, "");
+  out = out.replace(/\|/g, " ");
+  return out;
+}
+
+export function countCharacters(text: string, options: CountOptions = {}): CharacterStats {
+  let effective = text;
+  if (options.excludeHtml) effective = stripHtmlTags(effective);
+  if (options.excludeMarkdown) effective = stripMarkdown(effective);
+  const chars = [...effective];
   const breakdown: ScriptBreakdown = {
     hiragana: 0,
     katakana: 0,
@@ -106,29 +152,32 @@ export function countCharacters(text: string): CharacterStats {
   }
 
   const lines =
-    text.length === 0
+    effective.length === 0
       ? 0
-      : text.split(/\r\n|\r|\n/).filter((_, i, arr) => !(i === arr.length - 1 && arr[i] === ""))
-          .length;
+      : effective
+          .split(/\r\n|\r|\n/)
+          .filter((_, i, arr) => !(i === arr.length - 1 && arr[i] === "")).length;
 
-  const words = segmentWords(text);
+  const words = segmentWords(effective);
 
-  const sentences = text
+  const sentences = effective
     .split(/(?<=[。．.!！?？])/u)
     .filter((s) => /[^\s。．.!！?？]/u.test(s)).length;
 
   const paragraphs =
-    text.trim().length === 0 ? 0 : text.split(/\n\s*\n/u).filter((p) => p.trim().length > 0).length;
+    effective.trim().length === 0
+      ? 0
+      : effective.split(/\n\s*\n/u).filter((p) => p.trim().length > 0).length;
 
   return {
     characters: chars.length,
     charactersWithoutSpaces,
-    bytesUtf8: new TextEncoder().encode(text).length,
+    bytesUtf8: new TextEncoder().encode(effective).length,
     manuscriptSheets: charactersWithoutSpaces / MANUSCRIPT_CHARS_PER_SHEET,
     lines,
     wordCount: words.length,
     uniqueWordCount: new Set(words).size,
-    sentenceCount: text.trim().length === 0 ? 0 : sentences,
+    sentenceCount: effective.trim().length === 0 ? 0 : sentences,
     paragraphCount: paragraphs,
     readingTimeMinutes: charactersWithoutSpaces / READING_CHARS_PER_MINUTE,
     breakdown,
