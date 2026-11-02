@@ -13,7 +13,7 @@ import { countCharacters } from "@/lib/calculators/character-count";
 const t = ja.characterCount;
 
 const INTRO =
-  "文字数計算機は、入力した文章の文字数・単語数・文章数・段落数・行数と読了時間の目安を、入力と同時にリアルタイムで集計する無料ツールです。ひらがな・カタカナ・漢字・英数字の内訳も表示します。原稿やレポートの文字数制限の確認、SNS投稿の下書きチェック、ブログ記事の読了時間の目安づくりなどにご利用ください。入力した文章はブラウザ内でのみ集計され、外部に送信されることはありません。";
+  "文字数計算機は、入力した文章の文字数・単語数・文章数・段落数・行数と読了時間の目安を、入力と同時にリアルタイムで集計する無料ツールです。ひらがな・カタカナ・漢字・英数字の内訳に加えて、バイト数（UTF-8）と原稿用紙（400字詰め）の枚数換算、文字数制限のチェックも表示します。原稿やレポートの文字数制限の確認、SNS投稿の下書きチェック、ブログ記事の読了時間の目安づくりなどにご利用ください。入力した文章はブラウザ内でのみ集計され、外部に送信されることはありません。";
 
 const RULES = [
   "文字数はUnicodeのコードポイント単位で数えます。絵文字や一部の漢字も1文字として数えるため、見た目の文字数と一致します。",
@@ -21,6 +21,8 @@ const RULES = [
   "単語数は日本語の語区切り（分かち書きの境界）をもとにした実用的な目安です。文章の内容によって実際の単語の区切りと異なる場合があります。",
   "文章数は「。．.!！?？」で区切られた文の数、段落数は空行で区切られたブロックの数、行数は改行で区切られた行の数です。",
   "読了時間は、空白を除く文字数を日本語の平均的な読書速度（1分あたり500文字）で割って算出した目安です。",
+  "バイト数はUTF-8で数えた容量です。日本語の文字は通常1文字3バイト、英数字は1バイトになるため、文字数とは一致しません。",
+  "原稿用紙換算は、空白を除く文字数を400字詰め原稿用紙1枚＝400文字として換算した枚数です（200字詰めの場合は約2倍になります）。",
 ];
 
 const EXAMPLE_TEXT =
@@ -42,7 +44,7 @@ const HOW_TO = {
     },
     {
       title: "集計結果を確認する",
-      body: "文字数（スペースを除く数も併記）・単語数・文章数・段落数・行数・読了時間と、ひらがな・カタカナ・漢字などの内訳が表示されます。",
+      body: "文字数（スペースを除く数も併記）・単語数・文章数・段落数・行数・読了時間と、ひらがな・カタカナ・漢字などの内訳が表示されます。バイト数（UTF-8）と原稿用紙（400字詰め）の枚数換算も確認できます。",
     },
     {
       title: "結果をコピーする・文章を消す",
@@ -82,7 +84,17 @@ export const FAQ = {
     {
       question: "文字数制限のある原稿や投稿の確認に使えますか？",
       answer:
-        "はい。ページ下部の「文字数制限の目安」では、X（旧Twitter）やInstagramなどの代表的な制限をまとめています。ただし各サービスの仕様は変更されることがあるため、公開前に実際の投稿画面やプレビューでもご確認ください。",
+        "はい。結果欄の「文字数制限チェック」では、代表的な制限（Instagramのキャプション、YouTubeのタイトル）に対する残り文字数をバーで確認でき、任意の上限を入力してチェックすることもできます。また、ページ下部の「文字数制限の目安」では、X（旧Twitter）やInstagramなどの代表的な制限をまとめています。ただし各サービスの仕様は変更されることがあるため、公開前に実際の投稿画面やプレビューでもご確認ください。",
+    },
+    {
+      question: "バイト数（UTF-8）とは何ですか？",
+      answer:
+        "文章をUTF-8という文字コードで表したときのデータ量です。英数字は1文字1バイト、日本語の文字は通常1文字3バイト、絵文字は4バイトになります。データベースの容量制限や、バイト数で上限が決められた入力欄の確認などに使います。",
+    },
+    {
+      question: "原稿用紙の枚数はどのように換算していますか？",
+      answer:
+        "空白を除く文字数を、400字詰め原稿用紙1枚＝400文字として割った枚数です。たとえば空白を除く文字数が2,000文字なら約5枚になります。200字詰め原稿用紙では約2倍の枚数になります。",
     },
   ],
 };
@@ -94,6 +106,39 @@ function formatReadingTime(minutes: number): string {
   return `約${Math.ceil(minutes)}分`;
 }
 
+function formatManuscriptSheets(sheets: number): string {
+  if (sheets === 0) return "0枚";
+  const rounded = Math.round(sheets * 10) / 10;
+  return `約${rounded.toLocaleString()}枚`;
+}
+
+function LimitBar({ label, limit, used }: { label: string; limit: number; used: number }) {
+  const over = used > limit;
+  const pct = limit > 0 ? Math.min(100, (used / limit) * 100) : 0;
+  return (
+    <div>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+        <span className="font-medium text-text-secondary">
+          {label}（{limit.toLocaleString()}字まで）
+        </span>
+        <span
+          className={over ? "font-semibold text-red-600 dark:text-red-400" : "text-text-secondary"}
+        >
+          {over
+            ? `${(used - limit).toLocaleString()}字オーバー`
+            : `あと${(limit - used).toLocaleString()}字`}
+        </span>
+      </div>
+      <div className="mt-1 h-2 overflow-hidden rounded-full bg-surface-sunken">
+        <div
+          className={over ? "h-full bg-red-500" : "h-full bg-brand"}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 const guideHeadingClass =
   "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
 const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
@@ -101,6 +146,7 @@ const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text
 export function CharacterCounter() {
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
+  const [customLimit, setCustomLimit] = useState("");
   const stats = useMemo(() => countCharacters(text), [text]);
   const exampleStats = useMemo(() => countCharacters(EXAMPLE_TEXT), []);
 
@@ -111,6 +157,12 @@ export function CharacterCounter() {
     { label: t.stats.sentenceCount, value: stats.sentenceCount },
     { label: t.stats.paragraphCount, value: stats.paragraphCount },
     { label: "行数", value: stats.lines },
+    { label: "バイト数（UTF-8）", value: stats.bytesUtf8 },
+    {
+      label: "原稿用紙（400字詰め）",
+      value: stats.manuscriptSheets,
+      display: formatManuscriptSheets(stats.manuscriptSheets),
+    },
   ];
 
   const breakdownRows = [
@@ -140,6 +192,8 @@ export function CharacterCounter() {
       `${t.stats.sentenceCount}: ${stats.sentenceCount}`,
       `${t.stats.paragraphCount}: ${stats.paragraphCount}`,
       `行数: ${stats.lines}`,
+      `バイト数（UTF-8）: ${stats.bytesUtf8}`,
+      `原稿用紙（400字詰め）: ${formatManuscriptSheets(stats.manuscriptSheets)}`,
       `${t.stats.readingTime}: ${formatReadingTime(stats.readingTimeMinutes)}`,
     ].join("\n");
     try {
@@ -202,7 +256,7 @@ export function CharacterCounter() {
               >
                 <div className="text-xs font-medium text-text-tertiary">{tile.label}</div>
                 <div className="tabular-display mt-1 text-lg font-bold text-text-primary">
-                  {tile.value.toLocaleString()}
+                  {"display" in tile && tile.display ? tile.display : tile.value.toLocaleString()}
                 </div>
               </div>
             ))}
@@ -223,6 +277,50 @@ export function CharacterCounter() {
                 </span>
               ))}
             </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-surface px-4 py-3">
+            <div className="text-sm font-medium text-text-secondary">
+              文字数制限チェック（空白・改行を除く {stats.charactersWithoutSpaces.toLocaleString()}{" "}
+              字で判定）
+            </div>
+            <div className="mt-3 space-y-3">
+              <LimitBar
+                label="Instagramのキャプション"
+                limit={2200}
+                used={stats.charactersWithoutSpaces}
+              />
+              <LimitBar
+                label="YouTubeのタイトル"
+                limit={100}
+                used={stats.charactersWithoutSpaces}
+              />
+              {Number(customLimit) > 0 && (
+                <LimitBar
+                  label="カスタム制限"
+                  limit={Number(customLimit)}
+                  used={stats.charactersWithoutSpaces}
+                />
+              )}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <label htmlFor="character-custom-limit" className="text-sm text-text-secondary">
+                任意の上限（字）
+              </label>
+              <input
+                id="character-custom-limit"
+                type="number"
+                min={1}
+                inputMode="numeric"
+                value={customLimit}
+                onChange={(e) => setCustomLimit(e.target.value)}
+                placeholder="例：800"
+                className="w-28 rounded-[var(--radius-md)] border border-border bg-surface px-3 py-1.5 text-sm text-text-primary placeholder:text-text-tertiary focus:border-brand/40 focus:outline-none focus:ring-2 focus:ring-brand/20"
+              />
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-text-tertiary">
+              X（旧Twitter）は日本語1文字が2カウントとして扱われる仕様のため、このチェックの単純な文字数とは一致しません。各サービスの仕様は変更されることがあります。
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-3">
