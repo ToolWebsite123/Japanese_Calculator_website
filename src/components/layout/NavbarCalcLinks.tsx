@@ -6,13 +6,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorIcon } from "@/components/icons/CalculatorIcon";
 import { useLocale } from "@/context/LocaleContext";
 import { NAV_ITEMS, type CalculatorCategory, type NavItem } from "@/lib/constants";
-import {
-  CATEGORY_ORDER,
-  getCalculatorsByCategory,
-  getNavLabel,
-  searchCalculators,
-} from "@/lib/catalog";
+import { CATEGORY_ORDER, getNavLabel, searchCalculators } from "@/lib/catalog";
 import { pathsEqual } from "@/lib/path";
+
+/**
+ * The menu groups strictly by each tool's declared category, so every
+ * calculator appears exactly once. (The shared catalog helper treats
+ * "more" as a catch-all list of all secondary tools, which would flood
+ * this menu with duplicates; here その他 holds only its own tool, 麻雀.)
+ */
+function menuItemsByCategory(category: CalculatorCategory): NavItem[] {
+  return NAV_ITEMS.filter((item) => item.category === category);
+}
 
 /** Sidebar labels for the mega menu, as approved in the design spec. */
 const MENU_CATEGORY_LABELS: Record<CalculatorCategory, string> = {
@@ -52,9 +57,7 @@ export function NavbarCalcLinks() {
     () => (searching ? searchCalculators(query.trim()) : []),
     [query, searching],
   );
-  const visibleItems: NavItem[] = searching
-    ? searchResults
-    : getCalculatorsByCategory(activeCategory);
+  const visibleItems: NavItem[] = searching ? searchResults : menuItemsByCategory(activeCategory);
 
   // Every time the menu opens, start from the category of the page the
   // visitor is on (or 基本) with an empty search.
@@ -227,8 +230,7 @@ export function NavbarCalcLinks() {
               <div className="flex">
                 <div className="flex w-44 shrink-0 flex-col gap-0.5 border-r border-border p-2">
                   {CATEGORY_ORDER.map((catId) => {
-                    const count = getCalculatorsByCategory(catId).length;
-                    if (count === 0) return null;
+                    if (menuItemsByCategory(catId).length === 0) return null;
                     const selected = !searching && activeCategory === catId;
                     return (
                       <button
@@ -240,26 +242,16 @@ export function NavbarCalcLinks() {
                         }}
                         aria-current={selected ? "true" : undefined}
                         className={[
-                          "flex items-center justify-between rounded-[var(--radius-md)] px-3 py-2 text-left text-sm transition",
+                          "flex items-center rounded-[var(--radius-md)] px-3 py-2 text-left text-sm transition",
                           selected
                             ? "bg-brand-muted font-semibold text-brand dark:text-[#d6ccf0]"
                             : "text-text-secondary hover:bg-surface-sunken hover:text-brand",
                         ].join(" ")}
                       >
                         <span>{MENU_CATEGORY_LABELS[catId]}</span>
-                        <span className="text-xs text-text-tertiary">{count}</span>
                       </button>
                     );
                   })}
-                  <div className="mt-auto border-t border-border pt-2">
-                    <Link
-                      href="/calculators"
-                      onClick={() => setDropdownOpen(false)}
-                      className="block rounded-[var(--radius-md)] px-3 py-2 text-sm font-bold text-brand transition hover:bg-surface-sunken dark:text-[#d6ccf0]"
-                    >
-                      {t.nav.allCalculators} →
-                    </Link>
-                  </div>
                 </div>
 
                 <div className="max-h-[46vh] min-w-0 flex-1 overflow-y-auto p-3">
