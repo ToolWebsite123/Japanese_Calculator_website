@@ -25,21 +25,26 @@ export function HomeFeatures() {
   return (
     <section
       aria-labelledby="home-features-heading"
-      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14"
+      className="border-y border-border bg-brand-muted/25"
     >
-      <h2
-        id="home-features-heading"
-        className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
-      >
-        便利な機能と設定
-      </h2>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        {FEATURES.map((feature) => (
-          <article key={feature.title} className="rounded-2xl border border-border bg-surface p-5">
-            <h3 className="text-base font-bold text-text-primary">{feature.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-text-secondary">{feature.text}</p>
-          </article>
-        ))}
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14">
+        <h2
+          id="home-features-heading"
+          className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
+        >
+          便利な機能と設定
+        </h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {FEATURES.map((feature) => (
+            <article
+              key={feature.title}
+              className="rounded-2xl border border-border bg-surface p-5"
+            >
+              <h3 className="text-base font-bold text-text-primary">{feature.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{feature.text}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
