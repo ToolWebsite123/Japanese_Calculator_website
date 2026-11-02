@@ -136,11 +136,11 @@ export function NavbarCalcLinks() {
           "flex min-w-0 items-center gap-2.5 rounded-[var(--radius-md)] border px-2.5 py-2 transition",
           active
             ? "border-brand/30 bg-brand-muted/60 text-brand dark:text-[#d6ccf0]"
-            : "border-transparent text-text-secondary hover:border-brand/25 hover:bg-brand-muted/50 hover:text-brand",
+            : "border-transparent text-text-secondary hover:border-brand/25 hover:bg-brand-muted/50 hover:text-brand dark:hover:text-[#d6ccf0]",
         ].join(" ")}
       >
         <span
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-surface-sunken text-brand"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-surface-sunken text-brand dark:text-[#d6ccf0]"
           aria-hidden="true"
         >
           <CalculatorIcon className="h-4 w-4" />
@@ -163,7 +163,7 @@ export function NavbarCalcLinks() {
         {homeActive && underline}
       </Link>
 
-      <div ref={dropdownRef} className="relative flex items-stretch px-1">
+      <div ref={dropdownRef} className="relative ml-3 flex items-stretch px-1">
         <button
           ref={buttonRef}
           type="button"
@@ -244,7 +244,7 @@ export function NavbarCalcLinks() {
                           "flex items-center rounded-[var(--radius-md)] px-3 py-2 text-left text-sm transition",
                           selected
                             ? "bg-brand-muted font-semibold text-brand dark:text-[#d6ccf0]"
-                            : "text-text-secondary hover:bg-surface-sunken hover:text-brand",
+                            : "text-text-secondary hover:bg-surface-sunken hover:text-brand dark:hover:text-[#d6ccf0]",
                         ].join(" ")}
                       >
                         <span>{MENU_CATEGORY_LABELS[catId]}</span>
