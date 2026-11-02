@@ -21,7 +21,7 @@ const EXAMPLE_ROWS: [string, string, React.ReactNode][] = [
       2割引後の価格の目安です（割引専用の計算は
       <Link
         to="/discount-calculation"
-        className="font-medium text-brand underline-offset-2 hover:underline"
+        className="font-medium text-brand underline-offset-2 hover:underline dark:text-[#d6ccf0]"
       >
         割引計算機
       </Link>
@@ -48,7 +48,7 @@ export function HomeExamples() {
       >
         計算例
       </h2>
-      <div className="mt-4 max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+      <div className="mt-4 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm sm:text-base">
             <thead>
