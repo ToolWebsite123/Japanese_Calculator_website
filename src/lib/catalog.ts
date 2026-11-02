@@ -33,7 +33,7 @@ export const CATEGORY_META: Record<CalculatorCategory, CategoryMeta> = {
     accentClass: "text-brand",
     accentMutedClass: "bg-brand-muted",
     borderClass: "border-l-brand",
-    featuredHrefs: ["/web-calculator", "/percentage-calculator", "/time-calculator"],
+    featuredHrefs: ["/consumption-tax-calculator", "/percentage-calculator", "/time-calculator"],
   },
   scientific: {
     id: "scientific",
@@ -98,7 +98,6 @@ export const POPULAR_HREFS = [
   "/fraction-calculator",
   "/percentage-calculator",
   "/unit-converter",
-  "/web-calculator",
 ] as const;
 
 function getNavLabel(item: NavItem): string {
