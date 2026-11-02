@@ -206,14 +206,31 @@ export function buildFu(input: FuBuilderInput): {
   total: number;
   rounded: number;
   parts: Array<{ label: string; value: number }>;
+  pinfuTsumo: boolean;
+  openRonAdjusted: boolean;
 } {
+  const waitFu = input.wait === "kanchanPenchanTanki" ? 2 : 0;
+  const pairFu = input.pair === "yakuhai" ? 2 : input.pair === "doubleYakuhai" ? 4 : 0;
+  let meldFu = 0;
+  input.melds.forEach((m) => {
+    if (m.shape === "none") return;
+    meldFu += MELD_FU[m.tile][m.shape];
+  });
+
+  // A hand with no fu anywhere else (all sequences, a two-sided/shanpon wait
+  // on sequences, a non-yakuhai pair) is a pinfu shape. Two standard
+  // exceptions apply to it (see the page's own fu basics and MJ-05):
+  // - Pinfu tsumo: the +2 tsumo fu is NOT added, so the hand stays 20 fu.
+  // - Open ron (kui-pinfu): the raw sum is 20 fu, but a 20-fu ron hand does
+  //   not exist in scoring, so it is treated as 30 fu.
+  const isPinfuShape = waitFu === 0 && pairFu === 0 && meldFu === 0;
+  const pinfuTsumo = input.method === "tsumo" && isPinfuShape;
+
   const parts: Array<{ label: string; value: number }> = [{ label: "副底", value: 20 }];
   const methodFu = input.method === "menzenRon" ? 10 : input.method === "tsumo" ? 2 : 0;
-  if (methodFu)
+  if (methodFu && !pinfuTsumo)
     parts.push({ label: input.method === "menzenRon" ? "門前ロン" : "ツモ", value: methodFu });
-  const waitFu = input.wait === "kanchanPenchanTanki" ? 2 : 0;
   if (waitFu) parts.push({ label: "待ち (カンチャン/ペンチャン/単騎)", value: waitFu });
-  const pairFu = input.pair === "yakuhai" ? 2 : input.pair === "doubleYakuhai" ? 4 : 0;
   if (pairFu)
     parts.push({
       label: input.pair === "doubleYakuhai" ? "対子 (ダブル役牌)" : "対子 (役牌)",
@@ -225,6 +242,7 @@ export function buildFu(input: FuBuilderInput): {
     parts.push({ label: `面子${i + 1}`, value: v });
   });
   const total = parts.reduce((s, p) => s + p.value, 0);
-  const rounded = total === 20 ? 20 : Math.ceil(total / 10) * 10;
-  return { total, rounded, parts };
+  const openRonAdjusted = input.method === "openRon" && total === 20;
+  const rounded = pinfuTsumo ? 20 : openRonAdjusted ? 30 : Math.ceil(total / 10) * 10;
+  return { total, rounded, parts, pinfuTsumo, openRonAdjusted };
 }
