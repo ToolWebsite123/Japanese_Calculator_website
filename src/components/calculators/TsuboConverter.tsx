@@ -142,7 +142,7 @@ export function TsuboConverter() {
         坪・畳・㎡（平米）変換計算機
       </h1>
 
-      <p className="mx-auto mb-6 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:text-base">
         {INTRO}
       </p>
 
