@@ -63,7 +63,8 @@ const LINK_MAP: Array<{ text: string; href: string }> = [
   { text: "坪・畳・㎡変換", href: "/tsubo-converter" },
 ];
 
-const LINK_CLASS = "text-brand underline underline-offset-2 hover:text-brand/80";
+const LINK_CLASS =
+  "text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80";
 
 export function linkify(text: string, activeHref?: string | null): React.ReactNode {
   if (!text) return text;
