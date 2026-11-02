@@ -53,6 +53,7 @@ import {
 import { simplifyExpression } from "../src/lib/calculators/polynomial";
 import { convertToAllUnits, convertUnit, getUnits } from "../src/lib/calculators/units";
 import { buildFu, calcMahjong } from "../src/lib/calculators/mahjong";
+import { countCharacters, segmentWords } from "../src/lib/calculators/character-count";
 import {
   eraDateToWestern,
   eraToWestern,
@@ -1586,6 +1587,87 @@ test("UC-06: invalid input and unknown units throw; all-units covers the categor
   assert.ok(all.some((u) => u.id === "m2" && Math.abs(u.value - 33.057851) < 1e-6));
 });
 
+test("UC-07: all 11 categories exist and round-trip through their base units", () => {
+  const categories = [
+    "length",
+    "area",
+    "weight",
+    "volume",
+    "temperature",
+    "speed",
+    "time",
+    "angle",
+    "pressure",
+    "energy",
+    "currency",
+  ] as const;
+  for (const category of categories) {
+    const units = getUnits(category);
+    assert.ok(units.length >= 3, `${category} should offer several units`);
+    // Same-unit conversion is the identity, and a round trip returns the input.
+    const first = units[0].id;
+    const last = units[units.length - 1].id;
+    approxEq(convertUnit(category, 12.5, first, first), 12.5, 1e-9);
+    const roundTrip = convertUnit(category, convertUnit(category, 12.5, first, last), last, first);
+    approxEq(roundTrip, 12.5, 1e-6);
+    assert.equal(convertToAllUnits(category, 2, first).length, units.length);
+  }
+});
+
+test("UC-08: page-content examples are reproducible with the library", () => {
+  // Every row of the unitsPage examples table and quick-reference chips.
+  approxEq(convertUnit("length", 100, "cm", "in"), 39.3701, 1e-4);
+  approxEq(convertUnit("area", 10, "tsubo", "m2"), 33.0579, 1e-4);
+  approxEq(convertUnit("area", 6, "jo", "m2"), 9.72, 1e-9);
+  approxEq(convertUnit("weight", 70, "kg", "lb"), 154.3236, 1e-4);
+  approxEq(convertUnit("volume", 1, "sho", "l"), 1.8039, 1e-4);
+  approxEq(convertUnit("temperature", 36.5, "c", "f"), 97.7, 1e-9);
+  approxEq(convertUnit("speed", 60, "kmh", "ms"), 16.6667, 1e-4);
+  approxEq(convertUnit("length", 10, "in", "cm"), 25.4, 1e-9);
+  approxEq(convertUnit("length", 1, "mi", "km"), 1.609344, 1e-9);
+  approxEq(convertUnit("temperature", 100, "f", "c"), 37.8, 5e-2);
+  // Tsubo quick table: 1 tsubo = 3.31 m2 / 2.0 jo at table precision.
+  approxEq(convertUnit("area", 1, "tsubo", "m2"), 3.31, 5e-3);
+  approxEq(convertUnit("area", 1, "tsubo", "jo"), 2.0, 5e-2);
+  // Basis table: 1 knot = 1.852 km/h; 1 se = 30 tsubo; 1 tan = 300 tsubo.
+  approxEq(convertUnit("speed", 1, "knot", "kmh"), 1.852, 1e-9);
+  approxEq(convertUnit("area", 1, "se", "tsubo"), 30, 1e-9);
+  approxEq(convertUnit("area", 1, "tan", "tsubo"), 300, 1e-9);
+  // FAQ unit lists: shakkanho length/weight chains.
+  approxEq(convertUnit("length", 1, "cho", "shaku"), 360, 1e-9);
+  approxEq(convertUnit("length", 1, "ken", "shaku"), 6, 1e-9);
+  approxEq(convertUnit("weight", 1, "kan", "monme"), 1000, 1e-9);
+  approxEq(convertUnit("weight", 1, "ryo", "monme"), 10, 1e-9);
+  approxEq(convertUnit("volume", 1, "to", "sho"), 10, 1e-9);
+  approxEq(convertUnit("volume", 1, "shaku", "gou"), 0.1, 1e-9);
+});
+
+test("UC-09: remaining category benchmarks (time, angle, volume imperial)", () => {
+  approxEq(convertUnit("time", 1.5, "h", "min"), 90, 1e-9);
+  approxEq(convertUnit("time", 1, "week", "day"), 7, 1e-9);
+  approxEq(convertUnit("angle", 180, "deg", "rad"), Math.PI, 1e-12);
+  approxEq(convertUnit("angle", 1, "turn", "deg"), 360, 1e-9);
+  approxEq(convertUnit("volume", 1, "gal", "l"), 3.785412, 1e-6);
+  approxEq(convertUnit("volume", 1, "floz", "ml"), 29.57353, 1e-5);
+  approxEq(convertUnit("pressure", 1, "bar", "kpa"), 100, 1e-9);
+  approxEq(convertUnit("pressure", 760, "mmhg", "atm"), 1, 1e-9);
+  approxEq(convertUnit("energy", 1, "kwh", "kj"), 3600, 1e-9);
+  approxEq(convertUnit("speed", 100, "kmh", "mph"), 62.137119, 1e-6);
+});
+
+test("UC-10: edge cases — zero, negatives and non-finite values", () => {
+  assert.equal(convertUnit("length", 0, "m", "km"), 0);
+  assert.equal(convertUnit("area", 0, "tsubo", "jo"), 0);
+  approxEq(convertUnit("temperature", -40, "c", "f"), -40, 1e-9);
+  approxEq(convertUnit("temperature", -273.15, "c", "k"), 0, 1e-9);
+  approxEq(convertUnit("length", -5, "m", "cm"), -500, 1e-9);
+  assert.throws(() => convertUnit("area", Number.POSITIVE_INFINITY, "m2", "tsubo"));
+  assert.throws(() => convertUnit("speed", Number.NaN, "kmh", "ms"));
+  assert.throws(() => convertToAllUnits("volume", Number.NaN, "l"));
+  assert.throws(() => convertToAllUnits("volume", 1, "nope"));
+  assert.throws(() => convertUnit("volume", 1, "nope", "l"));
+});
+
 /* ---------------- #21: era converter （和暦西暦変換） ---------------- */
 
 test("ERA-01: year benchmarks both directions", () => {
@@ -1706,3 +1788,75 @@ test("MJ-06: fu builder — a full 70 fu hand", () => {
   assert.equal(r.rounded, 70);
 });
 
+test("CC-01: basic Japanese sentence counts", () => {
+  const s = countCharacters("私は学生です。");
+  assert.equal(s.characters, 7);
+  assert.equal(s.charactersWithoutSpaces, 7);
+  assert.equal(s.lines, 1);
+  assert.equal(s.sentenceCount, 1);
+  assert.equal(s.paragraphCount, 1);
+  assert.equal(s.wordCount, 4);
+  assert.deepEqual(segmentWords("私は学生です。"), ["私", "は", "学生", "です"]);
+  assert.equal(s.breakdown.kanji, 3);
+  assert.equal(s.breakdown.hiragana, 3);
+  assert.equal(s.breakdown.symbols, 1);
+});
+
+test("CC-02: whitespace handling — half/full-width spaces, tabs and newlines", () => {
+  const s = countCharacters("あ い　う\nえ");
+  assert.equal(s.characters, 7);
+  assert.equal(s.charactersWithoutSpaces, 4);
+  assert.equal(s.lines, 2);
+  assert.equal(countCharacters("a\tb").charactersWithoutSpaces, 2);
+});
+
+test("CC-03: lines, paragraphs and sentences", () => {
+  const s = countCharacters("一行目。\n二行目です。\n\n新しい段落です");
+  assert.equal(s.lines, 4);
+  assert.equal(s.paragraphCount, 2);
+  assert.equal(s.sentenceCount, 3);
+  assert.equal(countCharacters("末尾の改行\n").lines, 1);
+  assert.equal(countCharacters("a\nb").paragraphCount, 1);
+});
+
+test("CC-04: script breakdown incl. full-width latin/digits and emoji as one character", () => {
+  const s = countCharacters("カタカナとＡＢＣ１２３😀");
+  assert.equal(s.characters, 12);
+  assert.equal(s.breakdown.katakana, 4);
+  assert.equal(s.breakdown.hiragana, 1);
+  assert.equal(s.breakdown.latin, 3);
+  assert.equal(s.breakdown.digits, 3);
+  assert.equal(s.breakdown.symbols, 1);
+  assert.equal(countCharacters("𠮷").characters, 1);
+});
+
+test("CC-05: word and unique word counts", () => {
+  assert.equal(countCharacters("猫 猫 犬").wordCount, 3);
+  assert.equal(countCharacters("猫 猫 犬").uniqueWordCount, 2);
+  assert.equal(countCharacters("hello world hello").wordCount, 3);
+  assert.equal(countCharacters("hello world hello").uniqueWordCount, 2);
+});
+
+test("CC-06: reading time (500 chars/min) and empty input", () => {
+  assert.equal(countCharacters("あ".repeat(1000)).readingTimeMinutes, 2);
+  const empty = countCharacters("");
+  assert.equal(empty.characters, 0);
+  assert.equal(empty.charactersWithoutSpaces, 0);
+  assert.equal(empty.lines, 0);
+  assert.equal(empty.wordCount, 0);
+  assert.equal(empty.sentenceCount, 0);
+  assert.equal(empty.paragraphCount, 0);
+  assert.equal(empty.readingTimeMinutes, 0);
+});
+
+test("CC-07: the page's worked example reproduces exactly", () => {
+  const s = countCharacters(
+    "私は毎朝、近くの公園を散歩します。澄んだ空気の中で深呼吸をすると、一日の始まりが気持ちよくなります。",
+  );
+  assert.equal(s.characters, 50);
+  assert.equal(s.charactersWithoutSpaces, 50);
+  assert.equal(s.sentenceCount, 2);
+  assert.equal(s.lines, 1);
+  assert.equal(s.breakdown.kanji, 20);
+  assert.equal(s.breakdown.hiragana, 26);
+});
