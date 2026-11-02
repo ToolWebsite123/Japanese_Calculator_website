@@ -471,9 +471,9 @@ export function DueDateCalculator() {
             <tbody>
               {WEEK_TABLE.map((row) => (
                 <tr key={row.weeks} className="border-b border-border">
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.weeks}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.months}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.event}</td>
+                  <td data-label="妊娠週数" className="px-3 py-2.5 font-medium text-text-primary">{row.weeks}</td>
+                  <td data-label="妊娠月数" className="px-3 py-2.5 text-text-secondary">{row.months}</td>
+                  <td data-label="主なイベント・目安" data-wide className="px-3 py-2.5 text-text-secondary">{row.event}</td>
                 </tr>
               ))}
             </tbody>
