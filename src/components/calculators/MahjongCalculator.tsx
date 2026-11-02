@@ -387,24 +387,6 @@ export function MahjongCalculator() {
         <LinkedText text={INTRO} activeHref="/mahjong-score-calculation" />
       </p>
 
-      <section aria-labelledby="mj-tables-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="mj-tables-heading" className={guideHeadingClass}>
-          麻雀の点数早見表（ロン）
-        </h2>
-        <h3 className="mt-6 text-lg font-semibold text-text-primary">子（ロン）</h3>
-        <MahjongScoreTable rows={SCORE_TABLE_KO_RON} />
-        <h3 className="mt-8 text-lg font-semibold text-text-primary">親（ロン）</h3>
-        <MahjongScoreTable rows={SCORE_TABLE_OYA_RON} />
-        <h3 className="mt-8 text-lg font-semibold text-text-primary">満貫以上（共通）</h3>
-        <ul className="mt-3 list-disc space-y-1.5 pl-5">
-          {LIMIT_LINES.map((line) => (
-            <li key={line} className="text-sm leading-relaxed text-text-secondary sm:text-base">
-              {line}
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <section aria-labelledby="mj-example-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="mj-example-heading" className={guideHeadingClass}>
           点数計算の例
@@ -443,6 +425,24 @@ export function MahjongCalculator() {
           です（基本点1,920 × 4 ＝ 7,680 →
           切り上げ）。同じ30符4翻でも、親のロンなら11,600点、子のツモなら親3,900点・子2,000点ずつの合計7,900点と、アガり方で金額も受け取り方も変わります。
         </p>
+      </section>
+
+      <section aria-labelledby="mj-tables-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="mj-tables-heading" className={guideHeadingClass}>
+          麻雀の点数早見表（ロン）
+        </h2>
+        <h3 className="mt-6 text-lg font-semibold text-text-primary">子（ロン）</h3>
+        <MahjongScoreTable rows={SCORE_TABLE_KO_RON} />
+        <h3 className="mt-8 text-lg font-semibold text-text-primary">親（ロン）</h3>
+        <MahjongScoreTable rows={SCORE_TABLE_OYA_RON} />
+        <h3 className="mt-8 text-lg font-semibold text-text-primary">満貫以上（共通）</h3>
+        <ul className="mt-3 list-disc space-y-1.5 pl-5">
+          {LIMIT_LINES.map((line) => (
+            <li key={line} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {line}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section aria-labelledby="mj-fu-heading" className="mt-16 border-t border-border pt-16">
