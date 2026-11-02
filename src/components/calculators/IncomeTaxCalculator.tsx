@@ -359,7 +359,7 @@ export function IncomeTaxCalculator() {
                 </div>
                 <div className="mt-4 border-t border-brand/20 pt-4">
                   <div className="text-sm font-medium text-text-tertiary">納税額合計</div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(result.totalTax)}
                   </div>
                 </div>
