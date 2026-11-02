@@ -7,8 +7,8 @@ export function Hero() {
   const { t } = useLocale();
 
   return (
-    <section className="border-b border-border bg-brand-muted/30 px-4 pt-2 pb-4 sm:px-6 sm:pt-4 sm:pb-6 flex flex-col items-center">
-      <h1 className="mb-3 text-center text-xl font-semibold tracking-tight text-[#231942] sm:mb-4 sm:text-3xl dark:text-[#d6ccf0]">
+    <section className="border-b border-border bg-brand-muted/30 px-4 pt-4 pb-6 sm:px-6 sm:pt-6 sm:pb-8 flex flex-col items-center">
+      <h1 className="mb-3 text-center text-2xl font-semibold tracking-tight text-[#231942] sm:mb-4 sm:text-4xl dark:text-[#d6ccf0]">
         オンライン電卓
       </h1>
       <p className="max-w-2xl text-center text-base font-medium leading-relaxed text-text-secondary sm:text-lg">
@@ -20,10 +20,10 @@ export function Hero() {
           the calculator sits fully inside the hero. The prominent
           オンライン電卓 line became the real H1 on 2026-11-02 (it was a
           <p> before, while the small heroTitle line carried the H1). */}
-      <div className="mt-2 flex w-full justify-center sm:mt-3">
+      <div className="mt-3 flex w-full justify-center sm:mt-4">
         <HeroCalculator />
       </div>
-      <ul className="mt-4 flex flex-wrap justify-center gap-2">
+      <ul className="mt-5 flex flex-wrap justify-center gap-2">
         {t.home.heroChips.map((chip) => (
           <li key={chip.label}>
             <a
