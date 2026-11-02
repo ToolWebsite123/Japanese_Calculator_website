@@ -3,17 +3,19 @@ import type { ButtonGuideRow } from "@/lib/calculator-guides/types";
 type ButtonGuideTableProps = {
   title: string;
   rows: ButtonGuideRow[];
+  headingAs?: "h2" | "h3";
 };
 
-export function ButtonGuideTable({ title, rows }: ButtonGuideTableProps) {
+export function ButtonGuideTable({ title, rows, headingAs = "h2" }: ButtonGuideTableProps) {
+  const Heading = headingAs;
   return (
     <section aria-labelledby="button-guide-heading" className="mt-10">
-      <h2
+      <Heading
         id="button-guide-heading"
         className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
       >
         {title}
-      </h2>
+      </Heading>
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[320px] border-collapse text-sm">
           <thead>
