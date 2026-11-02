@@ -6,9 +6,9 @@ import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { buildBreadcrumbJsonLd, OG_IMAGE_URL } from "@/lib/seo/page-schema";
 import { absoluteUrl } from "@/lib/seo/site";
 
-const title = "計算ツール一覧｜関数電卓・税金・健康など全25種の計算機｜電卓.online";
+const title = "計算ツール一覧｜関数電卓・税金・健康など全27種の計算機｜電卓.online";
 const description =
-  "電卓.onlineの計算ツール一覧ページ。関数電卓、BMI、分数、複利・積立、所得税、ふるさと納税、単位変換など、全25種類の無料計算機をカテゴリ別に探せます。会員登録不要で、スマホ・PCどちらからでもすぐ使えます。";
+  "電卓.onlineの計算ツール一覧ページ。関数電卓、BMI、分数、複利・積立、所得税、ふるさと納税、単位変換など、全27種類の無料計算機をカテゴリ別に探せます。会員登録不要で、スマホ・PCどちらからでもすぐ使えます。";
 
 function buildCalculatorItemListJsonLd() {
   return {
