@@ -385,10 +385,10 @@ export function LongDivisionCalculator() {
         </SurfacePanel>
       </div>
 
-      <p className="mx-auto mt-12 max-w-2xl text-center text-base text-text-secondary sm:text-lg">
+      <p className="mt-12 text-center text-base text-text-secondary sm:text-lg">
         <LinkedText text={page.description} activeHref={HREF} />
       </p>
-      <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={page.introParagraph} activeHref={HREF} />
       </p>
 
