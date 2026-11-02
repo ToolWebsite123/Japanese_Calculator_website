@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
-import { SegmentedControl, SelectWell } from "@/components/ui/primitives";
+import { PrimaryButton, SegmentedControl, SelectWell } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
@@ -126,15 +126,22 @@ export function TsuboConverter() {
   const [unit, setUnit] = useState<AreaUnit>("tsubo");
   const [tatami, setTatami] = useState<TatamiType>("fudosan");
 
-  const result = useMemo(() => {
+  // Converted only when the user presses 計算する (site-wide pattern,
+  // same as the BMI calculator); the result cards show "—" until then.
+  const [result, setResult] = useState<ReturnType<typeof convertArea> | null>(null);
+
+  function handleCalculate() {
     const value = parseFloat(rawValue);
-    if (!Number.isFinite(value) || value < 0) return null;
-    try {
-      return convertArea(value, unit, tatami);
-    } catch {
-      return null;
+    if (!Number.isFinite(value) || value < 0) {
+      setResult(null);
+      return;
     }
-  }, [rawValue, unit, tatami]);
+    try {
+      setResult(convertArea(value, unit, tatami));
+    } catch {
+      setResult(null);
+    }
+  }
 
   return (
     <>
@@ -173,6 +180,8 @@ export function TsuboConverter() {
             <span className="text-sm font-medium text-text-secondary">入力する単位</span>
             <SegmentedControl options={UNIT_OPTIONS} value={unit} onChange={setUnit} columns={3} />
           </div>
+
+          <PrimaryButton onClick={handleCalculate}>計算する</PrimaryButton>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <ResultCard label="坪" value={result ? `${formatArea(result.tsubo)} 坪` : "—"} />
@@ -255,9 +264,9 @@ export function TsuboConverter() {
             <tbody>
               {QUICK_ROWS.map((row) => (
                 <tr key={row[0]}>
-                  <td className={`${tableCellClass} font-medium text-text-primary`}>{row[0]}</td>
-                  <td className={tableCellClass}>{row[1]}</td>
-                  <td className={tableCellClass}>{row[2]}</td>
+                  <td data-label="坪" className={`${tableCellClass} font-medium text-text-primary`}>{row[0]}</td>
+                  <td data-label="㎡（平米）" className={tableCellClass}>{row[1]}</td>
+                  <td data-label="畳" className={tableCellClass}>{row[2]}</td>
                 </tr>
               ))}
             </tbody>
@@ -296,10 +305,10 @@ export function TsuboConverter() {
             <tbody>
               {TATAMI_ROWS.map((row) => (
                 <tr key={row[0]}>
-                  <td className={`${tableCellClass} font-medium text-text-primary`}>{row[0]}</td>
-                  <td className={tableCellClass}>{row[1]}</td>
-                  <td className={tableCellClass}>{row[2]}</td>
-                  <td className={tableCellClass}>{row[3]}</td>
+                  <td data-label="種類" className={`${tableCellClass} font-medium text-text-primary`}>{row[0]}</td>
+                  <td data-label="寸法の目安" className={tableCellClass}>{row[1]}</td>
+                  <td data-label="1畳の面積" className={tableCellClass}>{row[2]}</td>
+                  <td data-label="主な地域・用途" className={tableCellClass}>{row[3]}</td>
                 </tr>
               ))}
             </tbody>
