@@ -121,3 +121,51 @@ body {
 .animate-slide-in-right {
   animation: slide-in-right 0.25s ease-out;
 }
+
+/* One table design on every page: any content table inside a plain
+   horizontal-scroll wrapper gets the same card frame as the homepage
+   tables (rounded corners, border, surface background, soft shadow).
+   Wide tables keep scrolling inside the frame on small screens.
+   Excluded: scrollers already inside a frame (homepage cards, whose
+   parent clips overflow) and sunken result panels (Furusato detail
+   table), which carry their own frame. */
+.overflow-x-auto:has(> table):not([class*="bg-surface-sunken"]) {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.overflow-hidden > .overflow-x-auto:has(> table) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Professional section headings: every content H2 inside <main>
+   (calculator pages, homepage, hub, legal) gets the same brand
+   accent bar on its left — one heading design across the site.
+   The accent follows the site's own dark-mode colour (#a794e0),
+   the same one the navigation uses on dark backgrounds. */
+main h2 {
+  position: relative;
+  padding-left: 1rem;
+}
+
+main h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.18em;
+  bottom: 0.18em;
+  width: 4px;
+  border-radius: 9999px;
+  background: var(--color-brand);
+}
+
+.dark main h2::before {
+  background: #a794e0;
+}
