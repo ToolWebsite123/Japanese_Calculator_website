@@ -47,7 +47,7 @@ export function Footer() {
     { href: "/furusato-nozei-calculation", label: t.footer.hometownTaxDonation },
   ];
 
-  const linkClass = "text-sm text-black transition hover:opacity-80 dark:text-foreground";
+  const linkClass = "text-sm text-black transition hover:opacity-80 dark:text-text-primary";
 
   return (
     <footer className="border-t border-border/20 px-4 py-12 sm:px-6 sm:py-16" suppressHydrationWarning>
@@ -56,13 +56,13 @@ export function Footer() {
           <div className="flex flex-col gap-3 sm:max-w-xs">
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 text-lg font-bold text-black dark:text-foreground"
+              className="inline-flex items-center gap-1.5 text-lg font-bold text-black dark:text-text-primary"
               suppressHydrationWarning
             >
               <LogoIcon className="h-5 w-5" />
               電卓
             </Link>
-            <p className="text-sm leading-relaxed text-black/70 dark:text-foreground/70" suppressHydrationWarning>
+            <p className="text-sm leading-relaxed text-black/70 dark:text-text-secondary" suppressHydrationWarning>
               {t.home.footerTagline}
             </p>
           </div>
@@ -81,7 +81,7 @@ export function Footer() {
             </nav>
 
             <nav aria-label="フッター計算ツールナビゲーション" suppressHydrationWarning>
-              <h3 className="mb-3 text-sm font-semibold text-black dark:text-foreground">
+              <h3 className="mb-3 text-sm font-semibold text-black dark:text-text-primary">
                 {t.footer.calculators}
               </h3>
               <ul className="flex flex-col gap-2">
@@ -98,7 +98,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 border-t border-border/20 pt-6">
-          <p className="text-xs text-black/70 dark:text-foreground/70">{t.home.footerCopyright}</p>
+          <p className="text-xs text-black/70 dark:text-text-secondary">{t.home.footerCopyright}</p>
         </div>
       </div>
     </footer>
