@@ -188,7 +188,7 @@ export function GraphCalculator() {
         グラフ計算機
       </h1>
 
-      <p className="mx-auto mb-6 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:text-base">
         {INTRO}
       </p>
 
@@ -217,7 +217,7 @@ export function GraphCalculator() {
                 key={preset.expr}
                 type="button"
                 onClick={() => setExpr(preset.expr)}
-                className="rounded-full border border-border bg-surface-sunken px-2.5 py-1 text-xs font-medium text-text-secondary transition hover:text-brand"
+                className="rounded-full border border-border bg-surface-sunken px-2.5 py-1 text-xs font-medium text-text-secondary transition hover:text-brand dark:hover:text-[#d6ccf0]"
               >
                 {preset.label}
               </button>
@@ -249,7 +249,7 @@ export function GraphCalculator() {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={2.4}
-                  className="text-brand"
+                  className="text-brand dark:text-[#d6ccf0]"
                 />
               )}
             </svg>
