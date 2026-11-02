@@ -10,12 +10,15 @@ type SearchInputProps = {
   size?: "default" | "large" | "compact";
   className?: string;
   autoFocus?: boolean;
+  /** Overrides the shared search placeholder (e.g. a shorter one for the header). */
+  placeholder?: string;
 };
 
 export function SearchInput({
   size = "default",
   className = "",
   autoFocus = false,
+  placeholder,
 }: SearchInputProps) {
   const { t } = useLocale();
   const router = useRouter();
@@ -139,7 +142,7 @@ export function SearchInput({
           onChange={(e) => handleQueryChange(e.target.value)}
           onFocus={() => query.trim() && setOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={t.home.searchPlaceholder}
+          placeholder={placeholder ?? t.home.searchPlaceholder}
           autoFocus={autoFocus}
           autoComplete="off"
           role="combobox"
