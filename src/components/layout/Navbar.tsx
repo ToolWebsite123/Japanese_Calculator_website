@@ -24,19 +24,42 @@ type NavbarProps = {
  * a search row inside this same header; navigation moves to the
  * hamburger drawer (MobileNav). There is no second header anywhere.
  */
+/** Quick links to the most-used calculators, shown as a slim strip
+ * inside the single header on large screens (added 2026-11-02). */
+const QUICK_LINKS: { href: string; label: string }[] = [
+  { href: "/bmi-calculator", label: "BMI計算" },
+  { href: "/consumption-tax-calculator", label: "消費税計算" },
+  { href: "/compound-interest-calculator", label: "複利計算" },
+  { href: "/character-counter", label: "文字数カウント" },
+  { href: "/furusato-nozei-calculation", label: "ふるさと納税" },
+  { href: "/unit-converter", label: "単位変換" },
+];
+
 export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
   const { t } = useLocale();
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setSearchOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <header
       className="sticky top-0 z-30 border-b border-border bg-surface-raised"
-      style={{ boxShadow: "0 1px 3px rgba(35, 25, 66, 0.05)" }}
+      style={{
+        boxShadow: scrolled
+          ? "0 6px 20px rgba(35, 25, 66, 0.13)"
+          : "0 1px 3px rgba(35, 25, 66, 0.05)",
+      }}
       suppressHydrationWarning
     >
       <div className="relative mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
@@ -127,6 +150,35 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
           <SearchInput size="compact" autoFocus placeholder="計算機を検索…" />
         </div>
       )}
+
+      <nav
+        aria-label="よく使われる計算機"
+        className="hidden border-t border-border lg:block"
+        suppressHydrationWarning
+      >
+        <div className="mx-auto flex max-w-7xl items-center gap-1 px-4 py-1.5 sm:px-6">
+          <span className="mr-1 shrink-0 text-xs font-semibold text-text-tertiary">
+            よく使われる計算機
+          </span>
+          {QUICK_LINKS.map((link) => {
+            const active = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`rounded-full px-2.5 py-1 text-[13px] transition ${
+                  active
+                    ? "font-semibold text-brand dark:text-[#d6ccf0]"
+                    : "text-text-secondary hover:bg-brand-muted/60 hover:text-brand"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </header>
   );
 }
