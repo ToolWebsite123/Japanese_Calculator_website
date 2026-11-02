@@ -576,8 +576,12 @@ export function RootCalculator() {
                 >
                   {t.rootPage.guideTableRowLabel}
                 </th>
-                {t.rootPage.guideTableRoots.map((r) => (
-                  <td key={r} className="border border-border px-3 py-2 text-text-secondary">
+                {t.rootPage.guideTableRoots.map((r, i) => (
+                  <td
+                    key={r}
+                    data-label={t.rootPage.guideTableNumbers[i]}
+                    className="border border-border px-3 py-2 text-text-secondary"
+                  >
                     {r}
                   </td>
                 ))}
