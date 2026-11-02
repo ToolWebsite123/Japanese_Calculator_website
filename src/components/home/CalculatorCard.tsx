@@ -25,7 +25,7 @@ export function CalculatorCard({ href, label, description, active = false }: Cal
           "flex h-12 w-12 shrink-0 items-center justify-center rounded-[var(--radius-md)] transition",
           active
             ? "bg-brand text-white"
-            : "bg-brand-muted text-brand group-hover:bg-brand group-hover:text-white",
+            : "bg-brand-muted text-brand group-hover:bg-brand group-hover:text-white dark:text-[#d6ccf0]",
         ].join(" ")}
       >
         <CalculatorIcon className="h-6 w-6" />
@@ -33,7 +33,9 @@ export function CalculatorCard({ href, label, description, active = false }: Cal
       <h3
         className={[
           "mt-4 text-base font-bold",
-          active ? "text-brand" : "text-text-primary group-hover:text-brand",
+          active
+            ? "text-brand dark:text-[#d6ccf0]"
+            : "text-text-primary group-hover:text-brand dark:group-hover:text-[#d6ccf0]",
         ].join(" ")}
       >
         {label}
