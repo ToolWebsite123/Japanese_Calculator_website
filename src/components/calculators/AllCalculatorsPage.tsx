@@ -7,7 +7,26 @@ import { NAV_ITEMS, type CalculatorCategory } from "@/lib/constants";
 import { useLocale } from "@/context/LocaleContext";
 
 const HUB_INTRO =
-  "電卓.onlineの計算ツールをすべてまとめました。関数電卓や税金・社会保険のシミュレーション、単位変換、麻雀の点数計算まで、全25種類のツールが無料・登録不要で使えます。入力した数値はブラウザの中で処理され、サーバーには送信されません。目的の計算をカテゴリからお選びください。";
+  "電卓.onlineの計算ツールをすべてまとめました。関数電卓や税金・社会保険のシミュレーション、単位変換、坪・畳・㎡の換算、関数のグラフ描画、麻雀の点数計算まで、全27種類のツールが無料・登録不要で使えます。入力した数値はブラウザの中で処理され、サーバーには送信されません。目的の計算をカテゴリからお選びください。";
+
+const HUB_GUIDE: { title: string; text: string }[] = [
+  {
+    title: "お金の計算をしたい",
+    text: "「金融」カテゴリに、消費税・所得税・社会保険料・ふるさと納税などの税金関係と、複利・利息・ローンなどの資産形成のツールをまとめています。手取りや控除上限額の目安づけにご利用ください。",
+  },
+  {
+    title: "数学・学習の計算をしたい",
+    text: "「関数・数学」カテゴリには、関数電卓・分数・文字式・因数分解・連立方程式に加えて、式を入力するとグラフを描くグラフ計算機があります。宿題や受験勉強の答え合わせにも使えます。",
+  },
+  {
+    title: "長さや広さを変換したい",
+    text: "「変換」カテゴリの単位変換では、長さ・重さ・体積など11カテゴリをまとめて変換できます。土地や部屋の広さなら、坪・畳・㎡専用の変換計算機が便利です。",
+  },
+  {
+    title: "日常のちょっとした計算をしたい",
+    text: "「基本」カテゴリには、パーセント・割引・時間・文字数カウントなど毎日使えるツールがあります。ふだんの四則演算だけなら、トップページのWeb電卓がそのまま使えます。",
+  },
+];
 
 export const HUB_FAQ = {
   title: "計算ツール一覧のよくある質問",
@@ -24,6 +43,16 @@ export const HUB_FAQ = {
     {
       question: "スマートフォンでも使えますか？",
       answer: "はい。スマートフォンやタブレットのブラウザでもそのまま使えます。",
+    },
+    {
+      question: "どの計算機を使えばよいか分からないときは？",
+      answer:
+        "このページの「計算機の選び方」か、カテゴリ名から目的に近いものを探してください。ページ上部の検索に「税金」「グラフ」のような言葉を入れると、該当する計算機を絞り込むこともできます。",
+    },
+    {
+      question: "計算結果は正確ですか？",
+      answer:
+        "各ツールは公式の計算式や定義に基づいて計算し、各ページに仕組み・計算例・注意点を掲載しています。税金や保険料などの試算は制度の前提による概算のため、最終的な金額は公式の案内や専門家にもご確認ください。",
     },
   ],
 };
@@ -102,6 +131,23 @@ export function AllCalculatorsPage() {
           ))}
         </div>
       </div>
+
+      <section aria-labelledby="hub-guide-heading" className="mt-16 border-t border-border pt-12">
+        <h2
+          id="hub-guide-heading"
+          className="mb-4 text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
+        >
+          計算機の選び方
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {HUB_GUIDE.map((item) => (
+            <div key={item.title} className="rounded-xl border border-border bg-surface p-4">
+              <p className="text-sm font-bold text-text-primary">{item.title}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-text-secondary">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <CalculatorFaqSection title={HUB_FAQ.title} items={HUB_FAQ.items} />
     </div>
