@@ -49,7 +49,7 @@ export function Display({
       <div className="relative mb-0.5 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5">
           {memoryActive && (
-            <span className="rounded-full bg-brand-muted px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
+            <span className="rounded-full bg-brand-muted px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand dark:text-[#d6ccf0]">
               M
             </span>
           )}
