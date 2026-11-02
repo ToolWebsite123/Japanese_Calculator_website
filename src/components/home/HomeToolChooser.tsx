@@ -41,7 +41,7 @@ export function HomeToolChooser() {
         >
           目的に合った計算機の選び方
         </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+        <p className="mt-3 text-sm leading-relaxed text-text-secondary sm:text-base">
           四則演算で足りない計算は、専用の計算機を使うほうが速くて確実です。よく使われる計算機を目的別に紹介します。
         </p>
         <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
