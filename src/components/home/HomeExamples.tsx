@@ -47,37 +47,41 @@ export function HomeExamples() {
       >
         計算例
       </h2>
-      <div className="mt-4 overflow-x-auto">
-        <table className="w-full border-collapse text-sm sm:text-base">
-          <thead>
-            <tr>
-              <th scope="col" className={tableHeadClass}>
-                入力
-              </th>
-              <th scope="col" className={tableHeadClass}>
-                結果
-              </th>
-              <th scope="col" className={tableHeadClass}>
-                ポイント
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {EXAMPLE_ROWS.map((row) => (
-              <tr key={row[0]}>
-                <td className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}>
-                  {row[0]}
-                </td>
-                <td
-                  className={`${tableCellClass} whitespace-nowrap font-semibold text-text-primary`}
-                >
-                  {row[1]}
-                </td>
-                <td className={tableCellClass}>{row[2]}</td>
+      <div className="mt-4 max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr>
+                <th scope="col" className={tableHeadClass}>
+                  入力
+                </th>
+                <th scope="col" className={tableHeadClass}>
+                  結果
+                </th>
+                <th scope="col" className={tableHeadClass}>
+                  ポイント
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {EXAMPLE_ROWS.map((row) => (
+                <tr key={row[0]}>
+                  <td
+                    className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
+                  >
+                    {row[0]}
+                  </td>
+                  <td
+                    className={`${tableCellClass} whitespace-nowrap font-semibold text-text-primary`}
+                  >
+                    {row[1]}
+                  </td>
+                  <td className={tableCellClass}>{row[2]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
