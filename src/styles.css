@@ -62,11 +62,11 @@
   --color-text-tertiary: #a8a29e;
   --color-key-number: #292524;
   --color-key-operator: #44403c;
-  --color-key-function-bg: #1c1917;
+  --color-key-function-bg: #322e2a;
   --color-key-function-text: #e7e5e4;
   --color-key-memory-bg: #312e81;
   --color-key-memory-text: #c7d2fe;
-  --color-key-danger-bg: #450a0a;
+  --color-key-danger-bg: #7f1d1d;
   --color-key-danger-text: #fca5a5;
   --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.3);
   --shadow-key-pressed: inset 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -168,4 +168,36 @@ main h2::before {
 
 .dark main h2::before {
   background: #a794e0;
+}
+
+/* Mobile tables: multi-column tables were being squeezed into the
+   phone width (owner phone report — cramped columns, mid-word wraps,
+   very tall rows). On small screens a table with 3+ columns inside a
+   scroll wrapper now keeps a readable minimum width and scrolls
+   sideways inside its card frame instead of crushing its columns;
+   the minimum grows with the column count. 1–2 column tables still
+   fit the screen without scrolling. Desktop is unchanged. */
+@media (max-width: 639.98px) {
+  .overflow-x-auto > table:has(> thead > tr > :nth-child(3)),
+  .overflow-x-auto > table:has(> tbody > tr > :nth-child(3)) {
+    min-width: 30rem;
+  }
+
+  .overflow-x-auto > table:has(> thead > tr > :nth-child(4)),
+  .overflow-x-auto > table:has(> tbody > tr > :nth-child(4)) {
+    min-width: 36rem;
+  }
+
+  .overflow-x-auto > table:has(> thead > tr > :nth-child(5)),
+  .overflow-x-auto > table:has(> tbody > tr > :nth-child(5)) {
+    min-width: 42rem;
+  }
+
+  /* Smaller section headings on phones (owner request): every
+     content H2 takes one size on small screens, whatever larger
+     utility a component set for it. Desktop sizes are unchanged. */
+  main h2[class] {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
 }
