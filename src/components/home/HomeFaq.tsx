@@ -10,9 +10,7 @@ import ja from "@/lib/i18n/ja";
 export function HomeFaq() {
   return (
     <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
-      <div className="max-w-3xl">
-        <CalculatorFaqSection title={ja.home.faqTitle} items={ja.home.faqItems} />
-      </div>
+      <CalculatorFaqSection title={ja.home.faqTitle} items={ja.home.faqItems} />
     </div>
   );
 }
