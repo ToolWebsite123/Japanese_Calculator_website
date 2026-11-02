@@ -223,7 +223,7 @@ export function TimeCalculator() {
           {!error && (
             <SurfacePanel className="border-brand/20 bg-brand-muted text-center">
               <div className="text-sm font-medium text-text-tertiary">結果</div>
-              <div className="tabular-display mt-2 text-4xl font-bold tracking-tight text-brand">
+              <div className="tabular-display mt-2 break-all text-3xl font-bold tracking-tight text-brand sm:text-4xl">
                 {isNegative && "-"}
                 {h > 0 ? `${h}時間 ` : ""}
                 {m > 0 || h > 0 ? `${m}分 ` : ""}
@@ -288,7 +288,7 @@ export function TimeCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     {t.timePage.elapsedTime}
                   </div>
-                  <div className="tabular-display mt-2 text-4xl font-bold tracking-tight text-brand">
+                  <div className="tabular-display mt-2 break-all text-3xl font-bold tracking-tight text-brand sm:text-4xl">
                     {formatDurationMinutes(clockDiff.minutes)}
                   </div>
                   <div className="tabular-display mt-2 text-sm text-text-tertiary">
@@ -372,7 +372,7 @@ export function TimeCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     {t.timePage.offsetResult}
                   </div>
-                  <div className="tabular-display mt-2 text-4xl font-bold tracking-tight text-brand">
+                  <div className="tabular-display mt-2 break-all text-3xl font-bold tracking-tight text-brand sm:text-4xl">
                     {formatClockTime(offsetResult.minutesOfDay)}
                     {offsetDaySuffix && (
                       <span className="ml-2 text-xl">{offsetDaySuffix}</span>
