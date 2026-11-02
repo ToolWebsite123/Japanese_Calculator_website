@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import {
+  SurfacePanel,
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -160,10 +165,15 @@ export function FurusatoNozeiSimulator() {
   const [ideco, setIdeco] = useState("0");
   const { addEntry } = useHistory();
 
-  const { result, error } = useMemo<{
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator).
+  const [calcState, setCalcState] = useState<{
     result: FurusatoDetailedResult | null;
     error: string | null;
-  }>(() => {
+  }>({ result: null, error: null });
+  const { result, error } = calcState;
+
+  function handleCalculate() {
     try {
       const r = calcFurusatoNozeiDetailed({
         annualIncome: num(annualIncome),
@@ -190,43 +200,19 @@ export function FurusatoNozeiSimulator() {
         housingLoanCredit: num(housingLoanCredit),
         ideco: num(ideco),
       });
-      return { result: r, error: null };
-    } catch (e) {
-      return {
-        result: null,
-        error: e instanceof Error ? e.message : "計算エラー",
-      };
-    }
-  }, [
-    annualIncome,
-    spouseType,
-    spouseIncome,
-    deps,
-    dis,
-    socialInsurance,
-    lifeInsurance,
-    earthquakeInsurance,
-    medical,
-    singleParent,
-    housingLoanCredit,
-    ideco,
-  ]);
-
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    if (!result) return;
-    const key = `${annualIncome}|${spouseType}|${socialInsurance}|${ideco}|${housingLoanCredit}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+      setCalcState({ result: r, error: null });
       addEntry({
         expression: `ふるさと納税詳細 年収${annualIncome}円`,
-        result: formatYen(result.donationLimit),
+        result: formatYen(r.donationLimit),
         route: "/furusato-nozei-simulation-calculation",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [result, annualIncome, spouseType, socialInsurance, ideco, housingLoanCredit, addEntry]);
+    } catch (e) {
+      setCalcState({
+        result: null,
+        error: e instanceof Error ? e.message : "計算エラー",
+      });
+    }
+  }
 
   function handleClear() {
     setAnnualIncome("6000000");
@@ -241,6 +227,7 @@ export function FurusatoNozeiSimulator() {
     setSingleParent(false);
     setHousingLoanCredit("0");
     setIdeco("0");
+    setCalcState({ result: null, error: null });
   }
 
   return (
@@ -381,6 +368,10 @@ export function FurusatoNozeiSimulator() {
             </label>
           </div>
 
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            計算する
+          </PrimaryButton>
+
           <SecondaryButton fullWidth onClick={handleClear}>
             クリア
           </SecondaryButton>
@@ -420,7 +411,7 @@ export function FurusatoNozeiSimulator() {
               <Divider>
                 <h2 className="mb-4 text-xl font-semibold text-text-primary">詳細な計算内訳</h2>
                 <SurfacePanel className="overflow-x-auto text-sm text-text-secondary">
-                  <table className="w-full min-w-[520px] border-collapse">
+                  <table className="w-full border-collapse">
                     <tbody>
                       <Row label="① 給与収入" value={formatYen(result.annualIncome)} />
                       <Row
@@ -544,8 +535,8 @@ export function FurusatoNozeiSimulator() {
             <tbody>
               {EXAMPLE_ROWS.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="条件" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="控除上限額" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -614,6 +605,7 @@ function Row({
     <tr className="border-b border-border/60 last:border-b-0">
       <td className="py-2 pr-3 align-top text-text-secondary">{label}</td>
       <td
+        data-label=""
         className={`tabular-display py-2 pl-3 text-right align-top ${highlight
             ? "text-brand font-bold dark:text-[#d6ccf0]"
             : strong
