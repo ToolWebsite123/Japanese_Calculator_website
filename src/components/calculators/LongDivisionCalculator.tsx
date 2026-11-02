@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { LinkedText } from "@/components/calculator/LinkedText";
@@ -8,6 +8,7 @@ import { RelatedCalculators } from "@/components/calculators/RelatedCalculators"
 import {
   Divider,
   InputWell,
+  PrimaryButton,
   SelectWell,
   SurfacePanel,
 } from "@/components/ui/primitives";
@@ -207,7 +208,17 @@ export function LongDivisionCalculator() {
   const [divisorStr, setDivisorStr] = useState("7");
   const [places, setPlaces] = useState(6);
 
-  const computed = useMemo(() => {
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). `submitted` keeps the
+  // error note hidden until the first calculation attempt.
+  const [computed, setComputed] = useState<{
+    result: LongDivisionComputation | null;
+    error: boolean;
+  }>({ result: null, error: false });
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleCalculate() {
+    setSubmitted(true);
     const dividend = Number(dividendStr);
     const divisor = Number(divisorStr);
     if (
@@ -216,7 +227,8 @@ export function LongDivisionCalculator() {
       !Number.isFinite(dividend) ||
       !Number.isFinite(divisor)
     ) {
-      return { result: null as LongDivisionComputation | null, error: true };
+      setComputed({ result: null, error: true });
+      return;
     }
     try {
       const result = computeLongDivision(dividend, divisor, places);
@@ -224,13 +236,14 @@ export function LongDivisionCalculator() {
         String(result.scaledDividend).length > 12 ||
         String(result.scaledDivisor).length > 9
       ) {
-        return { result: null as LongDivisionComputation | null, error: true };
+        setComputed({ result: null, error: true });
+        return;
       }
-      return { result, error: false };
+      setComputed({ result, error: false });
     } catch {
-      return { result: null as LongDivisionComputation | null, error: true };
+      setComputed({ result: null, error: true });
     }
-  }, [dividendStr, divisorStr, places]);
+  }
 
   const result = computed.result;
   const narration = result ? buildNarration(result, page) : [];
@@ -287,6 +300,12 @@ export function LongDivisionCalculator() {
                 ))}
               </SelectWell>
             </label>
+          </div>
+
+          <div className="mt-4">
+            <PrimaryButton fullWidth onClick={handleCalculate}>
+              {t.common.calculate}
+            </PrimaryButton>
           </div>
 
           {result ? (
@@ -379,9 +398,9 @@ export function LongDivisionCalculator() {
                 </>
               )}
             </>
-          ) : (
+          ) : submitted ? (
             <p className="mt-6 text-sm text-text-secondary">{page.errorNote}</p>
-          )}
+          ) : null}
         </SurfacePanel>
       </div>
 
@@ -440,6 +459,7 @@ export function LongDivisionCalculator() {
                   {row.map((cell, i) => (
                     <td
                       key={i}
+                      data-label={page.examplesTable.columns[i]}
                       className={
                         i === 0
                           ? "px-3 py-2.5 font-medium text-text-primary"
