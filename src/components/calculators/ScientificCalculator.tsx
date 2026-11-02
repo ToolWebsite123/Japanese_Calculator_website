@@ -679,7 +679,7 @@ export function ScientificCalculator() {
             <button
               type="button"
               onClick={() => setAdvancedOpen((prev) => !prev)}
-              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-border/80 bg-surface-sunken/60 py-1 text-xs font-semibold text-text-secondary hover:bg-surface-sunken hover:text-text-primary transition sm:hidden"
+              className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-brand/40 bg-brand-muted/50 px-3 py-3 text-sm font-bold text-text-primary hover:bg-brand-muted transition sm:hidden"
             >
               <span>{advancedOpen ? "簡易表示 (Simple)" : "詳細機能 (More functions)"}</span>
               <svg
@@ -739,6 +739,52 @@ export function ScientificCalculator() {
       <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={t.scientificPage.introParagraph} />
       </p>
+
+      <section aria-labelledby="sci-log-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-log-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.logLawsTitle}
+        </h2>
+        <div className="mt-4 space-y-2">
+          {t.scientificPage.logLaws.map((law) => (
+            <p
+              key={law}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
+            >
+              {law}
+            </p>
+          ))}
+        </div>
+        <p className="mt-6 font-semibold text-text-primary">計算例</p>
+        <ul className="mt-2 list-disc space-y-2 pl-5">
+          {t.scientificPage.logExamples.map((ex) => (
+            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {ex}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="sci-exp-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="sci-exp-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.scientificPage.expLawsTitle}
+        </h2>
+        <div className="mt-4 space-y-2">
+          {t.scientificPage.expLaws.map((law) => (
+            <p
+              key={law}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
+            >
+              {law}
+            </p>
+          ))}
+        </div>
+      </section>
 
       <section aria-labelledby="sci-examples-heading" className="mt-16 border-t border-border pt-16">
         <h2
@@ -829,52 +875,6 @@ export function ScientificCalculator() {
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           {t.scientificPage.guideDegRadBody}
         </p>
-      </section>
-
-      <section aria-labelledby="sci-log-heading" className="mt-16 border-t border-border pt-16">
-        <h2
-          id="sci-log-heading"
-          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
-        >
-          {t.scientificPage.logLawsTitle}
-        </h2>
-        <div className="mt-4 space-y-2">
-          {t.scientificPage.logLaws.map((law) => (
-            <p
-              key={law}
-              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
-            >
-              {law}
-            </p>
-          ))}
-        </div>
-        <p className="mt-6 font-semibold text-text-primary">計算例</p>
-        <ul className="mt-2 list-disc space-y-2 pl-5">
-          {t.scientificPage.logExamples.map((ex) => (
-            <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
-              {ex}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section aria-labelledby="sci-exp-heading" className="mt-16 border-t border-border pt-16">
-        <h2
-          id="sci-exp-heading"
-          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
-        >
-          {t.scientificPage.expLawsTitle}
-        </h2>
-        <div className="mt-4 space-y-2">
-          {t.scientificPage.expLaws.map((law) => (
-            <p
-              key={law}
-              className="rounded-lg border border-border bg-surface-sunken px-4 py-3 text-sm leading-relaxed text-text-primary sm:text-base"
-            >
-              {law}
-            </p>
-          ))}
-        </div>
       </section>
 
       <section aria-labelledby="sci-handcalc-heading" className="mt-16 border-t border-border pt-16">
