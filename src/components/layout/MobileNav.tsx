@@ -223,29 +223,6 @@ export function MobileNav({
               </Link>
 
               <Link
-                href="/#how-to"
-                onClick={onMenuClose}
-                className="group relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium text-brand transition-all duration-150 hover:bg-surface-sunken hover:opacity-80 dark:text-[#d6ccf0]"
-              >
-                <span className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] bg-surface-sunken text-brand">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </span>
-                {t.nav.howToUse}
-              </Link>
-
-              <Link
                 href="/calculators"
                 onClick={onMenuClose}
                 className={[
