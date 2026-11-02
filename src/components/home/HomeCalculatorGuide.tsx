@@ -113,7 +113,7 @@ export function HomeCalculatorGuide() {
         このページのWeb電卓は、買い物の合計から消費税の計算まで、その場で済ませられる無料の電卓です。四則演算に加えて、税込・税抜ボタン、GT、メモリー機能など、実物の電卓でよく使う機能をそろえています。登録やインストールは不要で、スマホでもPCでも同じように使えます。
       </p>
       <a
-        href="/web-calculator"
+        href="/"
         className="mt-4 inline-block rounded-full bg-brand px-5 py-2 text-sm font-bold text-white"
       >
         Web電卓を開く
