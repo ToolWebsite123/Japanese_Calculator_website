@@ -81,6 +81,7 @@ function GuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
               {row.map((cell, i) => (
                 <td
                   key={`${row[0]}-${i}`}
+                  data-label={head[i]}
                   className={`border border-border px-3 py-2 ${
                     i === 0 ? "font-semibold text-text-primary" : "text-text-secondary"
                   }`}
