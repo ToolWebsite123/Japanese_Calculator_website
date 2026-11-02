@@ -96,6 +96,28 @@ const WEEK_TABLE: { weeks: string; months: string; event: string }[] = [
   { weeks: "40週", months: "10か月", event: "出産予定日" },
 ];
 
+const DUE_EXAMPLES = [
+  {
+    title: "例1：最終月経から予定日を求める",
+    body: "最終月経の開始日が2026年4月1日で、月経周期が28日の場合、予定日は280日後（40週0日）の2027年1月6日です。",
+  },
+  {
+    title: "例2：今日の妊娠週数を求める",
+    body: "最終月経の開始日が2026年4月1日の場合、2026年6月24日時点では84日が経過しているので、妊娠12週0日です（84日 ÷ 7日 = 12週）。",
+  },
+  {
+    title: "例3：排卵日（受精日）から予定日を求める",
+    body: "受精日が2026年4月15日の場合、予定日は266日後の2027年1月6日です。例1と同じ予定日になることが確認できます。",
+  },
+] as const;
+
+const DUE_MISTAKES = [
+  "予定日を「必ずその日に生まれる日」と考える（正期産は妊娠37週0日から41週6日までで、実際のお産は予定日の前後になるのが普通です）",
+  "最終月経の「終わった日」を起点に数える（起点は最終月経の開始日です）",
+  "月経周期が28日でないのに、そのまま計算する（周期が長いと予定日も後ろにずれます。本ツールでは周期を調整できます）",
+  "医師から伝えられた予定日よりツールの結果を優先する（妊娠初期の超音波検査で予定日が修正されることがあります。医師の判断を優先してください）",
+] as const;
+
 export function DueDateCalculator() {
   const [mode, setMode] = useState<DueDateMode>("lmp");
 
@@ -385,8 +407,6 @@ export function DueDateCalculator() {
         <LinkedText text={INTRO} activeHref="/due-date-calculation" />
       </p>
 
-      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
-
       <section aria-labelledby="due-count-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="due-count-heading"
@@ -403,6 +423,28 @@ export function DueDateCalculator() {
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           予定日はあくまで目安で、実際のお産は前後します。月経周期が不規則な方や、医師から予定日を伝えられている場合は、医師の判断を優先してください。
         </p>
+      </section>
+
+      <section
+        aria-labelledby="due-examples-heading"
+        className="mt-16 border-t border-border pt-16"
+      >
+        <h2
+          id="due-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          出産予定日の計算例
+        </h2>
+        <div className="mt-4 space-y-4">
+          {DUE_EXAMPLES.map((ex) => (
+            <div key={ex.title}>
+              <h3 className="text-base font-semibold text-text-primary">{ex.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary sm:text-base">
+                {ex.body}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section aria-labelledby="due-table-heading" className="mt-16 border-t border-border pt-16">
@@ -438,6 +480,27 @@ export function DueDateCalculator() {
           </table>
         </div>
       </section>
+
+      <section
+        aria-labelledby="due-mistakes-heading"
+        className="mt-16 border-t border-border pt-16"
+      >
+        <h2
+          id="due-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          よくある間違い
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {DUE_MISTAKES.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
 
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/due-date-calculation" />
