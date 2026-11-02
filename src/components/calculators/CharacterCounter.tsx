@@ -414,7 +414,10 @@ export function CharacterCounter() {
                   <th scope="row" className="px-3 py-2 text-left font-medium text-text-secondary">
                     {row.label}
                   </th>
-                  <td className="tabular-display px-3 py-2 text-right font-semibold text-text-primary">
+                  <td
+                    data-label=""
+                    className="tabular-display px-3 py-2 text-right font-semibold text-text-primary"
+                  >
                     {row.value.toLocaleString()}
                   </td>
                 </tr>
@@ -439,7 +442,7 @@ export function CharacterCounter() {
                   <th scope="row" className="px-3 py-2 text-left font-medium text-text-secondary">
                     {item.label}
                   </th>
-                  <td className="px-3 py-2 text-text-primary">{item.value}</td>
+                  <td data-label="" className="px-3 py-2 text-text-primary">{item.value}</td>
                 </tr>
               ))}
             </tbody>
