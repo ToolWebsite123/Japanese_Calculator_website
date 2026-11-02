@@ -147,6 +147,13 @@ const DEP_LABELS: Array<{ key: DependentCategory; label: string }> = [
   { key: "age70plus", label: "70歳以上（老人扶養）" },
 ];
 
+const FURUSATO_MISTAKES = [
+  "控除上限額を超えて寄付する（超えた分は控除の対象にならず、自己負担が2,000円を超えて増えてしまいます）",
+  "ワンストップ特例を利用したのに確定申告をしてしまう（確定申告をすると特例は無効になるため、申告の中で寄付金控除を受ける必要があります）",
+  "住宅ローン控除や医療費控除があるのに、早見表の目安だけで判断する（ほかの控除があると上限額は下がります。詳細シミュレーションで確認してください）",
+  "年末に寄付だけ済ませて、ワンストップ特例の申請書（翌年1月10日必着）の提出を忘れる",
+] as const;
+
 export function FurusatoNozeiCalculator() {
   const [annualIncome, setAnnualIncome] = useState("6000000");
   const [hasSpouse, setHasSpouse] = useState(false);
@@ -373,8 +380,6 @@ export function FurusatoNozeiCalculator() {
         </p>
       </section>
 
-      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
-
       <section aria-labelledby="furusato-limit-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="furusato-limit-heading" className={guideHeadingClass}>
           年収別の控除上限額 早見表
@@ -483,6 +488,24 @@ export function FurusatoNozeiCalculator() {
           をご利用ください。控除が多い方ほど、上限額の差が大きくなります。
         </p>
       </section>
+
+      <section
+        aria-labelledby="furusato-mistakes-heading"
+        className="mt-16 border-t border-border pt-16"
+      >
+        <h2 id="furusato-mistakes-heading" className={guideHeadingClass}>
+          よくある間違い
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {FURUSATO_MISTAKES.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
 
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/furusato-nozei-calculation" />
