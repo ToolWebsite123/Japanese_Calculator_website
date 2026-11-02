@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import {
+  SelectWell,
+  SurfacePanel,
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -116,6 +122,8 @@ function TaxGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
               {row.map((cell, i) => (
                 <td
                   key={cell}
+                  data-label={head[i]}
+                  data-wide={cell.length > 40 ? true : undefined}
                   className={`border border-border px-3 py-2 ${
                     i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
                   }`}
@@ -223,36 +231,33 @@ export function ConsumptionTaxCalculator() {
 
   const { addEntry } = useHistory();
 
-  const computed = useMemo(() => {
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). resultMode snapshots the
+  // mode at calculation time so the shown result keeps matching the
+  // inputs it was computed from.
+  const [result, setResult] = useState<ReturnType<typeof calcFromTaxExcluded> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [resultMode, setResultMode] = useState<Mode>("fromExcluded");
+
+  function handleCalculate() {
     try {
       const rate =
         rateChoice === "custom" ? parseFloat(customRatePercent) / 100 : parseFloat(rateChoice);
       const input = { amount: parseFloat(amount) || 0, rate, round };
       const r = mode === "fromExcluded" ? calcFromTaxExcluded(input) : calcFromTaxIncluded(input);
-      return { result: r, error: null as string | null };
-    } catch (e) {
-      return { result: null, error: e instanceof Error ? e.message : "計算エラー" };
-    }
-  }, [mode, amount, rateChoice, customRatePercent, round]);
-  const result = computed.result;
-  const error = computed.error;
-  const resultMode = mode;
-
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    if (!result) return;
-    const key = `${mode}|${amount}|${rateChoice}|${customRatePercent}|${round}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+      setResult(r);
+      setError(null);
+      setResultMode(mode);
       addEntry({
         expression: `消費税 ${amount}円`,
-        result: formatYen(mode === "fromExcluded" ? result.totalAmount : result.baseAmount),
+        result: formatYen(mode === "fromExcluded" ? r.totalAmount : r.baseAmount),
         route: "/consumption-tax-calculator",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [result, mode, amount, rateChoice, customRatePercent, round, addEntry]);
+    } catch (e) {
+      setResult(null);
+      setError(e instanceof Error ? e.message : "計算エラー");
+    }
+  }
 
   function handleClear() {
     setMode("fromExcluded");
@@ -260,6 +265,8 @@ export function ConsumptionTaxCalculator() {
     setRateChoice("0.10");
     setCustomRatePercent("10");
     setRound("floor");
+    setResult(null);
+    setError(null);
   }
 
   return (
@@ -332,6 +339,10 @@ export function ConsumptionTaxCalculator() {
               <option value="ceil">切り上げ</option>
             </SelectWell>
           </label>
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            計算する
+          </PrimaryButton>
 
           <SecondaryButton fullWidth onClick={handleClear}>
             クリア
