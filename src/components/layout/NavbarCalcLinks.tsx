@@ -163,14 +163,14 @@ export function NavbarCalcLinks() {
         {homeActive && underline}
       </Link>
 
-      <div ref={dropdownRef} className="relative flex items-stretch">
+      <div ref={dropdownRef} className="relative flex items-stretch px-1">
         <button
           ref={buttonRef}
           type="button"
           onClick={() => setDropdownOpen((v) => !v)}
           aria-haspopup="true"
           aria-expanded={dropdownOpen}
-          className={linkClass(listActive)}
+          className={`my-auto flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand/90 ${listActive ? "ring-2 ring-brand/40 ring-offset-1" : ""}`}
         >
           {t.nav.calculatorsList}
           <svg
@@ -186,7 +186,6 @@ export function NavbarCalcLinks() {
               clipRule="evenodd"
             />
           </svg>
-          {listActive && underline}
         </button>
 
         {dropdownOpen && (
