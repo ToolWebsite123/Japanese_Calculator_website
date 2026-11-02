@@ -39,8 +39,9 @@ export function HomeExamples() {
   return (
     <section
       aria-labelledby="home-examples-heading"
-      className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14"
+      className="border-y border-border bg-brand-muted/25"
     >
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-14">
       <h2
         id="home-examples-heading"
         className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
@@ -82,6 +83,7 @@ export function HomeExamples() {
             </tbody>
           </table>
         </div>
+      </div>
       </div>
     </section>
   );
