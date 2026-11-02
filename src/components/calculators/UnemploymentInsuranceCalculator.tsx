@@ -340,6 +340,39 @@ export function UnemploymentInsuranceCalculator() {
         </p>
       </section>
 
+      <section aria-labelledby="unemp-example-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="unemp-example-heading" className={guideHeadingClass}>
+          計算例
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          離職前6か月の賃金総額180万円、年齢30〜34歳、被保険者期間5年以上10年未満、会社都合退職の場合、この計算機では基本手当日額{" "}
+          <strong className="text-text-primary">6,307円</strong>、所定給付日数{" "}
+          <strong className="text-text-primary">180日</strong>、受給総額の目安{" "}
+          <strong className="text-text-primary">1,135,260円</strong> となります。
+        </p>
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="border-b border-border bg-surface-sunken text-left">
+                <th className="px-3 py-2.5 font-semibold text-text-primary">条件</th>
+                <th className="px-3 py-2.5 font-semibold text-text-primary">受給総額の目安</th>
+              </tr>
+            </thead>
+            <tbody>
+              {EXAMPLE_ROWS.map((row) => (
+                <tr key={row[0]} className="border-b border-border">
+                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          実際の受給額と日数はハローワークの認定で決まります。自己都合退職には給付制限期間があります。
+        </p>
+      </section>
+
       <section aria-labelledby="unemp-days-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="unemp-days-heading" className={guideHeadingClass}>
           所定給付日数の早見表
@@ -395,39 +428,6 @@ export function UnemploymentInsuranceCalculator() {
         </div>
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           65歳以上は基本手当ではなく「高年齢求職者給付金」が一時金で支給されます（被保険者期間1年未満で30日分、1年以上で50日分）。
-        </p>
-      </section>
-
-      <section aria-labelledby="unemp-example-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="unemp-example-heading" className={guideHeadingClass}>
-          計算例
-        </h2>
-        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
-          離職前6か月の賃金総額180万円、年齢30〜34歳、被保険者期間5年以上10年未満、会社都合退職の場合、この計算機では基本手当日額{" "}
-          <strong className="text-text-primary">6,307円</strong>、所定給付日数{" "}
-          <strong className="text-text-primary">180日</strong>、受給総額の目安{" "}
-          <strong className="text-text-primary">1,135,260円</strong> となります。
-        </p>
-        <div className="mt-6 overflow-x-auto">
-          <table className="w-full border-collapse text-sm sm:text-base">
-            <thead>
-              <tr className="border-b border-border bg-surface-sunken text-left">
-                <th className="px-3 py-2.5 font-semibold text-text-primary">条件</th>
-                <th className="px-3 py-2.5 font-semibold text-text-primary">受給総額の目安</th>
-              </tr>
-            </thead>
-            <tbody>
-              {EXAMPLE_ROWS.map((row) => (
-                <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
-          実際の受給額と日数はハローワークの認定で決まります。自己都合退職には給付制限期間があります。
         </p>
       </section>
 
