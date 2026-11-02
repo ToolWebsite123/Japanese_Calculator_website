@@ -346,17 +346,6 @@ export function UnitConverter() {
         </div>
       </section>
 
-      <section aria-labelledby="units-mistakes-heading" className={sectionClass}>
-        <h2 id="units-mistakes-heading" className={headingClass}>
-          {t.unitsPage.mistakesTitle}
-        </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
-          {t.unitsPage.mistakes.map((mistake) => (
-            <li key={mistake}>{mistake}</li>
-          ))}
-        </ul>
-      </section>
-
       <section aria-labelledby="units-quick-heading" className={sectionClass}>
         <h2 id="units-quick-heading" className={headingClass}>
           {t.unitsPage.guideQuickTitle}
@@ -369,6 +358,17 @@ export function UnitConverter() {
             >
               {item}
             </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="units-mistakes-heading" className={sectionClass}>
+        <h2 id="units-mistakes-heading" className={headingClass}>
+          {t.unitsPage.mistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {t.unitsPage.mistakes.map((mistake) => (
+            <li key={mistake}>{mistake}</li>
           ))}
         </ul>
       </section>
