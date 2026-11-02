@@ -68,16 +68,18 @@ export function HomeExamples() {
               {EXAMPLE_ROWS.map((row) => (
                 <tr key={row[0]}>
                   <td
+                    data-label="入力"
                     className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
                   >
                     {row[0]}
                   </td>
                   <td
+                    data-label="結果"
                     className={`${tableCellClass} whitespace-nowrap font-semibold text-text-primary`}
                   >
                     {row[1]}
                   </td>
-                  <td className={tableCellClass}>{row[2]}</td>
+                  <td data-label="ポイント" data-wide className={tableCellClass}>{row[2]}</td>
                 </tr>
               ))}
             </tbody>
