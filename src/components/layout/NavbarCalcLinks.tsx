@@ -96,7 +96,7 @@ export function NavbarCalcLinks() {
 
   const linkClass = (active: boolean) =>
     [
-      "relative flex h-full items-center gap-1 px-3 text-sm font-medium transition",
+      "relative flex h-full items-center gap-1 px-4 text-sm font-medium transition",
       active
         ? "text-brand dark:text-[#d6ccf0]"
         : "text-[#231942] hover:text-brand dark:text-[#d6ccf0] dark:hover:text-white",
@@ -105,7 +105,7 @@ export function NavbarCalcLinks() {
   const underline = (
     <span
       aria-hidden="true"
-      className="absolute inset-x-3 bottom-0 h-[2.5px] rounded-full bg-brand dark:bg-[#a794e0]"
+      className="absolute inset-x-4 bottom-0 h-[2.5px] rounded-full bg-brand dark:bg-[#a794e0]"
     />
   );
 
