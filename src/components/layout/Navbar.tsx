@@ -93,7 +93,7 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
 
         <NavbarCalcLinks />
 
-        <div className="ml-auto flex min-w-0 items-center gap-2">
+        <div className="ml-auto flex min-w-0 items-center gap-3">
           <div className="hidden w-48 min-w-0 md:block lg:w-60">
             <SearchInput size="compact" placeholder="計算機を検索…" />
           </div>
