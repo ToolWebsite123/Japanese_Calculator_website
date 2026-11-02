@@ -278,7 +278,7 @@ export function DueDateCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     {mode === "reverse" ? "希望する出産予定日" : "出産予定日（40週0日）"}
                   </div>
-                  <div className="tabular-display mt-2 text-2xl font-bold text-brand sm:text-3xl">
+                  <div className="tabular-display mt-2 text-2xl font-bold text-brand dark:text-[#d6ccf0] sm:text-3xl">
                     {formatDate(result.dueDate)}
                   </div>
                 </div>
