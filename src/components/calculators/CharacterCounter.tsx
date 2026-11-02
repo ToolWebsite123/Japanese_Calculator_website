@@ -222,7 +222,7 @@ export function CharacterCounter() {
         {t.title}
       </h1>
 
-      <p className="mx-auto mb-6 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:text-base">
         {INTRO}
       </p>
 
@@ -264,7 +264,7 @@ export function CharacterCounter() {
                 HTMLタグを除外
               </label>
               {(excludeMarkdown || excludeHtml) && (
-                <span className="text-xs font-medium text-brand">
+                <span className="text-xs font-medium text-brand dark:text-[#d6ccf0]">
                   記法・タグを除外した文章で集計しています
                 </span>
               )}
@@ -274,7 +274,7 @@ export function CharacterCounter() {
           <SurfacePanel className="border-brand/20 bg-brand-muted space-y-3">
             <div>
               <div className="text-sm font-medium text-text-tertiary">{t.stats.characters}</div>
-              <div className="tabular-display mt-2 text-2xl font-bold text-brand sm:text-3xl">
+              <div className="tabular-display mt-2 text-2xl font-bold text-brand dark:text-[#d6ccf0] sm:text-3xl">
                 {stats.characters.toLocaleString()}
                 <span className="ml-1 text-base font-semibold text-text-secondary">文字</span>
               </div>
@@ -369,7 +369,7 @@ export function CharacterCounter() {
             >
               {ja.common.clear}
             </SecondaryButton>
-            {copied && <span className="self-center text-sm text-brand">{ja.common.copied}</span>}
+            {copied && <span className="self-center text-sm text-brand dark:text-[#d6ccf0]">{ja.common.copied}</span>}
           </div>
         </div>
       </CalculatorCard>
