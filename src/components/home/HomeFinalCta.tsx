@@ -2,8 +2,9 @@
 
 /**
  * Closing call-to-action on the homepage (§C-13 of the homepage content
- * proposal, approved 2026-10-31). Both destinations verified live:
- * /web-calculator (the dedicated calculator page) and /calculators (hub).
+ * proposal, approved 2026-10-31). Destinations: the homepage hero
+ * calculator (/) and the /calculators hub. (The dedicated /web-calculator
+ * page was retired 2026-11-02 and redirects to /.)
  */
 export function HomeFinalCta() {
   return (
@@ -15,10 +16,7 @@ export function HomeFinalCta() {
         日常の計算なら、このページのWeb電卓ですぐに計算できます。もっと専門的な計算をしたいときは、計算機一覧から目的に合ったツールを選んでください。
       </p>
       <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-        <a
-          href="/web-calculator"
-          className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white"
-        >
+        <a href="/" className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-white">
           Web電卓を使う
         </a>
         <a
