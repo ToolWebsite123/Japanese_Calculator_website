@@ -26,6 +26,10 @@ const aliasMap: Record<string, string> = {
   "/scientific": "/scientific-calculator",
   "/simultaneous-equations": "/simultaneous-equations-calculator",
   "/time": "/time-calculator",
+  // Retired 2026-11-02 at the owner's request: the Web calculator now lives
+  // on the homepage itself, so its old dedicated page permanently redirects
+  // there.
+  "/web-calculator": "/",
 };
 
 function normalizePath(path: string): string {
