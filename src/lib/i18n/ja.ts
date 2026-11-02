@@ -1,6 +1,7 @@
 const ja = {
   appName: "オンライン電卓",
   appTagline: "無料オンライン電卓サイト",
+  headerTagline: "無料で使えるオンライン計算ツール",
   nav: {
     standard: "電卓",
     scientific: "関数電卓",
@@ -19,6 +20,9 @@ const ja = {
     menu: "メニュー",
     more: "その他",
     allCalculators: "すべての電卓",
+    home: "ホーム",
+    calculatorsList: "電卓一覧",
+    howToUse: "使い方",
     primarySection: "計算機",
     secondarySection: "その他の計算機",
     webCalculator: "Web電卓",
