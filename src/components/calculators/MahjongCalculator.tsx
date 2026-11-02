@@ -270,7 +270,7 @@ export function MahjongCalculator() {
             <SurfacePanel className="border-brand/20 bg-brand-muted space-y-3">
               <div>
                 <div className="text-sm font-medium text-text-tertiary">合計点</div>
-                <div className="tabular-display mt-2 text-2xl font-bold text-brand sm:text-3xl">
+                <div className="tabular-display mt-2 text-2xl font-bold text-brand dark:text-[#d6ccf0] sm:text-3xl">
                   {result.total.toLocaleString()}点{result.label ? `（${result.label}）` : ""}
                 </div>
               </div>
@@ -288,7 +288,7 @@ export function MahjongCalculator() {
             <button
               type="button"
               onClick={() => setShowBuilder((v) => !v)}
-              className="text-sm font-medium text-brand underline underline-offset-2"
+              className="text-sm font-medium text-brand underline underline-offset-2 dark:text-[#d6ccf0]"
             >
               {showBuilder ? "符計算ヘルパーを閉じる" : "符計算ヘルパーを開く"}
             </button>
