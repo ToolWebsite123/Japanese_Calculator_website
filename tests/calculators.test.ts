@@ -1860,3 +1860,19 @@ test("CC-07: the page's worked example reproduces exactly", () => {
   assert.equal(s.breakdown.kanji, 20);
   assert.equal(s.breakdown.hiragana, 26);
 });
+
+test("CC-08: UTF-8 byte count — ASCII 1 byte, kana 3 bytes, emoji 4 bytes", () => {
+  assert.equal(countCharacters("abc").bytesUtf8, 3);
+  assert.equal(countCharacters("あいう").bytesUtf8, 9);
+  const emoji = countCharacters("😀");
+  assert.equal(emoji.characters, 1);
+  assert.equal(emoji.bytesUtf8, 4);
+  assert.equal(countCharacters("").bytesUtf8, 0);
+});
+
+test("CC-09: manuscript paper conversion (400 chars per sheet, spaces excluded)", () => {
+  assert.equal(countCharacters("あ".repeat(800)).manuscriptSheets, 2);
+  assert.equal(countCharacters("あ".repeat(200)).manuscriptSheets, 0.5);
+  // Whitespace does not fill manuscript paper in this conversion.
+  assert.equal(countCharacters("あ ".repeat(400)).manuscriptSheets, 1);
+});
