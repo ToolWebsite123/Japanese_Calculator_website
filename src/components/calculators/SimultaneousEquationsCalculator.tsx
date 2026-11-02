@@ -274,11 +274,11 @@ export function SimultaneousEquationsCalculator() {
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
                     <div className="text-sm font-medium text-text-tertiary">{labels.resultX}</div>
-                    <div className="tabular-display mt-2 text-3xl font-bold text-brand">{computed2.xText}</div>
+                    <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">{computed2.xText}</div>
                   </div>
                   <div>
                     <div className="text-sm font-medium text-text-tertiary">{labels.resultY}</div>
-                    <div className="tabular-display mt-2 text-3xl font-bold text-brand">{computed2.yText}</div>
+                    <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">{computed2.yText}</div>
                   </div>
                 </div>
               )}
@@ -291,7 +291,7 @@ export function SimultaneousEquationsCalculator() {
                   ].map(([label, value]) => (
                     <div key={label}>
                       <div className="text-sm font-medium text-text-tertiary">{label}</div>
-                      <div className="tabular-display mt-2 text-3xl font-bold text-brand">{value}</div>
+                      <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">{value}</div>
                     </div>
                   ))}
                 </div>
