@@ -42,7 +42,6 @@ import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimeCalculatorRouteImport } from './routes/time-calculator'
 import { Route as UnemploymentInsuranceCalculationRouteImport } from './routes/unemployment-insurance-calculation'
 import { Route as UnitConverterRouteImport } from './routes/unit-converter'
-import { Route as WebCalculatorRouteImport } from './routes/web-calculator'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -216,11 +215,6 @@ const UnitConverterRoute = UnitConverterRouteImport.update({
   path: '/unit-converter',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WebCalculatorRoute = WebCalculatorRouteImport.update({
-  id: '/web-calculator',
-  path: '/web-calculator',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -256,7 +250,6 @@ export interface FileRoutesByFullPath {
   '/time-calculator': typeof TimeCalculatorRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
   '/unit-converter': typeof UnitConverterRoute
-  '/web-calculator': typeof WebCalculatorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -292,7 +285,6 @@ export interface FileRoutesByTo {
   '/time-calculator': typeof TimeCalculatorRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
   '/unit-converter': typeof UnitConverterRoute
-  '/web-calculator': typeof WebCalculatorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -329,7 +321,6 @@ export interface FileRoutesById {
   '/time-calculator': typeof TimeCalculatorRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
   '/unit-converter': typeof UnitConverterRoute
-  '/web-calculator': typeof WebCalculatorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -367,7 +358,6 @@ export interface FileRouteTypes {
     | '/time-calculator'
     | '/unemployment-insurance-calculation'
     | '/unit-converter'
-    | '/web-calculator'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -403,7 +393,6 @@ export interface FileRouteTypes {
     | '/time-calculator'
     | '/unemployment-insurance-calculation'
     | '/unit-converter'
-    | '/web-calculator'
   id:
     | '__root__'
     | '/'
@@ -439,7 +428,6 @@ export interface FileRouteTypes {
     | '/time-calculator'
     | '/unemployment-insurance-calculation'
     | '/unit-converter'
-    | '/web-calculator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -476,7 +464,6 @@ export interface RootRouteChildren {
   TimeCalculatorRoute: typeof TimeCalculatorRoute
   UnemploymentInsuranceCalculationRoute: typeof UnemploymentInsuranceCalculationRoute
   UnitConverterRoute: typeof UnitConverterRoute
-  WebCalculatorRoute: typeof WebCalculatorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -712,13 +699,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnitConverterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/web-calculator': {
-      id: '/web-calculator'
-      path: '/web-calculator'
-      fullPath: '/web-calculator'
-      preLoaderRoute: typeof WebCalculatorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -757,7 +737,6 @@ const rootRouteChildren: RootRouteChildren = {
   TimeCalculatorRoute: TimeCalculatorRoute,
   UnemploymentInsuranceCalculationRoute: UnemploymentInsuranceCalculationRoute,
   UnitConverterRoute: UnitConverterRoute,
-  WebCalculatorRoute: WebCalculatorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
