@@ -77,6 +77,15 @@ function TimeBlock({
   );
 }
 
+const TIME_BASIS_INTRO =
+  "時間の計算は、10進法ではなく60進法が基本です。1時間 = 60分、1分 = 60秒のため、そのまま筆算すると繰り上がりや繰り下がりで間違いやすくなります。本ツールは、入力された時間をいったん「分」に直してから計算し、最後に時間と分の表記に戻して表示しています。手計算でも、同じように分へ直すのが確実です。";
+
+const TIME_FORMULAS = [
+  "合計（分） = 時間 × 60 + 分",
+  "分から時間へ：分 ÷ 60（商が時間、余りが分） 例：150分 ÷ 60 = 2 あまり 30 → 2時間30分",
+  "小数（時間） = 分 ÷ 60 例：90分 = 1.5時間、45分 = 0.75時間",
+] as const;
+
 export function TimeCalculator() {
   const { t } = useLocale();
 
@@ -386,6 +395,25 @@ export function TimeCalculator() {
         <LinkedText text={t.timePage.introParagraph} />
       </p>
 
+      <section aria-labelledby="time-basis-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="time-basis-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          時間計算の仕組みと公式
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+          {TIME_BASIS_INTRO}
+        </p>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {TIME_FORMULAS.map((f) => (
+            <li key={f} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {f}
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="time-examples-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="time-examples-heading"
@@ -422,22 +450,6 @@ export function TimeCalculator() {
         </div>
       </section>
 
-      <section aria-labelledby="time-mistakes-heading" className="mt-16 border-t border-border pt-16">
-        <h2
-          id="time-mistakes-heading"
-          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
-        >
-          {t.timePage.guideMistakesTitle}
-        </h2>
-        <ul className="mt-4 list-disc space-y-2 pl-5">
-          {t.timePage.guideMistakes.map((m) => (
-            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
-              {m}
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <section aria-labelledby="time-decimal-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="time-decimal-heading"
@@ -470,6 +482,22 @@ export function TimeCalculator() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section aria-labelledby="time-mistakes-heading" className="mt-16 border-t border-border pt-16">
+        <h2
+          id="time-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          {t.timePage.guideMistakesTitle}
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {t.timePage.guideMistakes.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <CalculatorHowToSection title={t.timePage.howToTitle} steps={t.timePage.howToSteps} />
