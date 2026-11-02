@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/context/LocaleContext";
+import { LinkedText } from "@/components/calculator/LinkedText";
 
 export function HomeIntroSection() {
   const { t } = useLocale();
@@ -16,7 +17,9 @@ export function HomeIntroSection() {
       </h2>
       <div className="mt-6 space-y-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         {t.home.introParagraphs.map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
+          <p key={index}>
+            <LinkedText text={paragraph} activeHref="/" />
+          </p>
         ))}
       </div>
     </section>
