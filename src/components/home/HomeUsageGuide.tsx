@@ -97,11 +97,12 @@ export function HomeUsageGuide() {
                 {BUTTON_ROWS.map((row) => (
                   <tr key={row[0]}>
                     <td
+                      data-label="ボタン・機能"
                       className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
                     >
                       {row[0]}
                     </td>
-                    <td className={tableCellClass}>{row[1]}</td>
+                    <td data-label="役割" data-wide className={tableCellClass}>{row[1]}</td>
                   </tr>
                 ))}
               </tbody>
@@ -127,11 +128,12 @@ export function HomeUsageGuide() {
                 {KEYBOARD_ROWS.map((row) => (
                   <tr key={row[0]}>
                     <td
+                      data-label="キー"
                       className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
                     >
                       {row[0]}
                     </td>
-                    <td className={tableCellClass}>{row[1]}</td>
+                    <td data-label="動作" data-wide className={tableCellClass}>{row[1]}</td>
                   </tr>
                 ))}
               </tbody>
