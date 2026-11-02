@@ -21,8 +21,8 @@ export function HomePage() {
           the earlier calculator-only note — the owner approved this
           content explicitly after reviewing the full draft. */}
       <HomeIntro />
-      <HomeUsageGuide />
       <HomeExamples />
+      <HomeUsageGuide />
       <HomeFeatures />
       <HomeToolChooser />
       <HomeMobileNote />
