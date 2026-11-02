@@ -272,10 +272,6 @@ export function NavbarCalcLinks() {
           </div>
         )}
       </div>
-
-      <Link href="/#how-to" className={linkClass(false)}>
-        {t.nav.howToUse}
-      </Link>
     </nav>
   );
 }
