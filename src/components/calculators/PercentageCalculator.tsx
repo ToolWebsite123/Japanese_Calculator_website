@@ -8,6 +8,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { PercentageWorkedExamples } from "@/components/calculator/PercentageWorkedExamples";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { PrimaryButton } from "@/components/ui/primitives";
 import { Divider, InputWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import {
@@ -49,6 +50,7 @@ function PercentGuideTable({ head, rows }: { head: string[]; rows: string[][] })
               {row.map((cell, i) => (
                 <td
                   key={cell}
+                  data-label={head[i]}
                   className={`border border-border px-3 py-2 ${
                     i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
                   }`}
@@ -84,7 +86,9 @@ export function PercentageCalculator() {
   const [p4Part, setP4Part] = useState<string>("30");
   const [p4Pct, setP4Pct] = useState<string>("20");
 
-  // All four modes compute live on every render (no calculate button).
+  // The four results appear only after the user presses 計算する
+  // (site-wide pattern, same as the BMI calculator). Until then each
+  // inline result box shows the placeholder and no error is shown.
   const parse = (s: string): number | null => {
     if (s.trim() === "") return null;
     const n = parseFloat(s);
@@ -92,38 +96,53 @@ export function PercentageCalculator() {
   };
   const invalid = t.common.invalidInput as string;
 
-  const n1x = parse(p1X);
-  const n1y = parse(p1Y);
-  const v1 = n1x !== null && n1y !== null ? percentOf(n1y, n1x) : null;
-  const result1 = {
-    value: v1 === null ? "—" : formatDisplayNumber(v1, 8),
-    error: v1 === null ? invalid : null,
-  };
+  type PctResult = { value: string; error: string | null };
+  const EMPTY: PctResult = { value: "—", error: null };
+  const [results, setResults] = useState<{
+    result1: PctResult;
+    result2: PctResult;
+    result3: PctResult;
+    result4: PctResult;
+  }>({ result1: EMPTY, result2: EMPTY, result3: EMPTY, result4: EMPTY });
+  const { result1, result2, result3, result4 } = results;
 
-  const n2x = parse(p2X);
-  const n2y = parse(p2Y);
-  const v2 = n2x !== null && n2y !== null ? ratioPercent(n2x, n2y) : null;
-  const buai2 = v2 !== null ? percentToBuai(v2) : null;
-  const result2 = {
-    value: v2 === null ? "—" : `${v2.toFixed(2)}%${buai2 ? `（${buai2}）` : ""}`,
-    error: v2 === null ? invalid : null,
-  };
+  function handleCalculate() {
+    const n1x = parse(p1X);
+    const n1y = parse(p1Y);
+    const v1 = n1x !== null && n1y !== null ? percentOf(n1y, n1x) : null;
 
-  const n3x = parse(p3X);
-  const n3y = parse(p3Y);
-  const v3 = n3x !== null && n3y !== null ? changePercent(n3x, n3y) : null;
-  const result3 = {
-    value: v3 === null ? "—" : `${v3 > 0 ? "+" : ""}${v3.toFixed(2)}%`,
-    error: v3 === null ? invalid : null,
-  };
+    const n2x = parse(p2X);
+    const n2y = parse(p2Y);
+    const v2 = n2x !== null && n2y !== null ? ratioPercent(n2x, n2y) : null;
+    const buai2 = v2 !== null ? percentToBuai(v2) : null;
 
-  const n4part = parse(p4Part);
-  const n4pct = parse(p4Pct);
-  const v4 = n4part !== null && n4pct !== null ? wholeFromPart(n4part, n4pct) : null;
-  const result4 = {
-    value: v4 === null ? "—" : formatDisplayNumber(v4, 8),
-    error: v4 === null ? invalid : null,
-  };
+    const n3x = parse(p3X);
+    const n3y = parse(p3Y);
+    const v3 = n3x !== null && n3y !== null ? changePercent(n3x, n3y) : null;
+
+    const n4part = parse(p4Part);
+    const n4pct = parse(p4Pct);
+    const v4 = n4part !== null && n4pct !== null ? wholeFromPart(n4part, n4pct) : null;
+
+    setResults({
+      result1: {
+        value: v1 === null ? "—" : formatDisplayNumber(v1, 8),
+        error: v1 === null ? invalid : null,
+      },
+      result2: {
+        value: v2 === null ? "—" : `${v2.toFixed(2)}%${buai2 ? `（${buai2}）` : ""}`,
+        error: v2 === null ? invalid : null,
+      },
+      result3: {
+        value: v3 === null ? "—" : `${v3 > 0 ? "+" : ""}${v3.toFixed(2)}%`,
+        error: v3 === null ? invalid : null,
+      },
+      result4: {
+        value: v4 === null ? "—" : formatDisplayNumber(v4, 8),
+        error: v4 === null ? invalid : null,
+      },
+    });
+  }
 
   return (
     <>
@@ -254,6 +273,10 @@ export function PercentageCalculator() {
           </div>
           {result4.error && <ErrorMessage message={result4.error} />}
 
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
+
           <Divider>
             <PercentageWorkedExamples
               originalPrice={p1Y}
@@ -310,8 +333,8 @@ export function PercentageCalculator() {
             <tbody>
               {t.percentagePage.examplesTable.map((row) => (
                 <tr key={row.calc} className="border-b border-border">
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.calc}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.result}</td>
+                  <td data-label="計算" className="px-3 py-2.5 font-medium text-text-primary">{row.calc}</td>
+                  <td data-label="結果" className="px-3 py-2.5 text-text-secondary">{row.result}</td>
                 </tr>
               ))}
             </tbody>
