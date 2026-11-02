@@ -23,6 +23,7 @@ const RULES = [
   "読了時間は、空白を除く文字数を日本語の平均的な読書速度（1分あたり500文字）で割って算出した目安です。",
   "バイト数はUTF-8で数えた容量です。日本語の文字は通常1文字3バイト、英数字は1バイトになるため、文字数とは一致しません。",
   "原稿用紙換算は、空白を除く文字数を400字詰め原稿用紙1枚＝400文字として換算した枚数です（200字詰めの場合は約2倍になります）。",
+  "「Markdown記法を除外」をオンにすると、見出しの「#」・太字の「**」・リンクのURL部分などの記法を取り除き、表示される本文だけで数えます。「HTMLタグを除外」ではタグとコメントを取り除き、タグの間のテキストだけを数えます。どちらの場合も、すべての集計項目が除外後の文章で計算されます。",
 ];
 
 const EXAMPLE_TEXT =
@@ -92,6 +93,11 @@ export const FAQ = {
         "文章をUTF-8という文字コードで表したときのデータ量です。英数字は1文字1バイト、日本語の文字は通常1文字3バイト、絵文字は4バイトになります。データベースの容量制限や、バイト数で上限が決められた入力欄の確認などに使います。",
     },
     {
+      question: "MarkdownやHTMLの文章も数えられますか？",
+      answer:
+        "はい。入力欄の下にある「Markdown記法を除外」にチェックを入れると、見出し・太字・リンクなどの記法を取り除いた本文の文字数を数えられます。「HTMLタグを除外」では、タグやコメントを除いたテキスト部分だけを集計します。ブログの下書きや、タグを含んだ文章の文字数確認にご利用ください。",
+    },
+    {
       question: "原稿用紙の枚数はどのように換算していますか？",
       answer:
         "空白を除く文字数を、400字詰め原稿用紙1枚＝400文字として割った枚数です。たとえば空白を除く文字数が2,000文字なら約5枚になります。200字詰め原稿用紙では約2倍の枚数になります。",
@@ -147,7 +153,12 @@ export function CharacterCounter() {
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
   const [customLimit, setCustomLimit] = useState("");
-  const stats = useMemo(() => countCharacters(text), [text]);
+  const [excludeMarkdown, setExcludeMarkdown] = useState(false);
+  const [excludeHtml, setExcludeHtml] = useState(false);
+  const stats = useMemo(
+    () => countCharacters(text, { excludeMarkdown, excludeHtml }),
+    [text, excludeMarkdown, excludeHtml],
+  );
   const exampleStats = useMemo(() => countCharacters(EXAMPLE_TEXT), []);
 
   const statTiles = [
@@ -233,6 +244,31 @@ export function CharacterCounter() {
               className="min-h-40 text-base leading-relaxed"
             />
             <p className="text-xs leading-relaxed text-text-tertiary">{t.liveNote}</p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1">
+              <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+                <input
+                  type="checkbox"
+                  checked={excludeMarkdown}
+                  onChange={(e) => setExcludeMarkdown(e.target.checked)}
+                  className="h-3.5 w-3.5"
+                />
+                Markdown記法を除外
+              </label>
+              <label className="flex items-center gap-1.5 text-xs text-text-secondary">
+                <input
+                  type="checkbox"
+                  checked={excludeHtml}
+                  onChange={(e) => setExcludeHtml(e.target.checked)}
+                  className="h-3.5 w-3.5"
+                />
+                HTMLタグを除外
+              </label>
+              {(excludeMarkdown || excludeHtml) && (
+                <span className="text-xs font-medium text-brand">
+                  記法・タグを除外した文章で集計しています
+                </span>
+              )}
+            </div>
           </div>
 
           <SurfacePanel className="border-brand/20 bg-brand-muted space-y-3">
