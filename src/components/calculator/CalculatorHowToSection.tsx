@@ -29,7 +29,7 @@ export function CalculatorHowToSection({ title, steps }: CalculatorHowToSectionP
           <li key={index} className="flex gap-4">
             <span
               aria-hidden="true"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-muted text-sm font-bold text-brand"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-muted text-sm font-bold text-brand dark:text-[#d6ccf0]"
             >
               {index + 1}
             </span>
