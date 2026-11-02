@@ -28,6 +28,7 @@ import { Route as FinancialCalculatorRouteImport } from './routes/financial-calc
 import { Route as FractionCalculatorRouteImport } from './routes/fraction-calculator'
 import { Route as FurusatoNozeiCalculationRouteImport } from './routes/furusato-nozei-calculation'
 import { Route as FurusatoNozeiSimulationCalculationRouteImport } from './routes/furusato-nozei-simulation-calculation'
+import { Route as GraphCalculatorRouteImport } from './routes/graph-calculator'
 import { Route as IncomeTaxCalculationRouteImport } from './routes/income-tax-calculation'
 import { Route as InterestCalculatorRouteImport } from './routes/interest-calculator'
 import { Route as LongDivisionCalculatorRouteImport } from './routes/long-division-calculator'
@@ -40,6 +41,7 @@ import { Route as SocialInsuranceCalculatorRouteImport } from './routes/social-i
 import { Route as SquarerootCalculatorRouteImport } from './routes/squareroot-calculator'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimeCalculatorRouteImport } from './routes/time-calculator'
+import { Route as TsuboConverterRouteImport } from './routes/tsubo-converter'
 import { Route as UnemploymentInsuranceCalculationRouteImport } from './routes/unemployment-insurance-calculation'
 import { Route as UnitConverterRouteImport } from './routes/unit-converter'
 
@@ -142,6 +144,11 @@ const FurusatoNozeiSimulationCalculationRoute =
     path: '/furusato-nozei-simulation-calculation',
     getParentRoute: () => rootRouteImport,
   } as any)
+const GraphCalculatorRoute = GraphCalculatorRouteImport.update({
+  id: '/graph-calculator',
+  path: '/graph-calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IncomeTaxCalculationRoute = IncomeTaxCalculationRouteImport.update({
   id: '/income-tax-calculation',
   path: '/income-tax-calculation',
@@ -204,6 +211,11 @@ const TimeCalculatorRoute = TimeCalculatorRouteImport.update({
   path: '/time-calculator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TsuboConverterRoute = TsuboConverterRouteImport.update({
+  id: '/tsubo-converter',
+  path: '/tsubo-converter',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnemploymentInsuranceCalculationRoute =
   UnemploymentInsuranceCalculationRouteImport.update({
     id: '/unemployment-insurance-calculation',
@@ -236,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/fraction-calculator': typeof FractionCalculatorRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
   '/furusato-nozei-simulation-calculation': typeof FurusatoNozeiSimulationCalculationRoute
+  '/graph-calculator': typeof GraphCalculatorRoute
   '/income-tax-calculation': typeof IncomeTaxCalculationRoute
   '/interest-calculator': typeof InterestCalculatorRoute
   '/long-division-calculator': typeof LongDivisionCalculatorRoute
@@ -248,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/squareroot-calculator': typeof SquarerootCalculatorRoute
   '/terms': typeof TermsRoute
   '/time-calculator': typeof TimeCalculatorRoute
+  '/tsubo-converter': typeof TsuboConverterRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
   '/unit-converter': typeof UnitConverterRoute
 }
@@ -271,6 +285,7 @@ export interface FileRoutesByTo {
   '/fraction-calculator': typeof FractionCalculatorRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
   '/furusato-nozei-simulation-calculation': typeof FurusatoNozeiSimulationCalculationRoute
+  '/graph-calculator': typeof GraphCalculatorRoute
   '/income-tax-calculation': typeof IncomeTaxCalculationRoute
   '/interest-calculator': typeof InterestCalculatorRoute
   '/long-division-calculator': typeof LongDivisionCalculatorRoute
@@ -283,6 +298,7 @@ export interface FileRoutesByTo {
   '/squareroot-calculator': typeof SquarerootCalculatorRoute
   '/terms': typeof TermsRoute
   '/time-calculator': typeof TimeCalculatorRoute
+  '/tsubo-converter': typeof TsuboConverterRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
   '/unit-converter': typeof UnitConverterRoute
 }
@@ -307,6 +323,7 @@ export interface FileRoutesById {
   '/fraction-calculator': typeof FractionCalculatorRoute
   '/furusato-nozei-calculation': typeof FurusatoNozeiCalculationRoute
   '/furusato-nozei-simulation-calculation': typeof FurusatoNozeiSimulationCalculationRoute
+  '/graph-calculator': typeof GraphCalculatorRoute
   '/income-tax-calculation': typeof IncomeTaxCalculationRoute
   '/interest-calculator': typeof InterestCalculatorRoute
   '/long-division-calculator': typeof LongDivisionCalculatorRoute
@@ -319,6 +336,7 @@ export interface FileRoutesById {
   '/squareroot-calculator': typeof SquarerootCalculatorRoute
   '/terms': typeof TermsRoute
   '/time-calculator': typeof TimeCalculatorRoute
+  '/tsubo-converter': typeof TsuboConverterRoute
   '/unemployment-insurance-calculation': typeof UnemploymentInsuranceCalculationRoute
   '/unit-converter': typeof UnitConverterRoute
 }
@@ -344,6 +362,7 @@ export interface FileRouteTypes {
     | '/fraction-calculator'
     | '/furusato-nozei-calculation'
     | '/furusato-nozei-simulation-calculation'
+    | '/graph-calculator'
     | '/income-tax-calculation'
     | '/interest-calculator'
     | '/long-division-calculator'
@@ -356,6 +375,7 @@ export interface FileRouteTypes {
     | '/squareroot-calculator'
     | '/terms'
     | '/time-calculator'
+    | '/tsubo-converter'
     | '/unemployment-insurance-calculation'
     | '/unit-converter'
   fileRoutesByTo: FileRoutesByTo
@@ -379,6 +399,7 @@ export interface FileRouteTypes {
     | '/fraction-calculator'
     | '/furusato-nozei-calculation'
     | '/furusato-nozei-simulation-calculation'
+    | '/graph-calculator'
     | '/income-tax-calculation'
     | '/interest-calculator'
     | '/long-division-calculator'
@@ -391,6 +412,7 @@ export interface FileRouteTypes {
     | '/squareroot-calculator'
     | '/terms'
     | '/time-calculator'
+    | '/tsubo-converter'
     | '/unemployment-insurance-calculation'
     | '/unit-converter'
   id:
@@ -414,6 +436,7 @@ export interface FileRouteTypes {
     | '/fraction-calculator'
     | '/furusato-nozei-calculation'
     | '/furusato-nozei-simulation-calculation'
+    | '/graph-calculator'
     | '/income-tax-calculation'
     | '/interest-calculator'
     | '/long-division-calculator'
@@ -426,6 +449,7 @@ export interface FileRouteTypes {
     | '/squareroot-calculator'
     | '/terms'
     | '/time-calculator'
+    | '/tsubo-converter'
     | '/unemployment-insurance-calculation'
     | '/unit-converter'
   fileRoutesById: FileRoutesById
@@ -450,6 +474,7 @@ export interface RootRouteChildren {
   FractionCalculatorRoute: typeof FractionCalculatorRoute
   FurusatoNozeiCalculationRoute: typeof FurusatoNozeiCalculationRoute
   FurusatoNozeiSimulationCalculationRoute: typeof FurusatoNozeiSimulationCalculationRoute
+  GraphCalculatorRoute: typeof GraphCalculatorRoute
   IncomeTaxCalculationRoute: typeof IncomeTaxCalculationRoute
   InterestCalculatorRoute: typeof InterestCalculatorRoute
   LongDivisionCalculatorRoute: typeof LongDivisionCalculatorRoute
@@ -462,6 +487,7 @@ export interface RootRouteChildren {
   SquarerootCalculatorRoute: typeof SquarerootCalculatorRoute
   TermsRoute: typeof TermsRoute
   TimeCalculatorRoute: typeof TimeCalculatorRoute
+  TsuboConverterRoute: typeof TsuboConverterRoute
   UnemploymentInsuranceCalculationRoute: typeof UnemploymentInsuranceCalculationRoute
   UnitConverterRoute: typeof UnitConverterRoute
 }
@@ -601,6 +627,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FurusatoNozeiSimulationCalculationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/graph-calculator': {
+      id: '/graph-calculator'
+      path: '/graph-calculator'
+      fullPath: '/graph-calculator'
+      preLoaderRoute: typeof GraphCalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/income-tax-calculation': {
       id: '/income-tax-calculation'
       path: '/income-tax-calculation'
@@ -685,6 +718,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimeCalculatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tsubo-converter': {
+      id: '/tsubo-converter'
+      path: '/tsubo-converter'
+      fullPath: '/tsubo-converter'
+      preLoaderRoute: typeof TsuboConverterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unemployment-insurance-calculation': {
       id: '/unemployment-insurance-calculation'
       path: '/unemployment-insurance-calculation'
@@ -723,6 +763,7 @@ const rootRouteChildren: RootRouteChildren = {
   FurusatoNozeiCalculationRoute: FurusatoNozeiCalculationRoute,
   FurusatoNozeiSimulationCalculationRoute:
     FurusatoNozeiSimulationCalculationRoute,
+  GraphCalculatorRoute: GraphCalculatorRoute,
   IncomeTaxCalculationRoute: IncomeTaxCalculationRoute,
   InterestCalculatorRoute: InterestCalculatorRoute,
   LongDivisionCalculatorRoute: LongDivisionCalculatorRoute,
@@ -735,6 +776,7 @@ const rootRouteChildren: RootRouteChildren = {
   SquarerootCalculatorRoute: SquarerootCalculatorRoute,
   TermsRoute: TermsRoute,
   TimeCalculatorRoute: TimeCalculatorRoute,
+  TsuboConverterRoute: TsuboConverterRoute,
   UnemploymentInsuranceCalculationRoute: UnemploymentInsuranceCalculationRoute,
   UnitConverterRoute: UnitConverterRoute,
 }
