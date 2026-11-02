@@ -58,6 +58,9 @@ const LINK_MAP: Array<{ text: string; href: string }> = [
   { text: "所得税 計算", href: "/income-tax-calculation" },
   { text: "ふるさと納税 シミュレーション", href: "/furusato-nozei-simulation-calculation" },
   { text: "ふるさと納税", href: "/furusato-nozei-calculation" },
+  { text: "文字数カウント", href: "/character-counter" },
+  { text: "グラフ計算機", href: "/graph-calculator" },
+  { text: "坪・畳・㎡変換", href: "/tsubo-converter" },
 ];
 
 const LINK_CLASS = "text-brand underline underline-offset-2 hover:text-brand/80";
