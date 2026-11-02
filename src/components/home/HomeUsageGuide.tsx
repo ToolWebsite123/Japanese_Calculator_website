@@ -80,7 +80,7 @@ export function HomeUsageGuide() {
         </ol>
 
         <h3 className="mt-8 text-base font-bold text-text-primary">ボタンと機能</h3>
-        <div className="mt-3 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+        <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm sm:text-base">
               <thead>
@@ -110,7 +110,7 @@ export function HomeUsageGuide() {
         </div>
 
         <h3 className="mt-8 text-base font-bold text-text-primary">キーボードでの操作</h3>
-        <div className="mt-3 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+        <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-sm sm:text-base">
               <thead>
