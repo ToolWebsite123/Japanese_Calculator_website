@@ -387,8 +387,6 @@ export function MahjongCalculator() {
         <LinkedText text={INTRO} activeHref="/mahjong-score-calculation" />
       </p>
 
-      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
-
       <section aria-labelledby="mj-tables-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="mj-tables-heading" className={guideHeadingClass}>
           麻雀の点数早見表（ロン）
@@ -452,6 +450,8 @@ export function MahjongCalculator() {
           ))}
         </ul>
       </section>
+
+      <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
 
       <CalculatorFaqSection title={FAQ.title} items={FAQ.items} />
       <RelatedCalculators activeHref="/mahjong-score-calculation" />
