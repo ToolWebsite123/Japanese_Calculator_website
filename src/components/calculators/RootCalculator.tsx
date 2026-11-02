@@ -8,6 +8,7 @@ import { ButtonGuideTable } from "@/components/calculator/ButtonGuideTable";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
+import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
   ChipButton,
   Divider,
@@ -287,6 +288,24 @@ function RootStepsPanel({
     </SurfacePanel>
   );
 }
+
+const ROOT_HOW_TO = {
+  title: "ルート（平方根）計算機の使い方",
+  steps: [
+    {
+      title: "平方根を求めたい数を入力する",
+      body: "「数」の欄に、平方根を求めたい数（被開方数）を入力します。",
+    },
+    {
+      title: "指数を選ぶ",
+      body: "通常の平方根は指数2のままにします。立方根（3乗根）などを求めたいときは指数を変更します。",
+    },
+    {
+      title: "結果を確認する",
+      body: "平方根の近似値と、√の中を簡単にした形（例：√12 = 2√3）が表示されます。",
+    },
+  ],
+};
 
 const guideHeadingClass =
   "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
@@ -621,6 +640,8 @@ export function RootCalculator() {
           ))}
         </ul>
       </section>
+
+      <CalculatorHowToSection title={ROOT_HOW_TO.title} steps={ROOT_HOW_TO.steps} />
 
       <CalculatorFaqSection title={t.rootPage.faqTitle} items={t.rootPage.faqItems} />
       <RelatedCalculators activeHref="/squareroot-calculator" />
