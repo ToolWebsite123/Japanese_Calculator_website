@@ -99,7 +99,7 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface px-4 dark:bg-surface-dark">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-brand">404</h1>
+        <h1 className="text-7xl font-bold text-brand dark:text-[#d6ccf0]">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-text-primary">ページが見つかりません</h2>
         <p className="mt-2 text-sm text-text-secondary">
           お探しのページは存在しないか、移動した可能性があります。
