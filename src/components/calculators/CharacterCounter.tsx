@@ -26,6 +26,13 @@ const RULES = [
 const EXAMPLE_TEXT =
   "私は毎朝、近くの公園を散歩します。澄んだ空気の中で深呼吸をすると、一日の始まりが気持ちよくなります。";
 
+const CC_MISTAKES = [
+  "「全角は2文字、半角は1文字」と数えてしまう（このツールでは全角・半角のどちらも1文字として数えます）",
+  "改行も文字数に含まれることを忘れる（改行を含めたくない場合は「文字数（空白・改行なし）」をご覧ください）",
+  "サービスの制限とツールの文字数が一致しない（例：Xでは日本語の文字が2カウントとして扱われるため、このツールの文字数がそのまま投稿できる文字数にはなりません）",
+  "絵文字は常に1文字だと思い込む（このツールでは通常の絵文字を1文字と数えますが、結合文字やスキントーン修飾を含む絵文字は、見た目が1つでも複数文字として数えられる場合があります）",
+] as const;
+
 const HOW_TO = {
   title: "文字数計算機の使い方",
   steps: [
@@ -305,6 +312,22 @@ export function CharacterCounter() {
           </table>
         </div>
         <p className={guideBodyClass}>{t.referenceNote}</p>
+      </section>
+
+      <section
+        aria-labelledby="character-mistakes-heading"
+        className="mt-16 border-t border-border pt-16"
+      >
+        <h2 id="character-mistakes-heading" className={guideHeadingClass}>
+          よくある間違いと注意点
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {CC_MISTAKES.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
       </section>
 
       <CalculatorHowToSection title={HOW_TO.title} steps={HOW_TO.steps} />
