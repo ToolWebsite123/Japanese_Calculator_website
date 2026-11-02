@@ -287,13 +287,6 @@ export function InterestMethodCalculator() {
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{page.guideCompareNote}</p>
       </section>
 
-      <section aria-labelledby="interest-tax-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="interest-tax-heading" className={guideHeadingClass}>
-          {page.guideTaxTitle}
-        </h2>
-        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{page.guideTaxBody}</p>
-      </section>
-
       <section aria-labelledby="interest-examples-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="interest-examples-heading" className={guideHeadingClass}>
           {page.contentExamplesTitle}
@@ -316,6 +309,13 @@ export function InterestMethodCalculator() {
             </tbody>
           </table>
         </div>
+      </section>
+
+      <section aria-labelledby="interest-tax-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="interest-tax-heading" className={guideHeadingClass}>
+          {page.guideTaxTitle}
+        </h2>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{page.guideTaxBody}</p>
       </section>
 
       <section aria-labelledby="interest-mistakes-heading" className="mt-16 border-t border-border pt-16">
