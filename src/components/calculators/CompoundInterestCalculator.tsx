@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
-import { SecondaryButton, SelectWell } from "@/components/ui/primitives";
+import { PrimaryButton, SecondaryButton, SelectWell } from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -28,47 +28,43 @@ export function CompoundInterestCalculator() {
   const [frequency, setFrequency] = useState<number>(1);
   const [monthlyContribution, setMonthlyContribution] = useState<string>("0");
 
-  const computed = useMemo(() => {
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Validation mirrors the
+  // previous live computation exactly.
+  const [calc, setCalc] = useState<ReturnType<typeof calcCompoundInterest> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const contributionNum = parseFloat(monthlyContribution) || 0;
+
+  function handleCalculate() {
     const p = parseFloat(principal);
     const r = parseFloat(rate);
     const y = parseFloat(years);
     const c = parseFloat(monthlyContribution);
     if (isNaN(p) || isNaN(r) || isNaN(y) || isNaN(c) || p < 0 || y < 0 || c < 0) {
-      return { calc: null, error: t.common.invalidInput as string };
+      setCalc(null);
+      setError(t.common.invalidInput as string);
+      return;
     }
     try {
-      return {
-        calc: calcCompoundInterest({
-          principal: p,
-          annualRatePercent: r,
-          years: y,
-          frequency,
-          monthlyContribution: c,
-        }),
-        error: null as string | null,
-      };
-    } catch {
-      return { calc: null, error: t.common.invalidInput as string };
-    }
-  }, [principal, rate, years, frequency, monthlyContribution, t.common.invalidInput]);
-  const calc = computed.calc;
-  const contributionNum = parseFloat(monthlyContribution) || 0;
-
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    if (!calc) return;
-    const key = `${principal}|${rate}|${years}|${frequency}|${monthlyContribution}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+      const res = calcCompoundInterest({
+        principal: p,
+        annualRatePercent: r,
+        years: y,
+        frequency,
+        monthlyContribution: c,
+      });
+      setCalc(res);
+      setError(null);
       addEntry({
         expression: `複利 ${principal}円 ${rate}% ${years}年`,
-        result: formatYen(calc.futureValue),
+        result: formatYen(res.futureValue),
         route: "/compound-interest-calculator",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [calc, principal, rate, years, frequency, monthlyContribution, addEntry]);
+    } catch {
+      setCalc(null);
+      setError(t.common.invalidInput as string);
+    }
+  }
 
   function handleClear() {
     setPrincipal("1000000");
@@ -76,6 +72,8 @@ export function CompoundInterestCalculator() {
     setYears("10");
     setFrequency(1);
     setMonthlyContribution("0");
+    setCalc(null);
+    setError(null);
   }
 
   return (
@@ -141,11 +139,15 @@ export function CompoundInterestCalculator() {
             className="text-lg"
           />
 
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
+
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
           </SecondaryButton>
 
-          {computed.error && <ErrorMessage message={computed.error} />}
+          {error && <ErrorMessage message={error} />}
 
           {calc && (
             <>
@@ -224,16 +226,28 @@ export function CompoundInterestCalculator() {
               <tbody>
                 {calc.yearly.map((row) => (
                   <tr key={row.year}>
-                    <td className="border border-border px-3 py-2 font-medium text-text-primary">
+                    <td
+                      data-label={t.compoundInterestPage.projectionHead[0]}
+                      className="border border-border px-3 py-2 font-medium text-text-primary"
+                    >
                       {row.year}年目
                     </td>
-                    <td className="tabular-display border border-border px-3 py-2 text-text-secondary">
+                    <td
+                      data-label={t.compoundInterestPage.projectionHead[1]}
+                      className="tabular-display border border-border px-3 py-2 text-text-secondary"
+                    >
                       {formatYen(row.contributed)}
                     </td>
-                    <td className="tabular-display border border-border px-3 py-2 text-text-secondary">
+                    <td
+                      data-label={t.compoundInterestPage.projectionHead[2]}
+                      className="tabular-display border border-border px-3 py-2 text-text-secondary"
+                    >
                       {formatYen(row.futureValue)}
                     </td>
-                    <td className="tabular-display border border-border px-3 py-2 text-text-secondary">
+                    <td
+                      data-label={t.compoundInterestPage.projectionHead[3]}
+                      className="tabular-display border border-border px-3 py-2 text-text-secondary"
+                    >
                       +{formatYen(row.interest)}
                     </td>
                   </tr>
@@ -278,8 +292,8 @@ export function CompoundInterestCalculator() {
             <tbody>
               {t.compoundInterestPage.contentExamplesRows.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="条件" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="将来額" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
