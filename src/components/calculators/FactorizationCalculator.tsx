@@ -1,12 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
-import { ChipButton, Divider, SegmentedControl, SurfacePanel } from "@/components/ui/primitives";
+import {
+  ChipButton,
+  Divider,
+  PrimaryButton,
+  SegmentedControl,
+  SurfacePanel,
+} from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useHistory } from "@/context/HistoryContext";
 import {
@@ -50,21 +56,37 @@ export function FactorizationCalculator() {
   const [expr, setExpr] = useState("x^2 + 5x + 6");
   const [numberInput, setNumberInput] = useState<string>("360");
 
-  const polyComputed = useMemo((): { data: FactorizeResult | null; error: string | null } => {
-    if (mode !== "poly") return { data: null, error: null };
-    try {
-      return { data: factorizeExpression(expr), error: null };
-    } catch (e) {
-      return {
-        data: null,
-        error: e instanceof Error ? e.message : t.common.invalidInput,
-      };
-    }
-  }, [mode, expr, t]);
+  // Results appear only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Each mode keeps its own
+  // last result, exactly as the two live computations did before.
+  const [polyComputed, setPolyComputed] = useState<{
+    data: FactorizeResult | null;
+    error: string | null;
+  }>({ data: null, error: null });
 
   // Wave 1B fix (M-05) preserved: prime factorization goes through the lib
   // (cap 1e12, Japanese errors) instead of unbounded trial division in render.
-  const primeComputed = useMemo(() => {
+  type PrimeComputed = {
+    num: number;
+    factorDisplay: ReactNode;
+    plain: string;
+    divisors: number[];
+    steps: ReturnType<typeof primeFactorSteps>;
+    isPrime: boolean;
+    error: string | null;
+  };
+
+  const [primeComputed, setPrimeComputed] = useState<PrimeComputed>({
+    num: 0,
+    factorDisplay: null,
+    plain: "",
+    divisors: [],
+    steps: [],
+    isPrime: false,
+    error: null,
+  });
+
+  function computePrime(): PrimeComputed {
     const num = parseInt(numberInput);
     if (isNaN(num) || num < 0) {
       return { num, factorDisplay: null as ReactNode, plain: "", divisors: [] as number[], steps: [] as ReturnType<typeof primeFactorSteps>, isPrime: false, error: t.common.invalidInput as string | null };
@@ -107,29 +129,36 @@ export function FactorizationCalculator() {
     }
     const isPrime = factors.length === 1 && factors[0].prime === num && factors[0].exponent === 1;
     return { num, factorDisplay, plain, divisors, steps, isPrime, error: null as string | null };
-  }, [numberInput, t]);
+  }
 
-  // Log to history once a result settles, not on every keystroke.
-  const lastLogged = useRef<string | null>(null);
-  useEffect(() => {
-    let key: string | null = null;
-    let entry: { expression: string; result: string } | null = null;
-    if (mode === "poly" && polyComputed.data) {
-      key = `poly:${expr}`;
-      entry = { expression: expr, result: polyComputed.data.result };
-    } else if (mode === "prime" && !primeComputed.error && primeComputed.plain) {
-      key = `prime:${primeComputed.num}`;
-      entry = { expression: `${primeComputed.num} の素因数分解`, result: primeComputed.plain };
-    }
-    if (!key || !entry) return;
-    const timer = setTimeout(() => {
-      if (lastLogged.current !== key) {
-        lastLogged.current = key;
-        addEntry({ ...entry!, route: "/factorization-calculator" });
+  function handleCalculate() {
+    if (mode === "poly") {
+      try {
+        const data = factorizeExpression(expr);
+        setPolyComputed({ data, error: null });
+        addEntry({
+          expression: expr,
+          result: data.result,
+          route: "/factorization-calculator",
+        });
+      } catch (e) {
+        setPolyComputed({
+          data: null,
+          error: e instanceof Error ? e.message : t.common.invalidInput,
+        });
       }
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [mode, expr, polyComputed, primeComputed, addEntry]);
+    } else {
+      const pc = computePrime();
+      setPrimeComputed(pc);
+      if (!pc.error && pc.plain) {
+        addEntry({
+          expression: `${pc.num} の素因数分解`,
+          result: pc.plain,
+          route: "/factorization-calculator",
+        });
+      }
+    }
+  }
 
   const copyValue =
     mode === "poly" ? polyComputed.data?.result : primeComputed.error ? undefined : primeComputed.plain || undefined;
@@ -244,6 +273,10 @@ export function FactorizationCalculator() {
               </SurfacePanel>
             </>
           )}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
         </div>
       </CalculatorCard>
 
@@ -277,8 +310,8 @@ export function FactorizationCalculator() {
             <tbody>
               {t.factorizationPage.formulaTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="式" className={tdClass}>{row[0]}</td>
+                  <td data-label="因数分解した結果" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -311,8 +344,8 @@ export function FactorizationCalculator() {
             <tbody>
               {t.factorizationPage.examplesTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="計算" className={tdClass}>{row[0]}</td>
+                  <td data-label="答え" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -335,8 +368,8 @@ export function FactorizationCalculator() {
             <tbody>
               {t.factorizationPage.quickTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="数" className={tdClass}>{row[0]}</td>
+                  <td data-label="素因数分解" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
