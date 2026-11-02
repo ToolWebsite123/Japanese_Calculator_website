@@ -1,0 +1,33 @@
+name: CI
+
+# Runs the test suite, the TypeScript check and a production build on
+# every push to main and on pull requests. ESLint is intentionally not
+# part of CI yet: the repo carries pre-existing lint errors, so a lint
+# gate would be permanently red; add it once the baseline is clean.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run tests
+        run: bun run test
+
+      - name: Type check
+        run: ./node_modules/.bin/tsc --noEmit
+
+      - name: Build
+        run: bun run build
