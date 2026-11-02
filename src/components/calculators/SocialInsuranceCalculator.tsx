@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import {
+  SelectWell,
+  SurfacePanel,
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -32,31 +38,28 @@ export function SocialInsuranceCalculator() {
   const [includeBonus, setIncludeBonus] = useState<boolean>(false);
   const [bonus, setBonus] = useState<string>("500000");
 
-  const r = useMemo(
-    () =>
-      calcSocialInsurance({
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator).
+  const [r, setR] = useState<ReturnType<typeof calcSocialInsurance> | null>(null);
+
+  function handleCalculate() {
+    try {
+      const res = calcSocialInsurance({
         monthlySalary: parseFloat(salary) || 0,
         bonus: includeBonus ? parseFloat(bonus) || 0 : 0,
         age: parseInt(age, 10) || 0,
         prefectureIndex: prefectureIdx,
-      }),
-    [salary, bonus, includeBonus, age, prefectureIdx],
-  );
-
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    const key = `${salary}|${age}|${prefectureIdx}|${includeBonus ? bonus : ""}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+      });
+      setR(res);
       addEntry({
         expression: `社会保険料 月給${salary}円 ${age}歳`,
-        result: formatYen(r.totalDeduction),
+        result: formatYen(res.totalDeduction),
         route: "/social-insurance-calculator",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [r, salary, age, prefectureIdx, includeBonus, bonus, addEntry]);
+    } catch {
+      setR(null);
+    }
+  }
 
   function handleClear() {
     setSalary("300000");
@@ -64,6 +67,7 @@ export function SocialInsuranceCalculator() {
     setPrefectureIdx(12);
     setIncludeBonus(false);
     setBonus("500000");
+    setR(null);
   }
 
   return (
@@ -74,7 +78,7 @@ export function SocialInsuranceCalculator() {
       <CalculatorCard
         compact
         maxWidthClass="max-w-[500px]"
-        actions={<CopyResultButton value={formatYen(r.totalDeduction)} />}
+        actions={r ? <CopyResultButton value={formatYen(r.totalDeduction)} /> : undefined}
       >
         <div className="space-y-2.5 sm:space-y-3">
           <FormField
@@ -132,13 +136,17 @@ export function SocialInsuranceCalculator() {
             />
           )}
 
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
+
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
           </SecondaryButton>
 
           <p className="text-xs leading-relaxed text-text-tertiary">{RATES_BASIS_LABEL}</p>
 
-          {(
+          {r && (
             <>
               <SurfacePanel className="border-brand/20 bg-brand-muted space-y-4 animate-in fade-in slide-in-from-top-2">
                 <div className="grid grid-cols-2 gap-4">
@@ -414,9 +422,9 @@ export function SocialInsuranceCalculator() {
             <tbody>
               {t.socialInsurancePage.ratesTableRows.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row[1]}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row[2]}</td>
+                  <td data-label={t.socialInsurancePage.ratesTableHead[0]} className="px-3 py-2.5 font-medium text-text-primary">{row[0]}</td>
+                  <td data-label={t.socialInsurancePage.ratesTableHead[1]} className="px-3 py-2.5 text-text-secondary">{row[1]}</td>
+                  <td data-label={t.socialInsurancePage.ratesTableHead[2]} className="px-3 py-2.5 text-text-secondary">{row[2]}</td>
                 </tr>
               ))}
             </tbody>
@@ -451,8 +459,8 @@ export function SocialInsuranceCalculator() {
             <tbody>
               {t.socialInsurancePage.contentExamplesRows.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="条件" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="本人負担の合計" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
