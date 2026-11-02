@@ -1,6 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HomePage } from "@/components/calculators/HomePage";
-import { buildHomeCalculatorJsonLd, buildWebSiteJsonLd } from "@/lib/seo/home-jsonld";
+import {
+  buildFaqPageJsonLd,
+  buildHomeCalculatorJsonLd,
+  buildWebSiteJsonLd,
+} from "@/lib/seo/home-jsonld";
 import { buildOrganizationJsonLd, OG_IMAGE_URL } from "@/lib/seo/page-schema";
 import { absoluteUrl, HOME_META_DESCRIPTION, HOME_META_TITLE } from "@/lib/seo/site";
 
@@ -31,6 +35,10 @@ export const Route = createFileRoute("/")({
         {
           type: "application/ld+json",
           children: JSON.stringify(buildOrganizationJsonLd()),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(buildFaqPageJsonLd()),
         },
         {
           type: "application/ld+json",
