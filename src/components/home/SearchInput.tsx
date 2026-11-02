@@ -182,11 +182,11 @@ export function SearchInput({
                   className={[
                     "flex w-full items-center gap-3 px-4 py-3 text-left transition",
                     index === activeIndex
-                      ? "bg-brand-muted text-brand"
+                      ? "bg-brand-muted text-brand dark:text-[#d6ccf0]"
                       : "text-text-primary hover:bg-surface-sunken",
                   ].join(" ")}
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-surface-sunken text-brand">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-surface-sunken text-brand dark:text-[#d6ccf0]">
                     <CalculatorIcon className="h-4 w-4" />
                   </span>
                   <span className="min-w-0 flex-1">
