@@ -135,6 +135,8 @@ function BmiGuideTable({
               {row.map((cell, i) => (
                 <td
                   key={cell}
+                  data-label={head[i]}
+                  data-wide={!dense && cell.length > 40 ? true : undefined}
                   className={`border border-border ${cellPad} ${
                     i === 0
                       ? `font-medium text-text-primary ${dense ? "sticky left-0 bg-surface" : ""}`
