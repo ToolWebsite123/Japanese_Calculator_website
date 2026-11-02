@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard } from "@/components/ui/FormField";
 import {
   Divider,
   InputWell,
+  PrimaryButton,
   SecondaryButton,
   SegmentedControl,
   SurfacePanel,
@@ -116,7 +117,17 @@ export function SimultaneousEquationsCalculator() {
     (v: string) =>
       setEq((prev) => prev.map((p, i) => (i === idx ? v : p)));
 
-  const computed2 = useMemo(() => {
+  // Results appear only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Each variable-count mode
+  // keeps its own last result, as the two live computations did.
+  const [computed2, setComputed2] = useState<ReturnType<typeof compute2> | { status: "idle" }>({
+    status: "idle",
+  });
+  const [computed3, setComputed3] = useState<ReturnType<typeof compute3> | { status: "idle" }>({
+    status: "idle",
+  });
+
+  function compute2() {
     const [a, b, c] = eq1.map((v) => parseFloat(v));
     const [d, e, f] = eq2.map((v) => parseFloat(v));
     if ([a, b, c, d, e, f].some((v) => Number.isNaN(v))) {
@@ -133,9 +144,9 @@ export function SimultaneousEquationsCalculator() {
       cramer: { a, b, c, d, e, f, D: solved.determinant, Dx: solved.dx, Dy: solved.dy },
       logExpression: `${equationText(a, b, c)} / ${equationText(d, e, f)}`,
     };
-  }, [eq1, eq2]);
+  }
 
-  const computed3 = useMemo(() => {
+  function compute3() {
     const rows = [eq31, eq32, eq33].map((r) => r.map((v) => parseFloat(v)));
     if (rows.some((r) => r.some((v) => Number.isNaN(v)))) {
       return { status: "invalid" as const };
@@ -160,7 +171,7 @@ export function SimultaneousEquationsCalculator() {
         .map((r) => `${r[0]}x + ${r[1]}y + ${r[2]}z = ${r[3]}`)
         .join(" / "),
     };
-  }, [eq31, eq32, eq33]);
+  }
 
   const active = vars === "2" ? computed2 : computed3;
   const copyValue =
@@ -170,23 +181,29 @@ export function SimultaneousEquationsCalculator() {
         : `x = ${computed3.status === "success" ? computed3.xText : ""}, y = ${computed3.status === "success" ? computed3.yText : ""}, z = ${computed3.status === "success" ? computed3.zText : ""}`
       : undefined;
 
-  // Log to history once a result settles.
-  const lastLogged = useRef<string | null>(null);
-  useEffect(() => {
-    if (active.status !== "success") return;
-    const logExpression = vars === "2"
-      ? computed2.status === "success" ? computed2.logExpression : null
-      : computed3.status === "success" ? computed3.logExpression : null;
-    if (!logExpression || !copyValue) return;
-    const key = `${vars}:${logExpression}`;
-    const timer = setTimeout(() => {
-      if (lastLogged.current !== key) {
-        lastLogged.current = key;
-        addEntry({ expression: logExpression, result: copyValue, route: "/simultaneous-equations-calculator" });
+  function handleCalculate() {
+    if (vars === "2") {
+      const c2 = compute2();
+      setComputed2(c2);
+      if (c2.status === "success") {
+        addEntry({
+          expression: c2.logExpression,
+          result: `x = ${c2.xText}, y = ${c2.yText}`,
+          route: "/simultaneous-equations-calculator",
+        });
       }
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [active, vars, computed2, computed3, copyValue, addEntry]);
+    } else {
+      const c3 = compute3();
+      setComputed3(c3);
+      if (c3.status === "success") {
+        addEntry({
+          expression: c3.logExpression,
+          result: `x = ${c3.xText}, y = ${c3.yText}, z = ${c3.zText}`,
+          route: "/simultaneous-equations-calculator",
+        });
+      }
+    }
+  }
 
   function handleClear() {
     if (vars === "2") {
@@ -197,6 +214,8 @@ export function SimultaneousEquationsCalculator() {
       setEq32(["", "", "", ""]);
       setEq33(["", "", "", ""]);
     }
+    setComputed2({ status: "idle" });
+    setComputed3({ status: "idle" });
   }
 
   const page = t.simultaneousEquationsPage;
@@ -263,6 +282,10 @@ export function SimultaneousEquationsCalculator() {
               />
             </>
           )}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
 
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
@@ -414,8 +437,8 @@ export function SimultaneousEquationsCalculator() {
             <tbody>
               {page.examplesTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="連立方程式" className={tdClass}>{row[0]}</td>
+                  <td data-label="解" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -438,8 +461,8 @@ export function SimultaneousEquationsCalculator() {
             <tbody>
               {page.judgeTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="条件" className={tdClass}>{row[0]}</td>
+                  <td data-label="解" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
