@@ -68,6 +68,19 @@ function withSecurityHeaders(response: Response): Response {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    // Canonical URLs have no trailing slash (see the sitemap); the
+    // framework would answer slashed URLs with a temporary 307, so make
+    // the redirect permanent (301) here. Root "/" itself is untouched.
+    if (request.method === "GET" || request.method === "HEAD") {
+      const url = new URL(request.url);
+      if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
+        url.pathname = url.pathname.replace(/\/+$/, "");
+        return new Response(null, {
+          status: 301,
+          headers: { location: url.toString() },
+        });
+      }
+    }
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
