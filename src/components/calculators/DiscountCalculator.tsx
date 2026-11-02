@@ -449,7 +449,7 @@ export function DiscountCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     {taxMode === "excluded" ? "支払総額（税込）" : "割引後価格"}
                   </div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(fwdResult.finalPrice)}
                   </div>
                 </div>
@@ -523,7 +523,7 @@ export function DiscountCalculator() {
                 </div>
                 <div className="mt-4 border-t border-brand/20 pt-4">
                   <div className="text-sm font-medium text-text-tertiary">元の定価</div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(revResult.originalPrice)}
                   </div>
                 </div>
@@ -567,7 +567,7 @@ export function DiscountCalculator() {
                 </div>
                 <div className="mt-4 border-t border-brand/20 pt-4">
                   <div className="text-sm font-medium text-text-tertiary">割引率</div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {fmtTenth(rateResult.ratePercent)}％オフ（{fmtTenth(rateResult.rateWari)}割引）
                   </div>
                 </div>
