@@ -4,6 +4,7 @@ import { Hero } from "@/components/home/Hero";
 import { HomeIntroSection } from "@/components/home/HomeIntroSection";
 import { HomeCalculatorsShowcase } from "@/components/home/HomeCalculatorsShowcase";
 import { HomeCalculatorGuide } from "@/components/home/HomeCalculatorGuide";
+import { HomePurposeSection } from "@/components/home/HomePurposeSection";
 import { HomeWhyUs } from "@/components/home/HomeWhyUs";
 import { HomeFinalCta } from "@/components/home/HomeFinalCta";
 import { HomeFaqSection } from "@/components/home/HomeFaqSection";
@@ -21,6 +22,8 @@ export function HomePage() {
           FAQ -> all-calculators showcase last, as the "related" block. */}
 
       <HomeCalculatorGuide />
+
+      <HomePurposeSection />
 
       <HomeCalculatorsShowcase />
 
