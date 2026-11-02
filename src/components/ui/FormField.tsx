@@ -41,7 +41,7 @@ export function ResultCard({
       <div
         className={[
           "tabular-display mt-1 text-xl font-bold tracking-tight",
-          highlight ? "text-brand" : "text-text-primary",
+          highlight ? "text-brand dark:text-[#d6ccf0]" : "text-text-primary",
         ].join(" ")}
       >
         {value}
