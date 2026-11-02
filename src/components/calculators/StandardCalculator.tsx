@@ -365,7 +365,7 @@ export function StandardCalculator({
         compact={compact}
         maxWidthClass={maxWidthClass}
       >
-        <div className={compact ? "space-y-3 md:space-y-1.5" : "space-y-4"}>
+        <div className={compact ? "space-y-2 md:space-y-1" : "space-y-4"}>
           <Display
             expression={expression}
             value={display}
