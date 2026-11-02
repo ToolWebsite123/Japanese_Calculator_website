@@ -178,9 +178,22 @@ function tokenize(input: string): Token[] {
   return tokens;
 }
 
-function toRpn(tokens: Token[]): Token[] {
+export type EvaluationMode = "math" | "chain";
+
+function toRpn(tokens: Token[], mode: EvaluationMode = "math"): Token[] {
   const output: Token[] = [];
   const ops: Token[] = [];
+
+  // Chain mode (desk-calculator style): every binary operator has the
+  // same precedence and associates left-to-right, so 2+2×2 evaluates as
+  // (2+2)×2 = 8. Parentheses still group, and unary minus keeps its
+  // binding in both modes.
+  const precedenceOf = (value: string): number => {
+    if (mode === "chain" && value !== "u-") return 1;
+    return PRECEDENCE[value] ?? 0;
+  };
+  const isRightAssoc = (value: string): boolean =>
+    value === "u-" || (mode === "math" && RIGHT_ASSOC.has(value));
 
   for (const token of tokens) {
     if (token.type === "number") {
@@ -191,9 +204,9 @@ function toRpn(tokens: Token[]): Token[] {
       while (ops.length > 0) {
         const top = ops[ops.length - 1];
         if (top.type !== "op") break;
-        const pTop = PRECEDENCE[top.value] ?? 0;
-        const pCur = PRECEDENCE[token.value] ?? 0;
-        const shouldPop = RIGHT_ASSOC.has(token.value) ? pTop > pCur : pTop >= pCur;
+        const pTop = precedenceOf(top.value);
+        const pCur = precedenceOf(token.value);
+        const shouldPop = isRightAssoc(token.value) ? pTop > pCur : pTop >= pCur;
         if (!shouldPop) break;
         output.push(ops.pop()!);
       }
@@ -289,11 +302,11 @@ function evalRpn(rpn: Token[]): number {
   return stack[0];
 }
 
-export function evaluateExpression(expression: string): number {
+export function evaluateExpression(expression: string, mode: EvaluationMode = "math"): number {
   const trimmed = expression.trim();
   if (!trimmed) throw new Error("Empty expression");
   const tokens = tokenize(trimmed);
-  const rpn = toRpn(tokens);
+  const rpn = toRpn(tokens, mode);
   return evalRpn(rpn);
 }
 
