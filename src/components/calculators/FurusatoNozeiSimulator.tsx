@@ -394,7 +394,7 @@ export function FurusatoNozeiSimulator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     控除上限額（寄付上限の目安）
                   </div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(result.donationLimit)}
                   </div>
                   <p className="mt-1 text-xs text-text-tertiary">
@@ -559,7 +559,7 @@ export function FurusatoNozeiSimulator() {
           年収と家族構成だけでざっくり上限を知りたい方は、シンプルな
           <Link
             href="/furusato-nozei-calculation"
-            className="text-brand underline underline-offset-2 hover:text-brand/80"
+            className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
           >
             ふるさと納税 クイック版
           </Link>
@@ -584,7 +584,7 @@ export function FurusatoNozeiSimulator() {
         </h2>
         <p className={guideBodyClass}>
           上限額は目安であり、最終的な控除額は確定申告・住民税の決定通知で確定します。年収と家族構成だけの簡単な目安でよい方は{" "}
-          <a href="/furusato-nozei-calculation" className="font-medium text-brand underline underline-offset-2">
+          <a href="/furusato-nozei-calculation" className="font-medium text-brand underline underline-offset-2 dark:text-[#d6ccf0]">
             かんたんシミュレーション
           </a>{" "}
           もあわせてご利用ください。
@@ -615,7 +615,7 @@ function Row({
       <td className="py-2 pr-3 align-top text-text-secondary">{label}</td>
       <td
         className={`tabular-display py-2 pl-3 text-right align-top ${highlight
-            ? "text-brand font-bold"
+            ? "text-brand font-bold dark:text-[#d6ccf0]"
             : strong
               ? "font-semibold text-text-primary"
               : "text-text-primary"
