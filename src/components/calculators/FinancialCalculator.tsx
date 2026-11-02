@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -10,6 +10,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
   Divider,
+  PrimaryButton,
   SecondaryButton,
   SegmentedControl,
   SurfacePanel,
@@ -700,72 +701,65 @@ export function FinancialCalculator() {
     N: setPeriods,
   };
 
-  const computed = useMemo(() => {
-    try {
-      const res = solveTimeValueOfMoney(solveFor, {
-        pv: parseFloat(pv),
-        fv: parseFloat(fv),
-        pmt: parseFloat(pmt),
-        ratePercent: parseFloat(rate),
-        periods: parseFloat(periods),
-      });
-      return { result: res as TvmResult, error: null as string | null };
-    } catch (e) {
-      return {
-        result: null,
-        error: e instanceof Error ? e.message : t.common.invalidInput,
-      };
-    }
-  }, [solveFor, pv, fv, pmt, rate, periods, t.common.invalidInput]);
+  // Results appear only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Each mode keeps its own
+  // last result, exactly as the two live computations did before.
+  const [computed, setComputed] = useState<{
+    result: TvmResult | null;
+    error: string | null;
+  }>({ result: null, error: null });
   const result = computed.result;
   const error = mode === "tvm" ? computed.error : null;
 
-  const loanComputed = useMemo(() => {
-    try {
-      const res = calculateLoan(
-        parseFloat(loanPrincipal),
-        parseFloat(loanRate),
-        parseFloat(loanYears),
-        repaymentType,
-      );
-      return { result: res, error: null as string | null };
-    } catch (e) {
-      return {
-        result: null,
-        error: e instanceof Error ? e.message : t.common.invalidInput,
-      };
-    }
-  }, [loanPrincipal, loanRate, loanYears, repaymentType, t.common.invalidInput]);
+  const [loanComputed, setLoanComputed] = useState<{
+    result: ReturnType<typeof calculateLoan> | null;
+    error: string | null;
+  }>({ result: null, error: null });
 
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
+  function handleCalculate() {
     if (mode === "tvm") {
-      if (!computed.result) return;
-      const key = `TVM|${solveFor}|${pv}|${fv}|${pmt}|${rate}|${periods}`;
-      if (loggedKeyRef.current === key) return;
-      const timer = setTimeout(() => {
-        loggedKeyRef.current = key;
+      try {
+        const res = solveTimeValueOfMoney(solveFor, {
+          pv: parseFloat(pv),
+          fv: parseFloat(fv),
+          pmt: parseFloat(pmt),
+          ratePercent: parseFloat(rate),
+          periods: parseFloat(periods),
+        }) as TvmResult;
+        setComputed({ result: res, error: null });
         addEntry({
           expression: `TVM solve ${solveFor}`,
-          result: formatTvmValue(solveFor, computed.result!.solvedValue),
+          result: formatTvmValue(solveFor, res.solvedValue),
           route: "/financial-calculator",
         });
-      }, 1200);
-      return () => clearTimeout(timer);
+      } catch (e) {
+        setComputed({
+          result: null,
+          error: e instanceof Error ? e.message : t.common.invalidInput,
+        });
+      }
+    } else {
+      try {
+        const res = calculateLoan(
+          parseFloat(loanPrincipal),
+          parseFloat(loanRate),
+          parseFloat(loanYears),
+          repaymentType,
+        );
+        setLoanComputed({ result: res, error: null });
+        addEntry({
+          expression: `ローン ${loanPrincipal}円 ${loanRate}% ${loanYears}年`,
+          result: formatYen(res.monthlyPayment),
+          route: "/financial-calculator",
+        });
+      } catch (e) {
+        setLoanComputed({
+          result: null,
+          error: e instanceof Error ? e.message : t.common.invalidInput,
+        });
+      }
     }
-    if (!loanComputed.result) return;
-    const key = `LOAN|${loanPrincipal}|${loanRate}|${loanYears}|${repaymentType}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
-      addEntry({
-        expression: `ローン ${loanPrincipal}円 ${loanRate}% ${loanYears}年`,
-        result: formatYen(loanComputed.result!.monthlyPayment),
-        route: "/financial-calculator",
-      });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [mode, computed, loanComputed, solveFor, pv, fv, pmt, rate, periods, loanPrincipal, loanRate, loanYears, repaymentType, addEntry]);
+  }
 
   function handleClear() {
     if (mode === "loan") {
@@ -773,6 +767,7 @@ export function FinancialCalculator() {
       setLoanRate("3");
       setLoanYears("5");
       setRepaymentType("equal_payment");
+      setLoanComputed({ result: null, error: null });
       return;
     }
     setSolveFor("FV");
@@ -781,6 +776,7 @@ export function FinancialCalculator() {
     setPmt("0");
     setRate("5");
     setPeriods("10");
+    setComputed({ result: null, error: null });
   }
 
   const solveLabels: Record<TvmSolveTarget, string> = {
@@ -859,6 +855,9 @@ export function FinancialCalculator() {
                   ]}
                 />
               </div>
+              <PrimaryButton fullWidth onClick={handleCalculate}>
+                {t.common.calculate}
+              </PrimaryButton>
               <SecondaryButton fullWidth onClick={handleClear}>
                 {t.common.clear}
               </SecondaryButton>
@@ -908,11 +907,11 @@ export function FinancialCalculator() {
                         <tbody>
                           {loanComputed.result.schedule.map((row) => (
                             <tr key={row.period} className="border-b border-border">
-                              <td className="px-3 py-2 text-text-secondary">{row.label}</td>
-                              <td className="px-3 py-2 text-text-primary">{formatYen(row.payment)}</td>
-                              <td className="px-3 py-2 text-text-secondary">{formatYen(row.principal)}</td>
-                              <td className="px-3 py-2 text-text-secondary">{formatYen(row.interest)}</td>
-                              <td className="px-3 py-2 text-text-secondary">{formatYen(row.balance)}</td>
+                              <td data-label="回" className="px-3 py-2 text-text-secondary">{row.label}</td>
+                              <td data-label="返済額" className="px-3 py-2 text-text-primary">{formatYen(row.payment)}</td>
+                              <td data-label="元金" className="px-3 py-2 text-text-secondary">{formatYen(row.principal)}</td>
+                              <td data-label="利息" className="px-3 py-2 text-text-secondary">{formatYen(row.interest)}</td>
+                              <td data-label="残高" className="px-3 py-2 text-text-secondary">{formatYen(row.balance)}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -955,6 +954,10 @@ export function FinancialCalculator() {
               />
             );
           })}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
 
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
@@ -1009,13 +1012,6 @@ export function FinancialCalculator() {
               </Divider>
             </div>
           )}
-
-          <SurfacePanel className="mt-4">
-            <h3 className="text-sm font-semibold text-text-primary">{tFin.explanationTitle}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-              {tFin.explanationText}
-            </p>
-          </SurfacePanel>
             </>
           )}
         </div>
@@ -1030,6 +1026,17 @@ export function FinancialCalculator() {
       <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={tPage.introParagraph} />
       </p>
+
+      {/* The TVM explanation belongs to the page content flow (full
+          width, like every other page's explanation sections) — it
+          used to sit inside the calculator card, narrower than the
+          text around it. Text is unchanged. */}
+      <SurfacePanel className="mt-8">
+        <h3 className="text-sm font-semibold text-text-primary">{tFin.explanationTitle}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+          {tFin.explanationText}
+        </p>
+      </SurfacePanel>
 
       <section aria-labelledby="financial-formula-heading" className="mt-16 border-t border-border pt-16">
         <h2
@@ -1065,8 +1072,8 @@ export function FinancialCalculator() {
             <tbody>
               {tPage.contentExamplesRows.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="条件" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="結果" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
