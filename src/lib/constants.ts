@@ -128,6 +128,22 @@ export const SECONDARY_NAV_ITEMS: NavItem[] = [
     secondary: true,
   },
   {
+    href: "/tsubo-converter",
+    labelKey: "nav.tsubo",
+    icon: "坪",
+    category: "conversion",
+    descriptionKey: "tsubo.description",
+    secondary: true,
+  },
+  {
+    href: "/graph-calculator",
+    labelKey: "nav.graph",
+    icon: "↗",
+    category: "scientific",
+    descriptionKey: "graph.description",
+    secondary: true,
+  },
+  {
     href: "/era-converter",
     labelKey: "nav.era",
     icon: "暦",
