@@ -215,6 +215,14 @@ export const SECONDARY_NAV_ITEMS: NavItem[] = [
     descriptionKey: "furusatoNozei.description",
     secondary: true,
   },
+  {
+    href: "/character-counter",
+    labelKey: "nav.characterCount",
+    icon: "字",
+    category: "basic",
+    descriptionKey: "characterCount.description",
+    secondary: true,
+  },
 ];
 
 export const NAV_ITEMS: NavItem[] = [...PRIMARY_NAV_ITEMS, ...SECONDARY_NAV_ITEMS];
