@@ -366,7 +366,7 @@ export function ConsumptionTaxCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     {resultMode === "fromExcluded" ? "税込価格" : "税抜価格"}
                   </div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(
                       resultMode === "fromExcluded" ? result.totalAmount : result.baseAmount,
                     )}
