@@ -1,12 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { CalculatorCard, ResultCard } from "@/components/ui/FormField";
 import { FormField } from "@/components/ui/FormField";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
-import { Divider, SecondaryButton, SegmentedControl } from "@/components/ui/primitives";
+import {
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+  SegmentedControl,
+} from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
@@ -45,7 +50,7 @@ export function InterestMethodCalculator() {
               {page.compoundCalcDiffAnswerBefore}
               <Link
                 href="/compound-interest-calculator"
-                className="font-medium text-brand underline underline-offset-2 hover:text-brand-hover"
+                className="font-medium text-brand underline underline-offset-2 hover:text-brand-hover dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]"
               >
                 {page.compoundCalcDiffLinkLabel}
               </Link>
@@ -63,36 +68,28 @@ export function InterestMethodCalculator() {
   const [unit, setUnit] = useState<InterestPeriodUnit>("years");
   const [applyTax, setApplyTax] = useState<"off" | "on">("off");
 
-  const computed = useMemo(() => {
-    try {
-      const res = calcInterest(parseFloat(principal), parseFloat(rate), parseFloat(period), unit);
-      return { result: res, error: null as string | null };
-    } catch (e) {
-      return {
-        result: null,
-        error: e instanceof Error ? e.message : (t.common.invalidInput as string),
-      };
-    }
-  }, [principal, rate, period, unit, t.common.invalidInput]);
-  const result = computed.result;
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator).
+  const [result, setResult] = useState<ReturnType<typeof calcInterest> | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const simpleTax = result ? withholdingTax(Math.floor(result.simpleInterest)) : null;
   const compoundTax = result ? withholdingTax(Math.floor(result.compoundInterest)) : null;
 
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    if (!result) return;
-    const key = `${principal}|${rate}|${period}|${unit}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+  function handleCalculate() {
+    try {
+      const res = calcInterest(parseFloat(principal), parseFloat(rate), parseFloat(period), unit);
+      setResult(res);
+      setError(null);
       addEntry({
         expression: `利息 ${principal}円 ${rate}% ${period}${unit}`,
-        result: formatYen(result.compoundTotal),
+        result: formatYen(res.compoundTotal),
         route: "/interest-calculator",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [result, principal, rate, period, unit, addEntry]);
+    } catch (e) {
+      setResult(null);
+      setError(e instanceof Error ? e.message : (t.common.invalidInput as string));
+    }
+  }
 
   function handleClear() {
     setPrincipal("1000000");
@@ -100,6 +97,8 @@ export function InterestMethodCalculator() {
     setPeriod("10");
     setUnit("years");
     setApplyTax("off");
+    setResult(null);
+    setError(null);
   }
 
   return (
@@ -166,11 +165,15 @@ export function InterestMethodCalculator() {
             />
           </div>
 
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
+
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
           </SecondaryButton>
 
-          {computed.error && <ErrorMessage message={computed.error} />}
+          {error && <ErrorMessage message={error} />}
 
           {result && (
             <>
@@ -272,6 +275,8 @@ export function InterestMethodCalculator() {
                   {row.map((cell, i) => (
                     <td
                       key={cell}
+                      data-label={page.guideCompareHead[i]}
+                      data-wide={cell.length > 40 ? true : undefined}
                       className={`border border-border px-3 py-2 ${
                         i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
                       }`}
@@ -302,8 +307,8 @@ export function InterestMethodCalculator() {
             <tbody>
               {page.contentExamplesRows.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="条件" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="結果" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
