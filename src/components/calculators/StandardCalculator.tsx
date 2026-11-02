@@ -15,7 +15,7 @@ import {
   closeParenthesis,
   openParenthesis,
 } from "@/lib/calculators/expression-input";
-import { evaluateExpression } from "@/lib/calculators/standard";
+import { evaluateExpression, type EvaluationMode } from "@/lib/calculators/standard";
 import { sqrtValue, taxExcluded, taxIncluded } from "@/lib/calculators/desk-features";
 import { formatDisplayNumber, CALCULATOR_ERROR_DISPLAY } from "@/lib/format";
 
@@ -39,13 +39,28 @@ export function StandardCalculator({
 
   const [display, setDisplay] = useState("0");
   const [expression, setExpression] = useState("");
-  const [memory, setMemory] = useState(0);
+  // Three independent memory cells (M1–M3); the M1 chip cycles the
+  // active cell and MC/MR/M+/M− act on the active one.
+  const [memoryCells, setMemoryCells] = useState<[number, number, number]>([0, 0, 0]);
+  const [activeCell, setActiveCell] = useState(0);
+  const memory = memoryCells[activeCell];
   const [justEvaluated, setJustEvaluated] = useState(false);
   const [awaitingOperand, setAwaitingOperand] = useState(true);
   const [error, setError] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const [taxRate, setTaxRate] = useState<10 | 8>(10);
+  // "math" applies operator precedence (2+2×2=6); "chain" evaluates
+  // strictly left-to-right like a basic desk calculator (2+2×2=8).
+  const [mode, setMode] = useState<EvaluationMode>("math");
+  // Fixed decimal places for results, or "auto" for the default format.
+  const [decimals, setDecimals] = useState<"auto" | number>("auto");
+
+  const formatResult = useCallback(
+    (value: number): string =>
+      decimals === "auto" ? formatDisplayNumber(value) : value.toFixed(decimals),
+    [decimals],
+  );
 
   const inputDigit = useCallback(
     (digit: string) => {
@@ -90,8 +105,8 @@ export function StandardCalculator({
     try {
       const full = buildEvalExpression(expression, display, awaitingOperand);
       if (!full) return;
-      const result = evaluateExpression(normalizeExpr(full));
-      const formatted = formatDisplayNumber(result);
+      const result = evaluateExpression(normalizeExpr(full), mode);
+      const formatted = formatResult(result);
       setExpression(full);
       setDisplay(formatted);
       setJustEvaluated(true);
@@ -105,7 +120,7 @@ export function StandardCalculator({
       setJustEvaluated(true);
       setAwaitingOperand(true);
     }
-  }, [justEvaluated, expression, display, awaitingOperand, addEntry]);
+  }, [justEvaluated, expression, display, awaitingOperand, addEntry, mode, formatResult]);
 
   const handleClear = useCallback(() => {
     setDisplay("0");
@@ -211,9 +226,14 @@ export function StandardCalculator({
   const handleMemory = useCallback(
     (action: "MC" | "MR" | "M+" | "M-") => {
       const val = parseFloat(display);
+      const setCell = (fn: (v: number) => number) =>
+        setMemoryCells(
+          (cells) =>
+            cells.map((c, i) => (i === activeCell ? fn(c) : c)) as [number, number, number],
+        );
       switch (action) {
         case "MC":
-          setMemory(0);
+          setCell(() => 0);
           break;
         case "MR":
           setDisplay(formatDisplayNumber(memory));
@@ -223,14 +243,14 @@ export function StandardCalculator({
         case "M+":
           // Also allow right after "=" so the displayed result can be
           // stored, like a physical desk calculator (guide example).
-          if (Number.isFinite(val) && (!awaitingOperand || justEvaluated)) setMemory((m) => m + val);
+          if (Number.isFinite(val) && (!awaitingOperand || justEvaluated)) setCell((m) => m + val);
           break;
         case "M-":
-          if (Number.isFinite(val) && (!awaitingOperand || justEvaluated)) setMemory((m) => m - val);
+          if (Number.isFinite(val) && (!awaitingOperand || justEvaluated)) setCell((m) => m - val);
           break;
       }
     },
-    [display, memory, awaitingOperand],
+    [display, memory, awaitingOperand, justEvaluated, activeCell],
   );
 
   const toggleSign = useCallback(() => {
@@ -376,6 +396,65 @@ export function StandardCalculator({
                 GT: {formatDisplayNumber(grandTotal)}
               </span>
             )}
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 px-0.5">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-medium text-text-secondary">計算順序</span>
+              {(
+                [
+                  { value: "math", label: "標準", title: "乗除を先に計算します（2+2×2=6）" },
+                  {
+                    value: "chain",
+                    label: "左から順に",
+                    title: "入力した順に計算します（2+2×2=8）",
+                  },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  title={opt.title}
+                  aria-pressed={mode === opt.value}
+                  onClick={() => setMode(opt.value)}
+                  className={
+                    mode === opt.value
+                      ? "rounded-full bg-brand px-2.5 py-1 text-xs font-bold text-white"
+                      : "rounded-full border border-border bg-surface-sunken/80 px-2.5 py-1 text-xs font-medium text-text-secondary transition hover:text-text-primary dark:bg-surface-dark/60"
+                  }
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                title="メモリーセルを切り替えます（M1〜M3）"
+                aria-label={`メモリーセル切り替え、現在 M${activeCell + 1}`}
+                onClick={() => setActiveCell((c) => (c + 1) % 3)}
+                className="rounded-full border border-border bg-surface-sunken/80 px-2.5 py-1 text-xs font-bold text-brand transition hover:text-brand dark:bg-surface-dark/60"
+              >
+                M{activeCell + 1}
+              </button>
+              <label className="flex items-center gap-1 text-xs font-medium text-text-secondary">
+                小数
+                <select
+                  value={String(decimals)}
+                  onChange={(e) =>
+                    setDecimals(e.target.value === "auto" ? "auto" : Number(e.target.value))
+                  }
+                  aria-label="結果の小数点以下の桁数"
+                  className="rounded-full border border-border bg-surface-sunken/80 px-2 py-1 text-xs font-medium text-text-secondary dark:bg-surface-dark/60"
+                >
+                  <option value="auto">自動</option>
+                  {[0, 1, 2, 3, 4, 5, 6].map((n) => (
+                    <option key={n} value={n}>
+                      {n}桁
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
           </div>
           <div className="-mx-1 overflow-x-auto px-1 pb-1">
             <div className="min-w-[280px]">
