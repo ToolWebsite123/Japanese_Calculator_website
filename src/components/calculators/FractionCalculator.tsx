@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -11,7 +11,13 @@ import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToS
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import { MathFraction, MathEq, MathOp } from "@/components/ui/MathDisplay";
-import { Divider, SecondaryButton, SelectWell, SurfacePanel } from "@/components/ui/primitives";
+import {
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+  SelectWell,
+  SurfacePanel,
+} from "@/components/ui/primitives";
 import {
   decimalToFraction,
   formatFraction,
@@ -221,65 +227,57 @@ export function FractionCalculator() {
     expression: string;
   };
 
-  const computed = useMemo((): { result: CalcResult | null; error: string | null } => {
-    if (mode !== "calc") return { result: null, error: null };
-    try {
-      const fa = parseFractionInput(aWhole, aNum, aDen);
-      const fb = parseFractionInput(bWhole, bNum, bDen);
-      const stepsData = getFractionSteps(fa, fb, op);
-      const formatted = formatFraction(stepsData.finalResult);
-      return {
-        result: {
+  // Results appear only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Each mode keeps its own
+  // last result, exactly as the two live computations did before.
+  const [calcState, setCalcState] = useState<{
+    result: CalcResult | null;
+    error: string | null;
+  }>({ result: null, error: null });
+  const [decimalComputed, setDecimalComputed] = useState<{
+    value: ReturnType<typeof decimalToFraction> | null;
+    error: string | null;
+  }>({ value: null, error: null });
+
+  const result = calcState.result;
+  const error = mode === "calc" ? calcState.error : null;
+
+  function handleCalculate() {
+    if (mode === "calc") {
+      try {
+        const fa = parseFractionInput(aWhole, aNum, aDen);
+        const fb = parseFractionInput(bWhole, bNum, bDen);
+        const stepsData = getFractionSteps(fa, fb, op);
+        const formatted = formatFraction(stepsData.finalResult);
+        const res: CalcResult = {
           formatted,
           decimal: fractionToDecimal(stepsData.finalResult),
           stepsData,
           expression: `${formatFraction(fa)} ${op} ${formatFraction(fb)}`,
-        },
-        error: null,
-      };
-    } catch (e) {
-      return {
-        result: null,
-        error: e instanceof Error ? e.message : t.common.invalidInput,
-      };
-    }
-  }, [mode, aWhole, aNum, aDen, bWhole, bNum, bDen, op, t]);
-
-  const result = computed.result;
-  const error = mode === "calc" ? computed.error : null;
-
-  const decimalComputed = useMemo(() => {
-    if (mode !== "decimal") return null;
-    try {
-      return {
-        value: decimalToFraction(decimalInput),
-        error: null as string | null,
-      };
-    } catch (e) {
-      return {
-        value: null,
-        error: e instanceof Error ? e.message : t.common.invalidInput,
-      };
-    }
-  }, [mode, decimalInput, t]);
-
-  // Log to history once a calculation settles, not on every keystroke.
-  const lastLogged = useRef<string | null>(null);
-  useEffect(() => {
-    if (!result) return;
-    const key = result.expression;
-    const timer = setTimeout(() => {
-      if (lastLogged.current !== key) {
-        lastLogged.current = key;
+        };
+        setCalcState({ result: res, error: null });
         addEntry({
-          expression: key,
-          result: result.formatted,
+          expression: res.expression,
+          result: res.formatted,
           route: "/fraction-calculator",
         });
+      } catch (e) {
+        setCalcState({
+          result: null,
+          error: e instanceof Error ? e.message : t.common.invalidInput,
+        });
       }
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [result, addEntry]);
+    } else {
+      try {
+        setDecimalComputed({ value: decimalToFraction(decimalInput), error: null });
+      } catch (e) {
+        setDecimalComputed({
+          value: null,
+          error: e instanceof Error ? e.message : t.common.invalidInput,
+        });
+      }
+    }
+  }
 
   function handleClear() {
     setAWhole("");
@@ -289,6 +287,8 @@ export function FractionCalculator() {
     setBNum("");
     setBDen("");
     setDecimalInput("");
+    setCalcState({ result: null, error: null });
+    setDecimalComputed({ value: null, error: null });
   }
 
   const inputLabels = {
@@ -405,6 +405,10 @@ export function FractionCalculator() {
             )}
           </div>
           )}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
 
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
@@ -524,9 +528,9 @@ export function FractionCalculator() {
             <tbody>
               {t.fractionPage.examplesTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
-                  <td className={tdClass}>{row[2]}</td>
+                  <td data-label="計算" className={tdClass}>{row[0]}</td>
+                  <td data-label="答え" className={tdClass}>{row[1]}</td>
+                  <td data-label="小数" className={tdClass}>{row[2]}</td>
                 </tr>
               ))}
             </tbody>
@@ -550,9 +554,9 @@ export function FractionCalculator() {
             <tbody>
               {t.fractionPage.quickTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
-                  <td className={tdClass}>{row[2]}</td>
+                  <td data-label="分数" className={tdClass}>{row[0]}</td>
+                  <td data-label="小数" className={tdClass}>{row[1]}</td>
+                  <td data-label="パーセント" className={tdClass}>{row[2]}</td>
                 </tr>
               ))}
             </tbody>
