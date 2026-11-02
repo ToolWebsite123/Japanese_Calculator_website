@@ -66,7 +66,7 @@ function PercentGuideTable({ head, rows }: { head: string[]; rows: string[][] })
 
 function ResultInline({ value }: { value: string }) {
   return (
-    <div className="tabular-display flex-1 rounded-[var(--radius-sm)] border border-brand/20 bg-brand-muted px-4 py-2 text-right text-xl font-bold text-brand">
+    <div className="tabular-display flex-1 rounded-[var(--radius-sm)] border border-brand/20 bg-brand-muted px-4 py-2 text-right text-xl font-bold text-brand dark:text-[#d6ccf0]">
       {value}
     </div>
   );
@@ -288,7 +288,7 @@ export function PercentageCalculator() {
               className="rounded-[var(--radius-md)] border border-border bg-surface px-4 py-4"
             >
               <h3 className="text-sm font-semibold text-text-primary sm:text-base">{f.title}</h3>
-              <p className="mt-2 text-base font-bold text-brand sm:text-lg">{f.formula}</p>
+              <p className="mt-2 text-base font-bold text-brand dark:text-[#d6ccf0] sm:text-lg">{f.formula}</p>
               <p className="mt-2 text-sm text-text-secondary">{f.example}</p>
             </div>
           ))}
