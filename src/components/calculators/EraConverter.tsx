@@ -13,6 +13,28 @@ import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import { ERAS, eraToWestern, westernToEra, type EraId } from "@/lib/calculators/era";
 
+const ERA_EXAMPLES = [
+  {
+    title: "例1：2025年を和暦に変換する",
+    body: "2025年は令和が始まった2019年から7年目なので、令和7年です（2019 + 7 − 1 = 2025）。",
+  },
+  {
+    title: "例2：昭和64年を西暦に変換する",
+    body: "昭和の開始年は1926年なので、1926 + 64 − 1 = 1989年です。昭和64年は1989年1月7日までで終わりました。",
+  },
+  {
+    title: "例3：1989年1月7日と1月8日",
+    body: "1989年1月7日は昭和64年、翌日の1月8日は平成元年です。改元の年は、同じ西暦年に2つの元号が存在します。",
+  },
+] as const;
+
+const ERA_MISTAKES = [
+  "「元年」を0年として数えてしまう（元年は1年です。西暦 = 元号の開始年 + 和暦の年数 − 1 で計算します）",
+  "改元の年には2つの元号があることを忘れる（例：1989年は1月7日まで昭和、1月8日から平成です）",
+  "明治より前の年（江戸時代など）にこの換算を当てはめる（本ツールの対象は明治以降です）",
+  "大正と昭和の境目を取り違える（昭和は1926年12月25日に始まりました）",
+] as const;
+
 export function EraConverter() {
   const { t } = useLocale();
   const { addEntry } = useHistory();
@@ -168,8 +190,6 @@ export function EraConverter() {
         <LinkedText text={t.eraPage.introParagraph} />
       </p>
 
-      <CalculatorHowToSection title={t.eraPage.howToTitle} steps={t.eraPage.howToSteps} />
-
       <section aria-labelledby="era-memory-heading" className="mt-16 border-t border-border pt-16">
         <h2
           id="era-memory-heading"
@@ -190,6 +210,28 @@ export function EraConverter() {
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
           {t.eraPage.guideMemoryExample}
         </p>
+      </section>
+
+      <section
+        aria-labelledby="era-examples-heading"
+        className="mt-16 border-t border-border pt-16"
+      >
+        <h2
+          id="era-examples-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          変換の計算例
+        </h2>
+        <div className="mt-4 space-y-4">
+          {ERA_EXAMPLES.map((ex) => (
+            <div key={ex.title}>
+              <h3 className="text-base font-semibold text-text-primary">{ex.title}</h3>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary sm:text-base">
+                {ex.body}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section aria-labelledby="era-table-heading" className="mt-16 border-t border-border pt-16">
@@ -243,6 +285,27 @@ export function EraConverter() {
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">{t.eraPage.guideNoteBody}</p>
       </section>
+
+      <section
+        aria-labelledby="era-mistakes-heading"
+        className="mt-16 border-t border-border pt-16"
+      >
+        <h2
+          id="era-mistakes-heading"
+          className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
+        >
+          よくある間違い
+        </h2>
+        <ul className="mt-4 list-disc space-y-2 pl-5">
+          {ERA_MISTAKES.map((m) => (
+            <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
+              {m}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <CalculatorHowToSection title={t.eraPage.howToTitle} steps={t.eraPage.howToSteps} />
 
       <CalculatorFaqSection title={t.eraPage.faqTitle} items={t.eraPage.faqItems} />
       <RelatedCalculators activeHref="/era-converter" />
