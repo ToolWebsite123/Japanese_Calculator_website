@@ -77,7 +77,7 @@ export function AllCalculatorsPage() {
         {t.nav.allCalculators}
       </h1>
 
-      <p className="mb-8 max-w-3xl text-sm leading-relaxed text-text-secondary sm:text-base">
+      <p className="mb-8 text-sm leading-relaxed text-text-secondary sm:text-base">
         {HUB_INTRO}
       </p>
 
