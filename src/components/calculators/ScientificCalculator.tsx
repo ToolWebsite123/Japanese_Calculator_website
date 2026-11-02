@@ -824,9 +824,9 @@ export function ScientificCalculator() {
             <tbody>
               {t.scientificPage.keystrokeExamples.map((row) => (
                 <tr key={row.calc} className="border-b border-border last:border-b-0">
-                  <td className="px-3 py-2.5 text-text-primary">{row.calc}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.keys}</td>
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.result}</td>
+                  <td data-label="計算" className="px-3 py-2.5 text-text-primary">{row.calc}</td>
+                  <td data-label="入力手順" className="px-3 py-2.5 text-text-secondary">{row.keys}</td>
+                  <td data-label="結果" className="px-3 py-2.5 font-medium text-text-primary">{row.result}</td>
                 </tr>
               ))}
             </tbody>
@@ -854,10 +854,10 @@ export function ScientificCalculator() {
             <tbody>
               {t.scientificPage.trigTableRows.map((row) => (
                 <tr key={row.angle} className="border-b border-border last:border-b-0">
-                  <td className="px-3 py-2.5 font-medium text-text-primary">{row.angle}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.sin}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.cos}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.tan}</td>
+                  <td data-label="角度" className="px-3 py-2.5 font-medium text-text-primary">{row.angle}</td>
+                  <td data-label="sin" className="px-3 py-2.5 text-text-secondary">{row.sin}</td>
+                  <td data-label="cos" className="px-3 py-2.5 text-text-secondary">{row.cos}</td>
+                  <td data-label="tan" className="px-3 py-2.5 text-text-secondary">{row.tan}</td>
                 </tr>
               ))}
             </tbody>
@@ -937,8 +937,8 @@ export function ScientificCalculator() {
             <tbody>
               {t.scientificPage.shortcuts.map((row) => (
                 <tr key={row.key} className="border-b border-border last:border-b-0">
-                  <td className="px-3 py-2.5 font-medium whitespace-nowrap text-text-primary">{row.key}</td>
-                  <td className="px-3 py-2.5 text-text-secondary">{row.action}</td>
+                  <td data-label="キー" className="px-3 py-2.5 font-medium whitespace-nowrap text-text-primary">{row.key}</td>
+                  <td data-label="操作" data-wide className="px-3 py-2.5 text-text-secondary">{row.action}</td>
                 </tr>
               ))}
             </tbody>
