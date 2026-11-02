@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -10,6 +10,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
   Divider,
+  PrimaryButton,
   SecondaryButton,
   SegmentedControl,
   SurfacePanel,
@@ -348,69 +349,69 @@ export function AlgebraCalculator() {
   const [equation, setEquation] = useState("2x + 3 = 7");
   const [xValue, setXValue] = useState("5");
 
-  const computed = useMemo((): {
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). The state snapshots the
+  // mode it was calculated in, so switching modes never shows a
+  // result that belongs to another mode.
+  const [computed, setComputed] = useState<{
     result: string | null;
     simplify: SimplifyResult | null;
     logExpression: string | null;
     error: string | null;
-  } => {
+    forMode: "simplify" | "evaluate" | "solve" | null;
+  }>({ result: null, simplify: null, logExpression: null, error: null, forMode: null });
+
+  const result = computed.forMode === mode ? computed.result : null;
+  const error = computed.forMode === mode ? computed.error : null;
+
+  function handleCalculate() {
     try {
+      let next: Omit<typeof computed, "forMode">;
       if (mode === "simplify") {
         const s = simplifyExpression(simplifyExpr);
-        return { result: s.result, simplify: s, logExpression: simplifyExpr, error: null };
-      }
-      if (mode === "evaluate") {
+        next = { result: s.result, simplify: s, logExpression: simplifyExpr, error: null };
+      } else if (mode === "evaluate") {
         const val = evaluateExpressionSafe(expression, parseFloat(xValue));
-        return {
+        next = {
           result: formatDisplayNumber(val, 8),
           simplify: null,
           logExpression: `${expression}, x=${xValue}`,
           error: null,
         };
+      } else {
+        const sol = solveLinearEquationSafe(equation);
+        next = {
+          result: `x = ${formatDisplayNumber(sol, 8)}`,
+          simplify: null,
+          logExpression: equation,
+          error: null,
+        };
       }
-      const sol = solveLinearEquationSafe(equation);
-      return {
-        result: `x = ${formatDisplayNumber(sol, 8)}`,
-        simplify: null,
-        logExpression: equation,
-        error: null,
-      };
+      setComputed({ ...next, forMode: mode });
+      if (next.result && next.logExpression) {
+        addEntry({
+          expression: next.logExpression,
+          result: next.result,
+          route: "/algebra-calculator",
+        });
+      }
     } catch (e) {
-      return {
+      setComputed({
         result: null,
         simplify: null,
         logExpression: null,
         error: e instanceof Error ? e.message : t.common.invalidInput,
-      };
+        forMode: mode,
+      });
     }
-  }, [mode, simplifyExpr, expression, equation, xValue, t]);
-
-  const result = computed.result;
-  const error = computed.error;
-
-  // Log to history once a calculation settles, not on every keystroke.
-  const lastLogged = useRef<string | null>(null);
-  useEffect(() => {
-    if (!computed.result || !computed.logExpression) return;
-    const key = `${mode}:${computed.logExpression}`;
-    const timer = setTimeout(() => {
-      if (lastLogged.current !== key) {
-        lastLogged.current = key;
-        addEntry({
-          expression: computed.logExpression!,
-          result: computed.result!,
-          route: "/algebra-calculator",
-        });
-      }
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [computed, mode, addEntry]);
+  }
 
   function handleClear() {
     setSimplifyExpr("");
     setExpression("");
     setEquation("");
     setXValue("");
+    setComputed({ result: null, simplify: null, logExpression: null, error: null, forMode: null });
   }
 
   const page = t.algebraPage;
@@ -470,6 +471,10 @@ export function AlgebraCalculator() {
               placeholder={t.algebra.placeholderEq}
             />
           ) : null}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            {t.common.calculate}
+          </PrimaryButton>
 
           <SecondaryButton fullWidth onClick={handleClear}>
             {t.common.clear}
@@ -551,8 +556,8 @@ export function AlgebraCalculator() {
             <tbody>
               {t.algebraPage.formulaTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="展開する式" className={tdClass}>{row[0]}</td>
+                  <td data-label="展開した結果" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -585,8 +590,8 @@ export function AlgebraCalculator() {
             <tbody>
               {t.algebraPage.examplesTableRows.map((row) => (
                 <tr key={row[0]}>
-                  <td className={tdClass}>{row[0]}</td>
-                  <td className={tdClass}>{row[1]}</td>
+                  <td data-label="計算" className={tdClass}>{row[0]}</td>
+                  <td data-label="答え" className={tdClass}>{row[1]}</td>
                 </tr>
               ))}
             </tbody>
