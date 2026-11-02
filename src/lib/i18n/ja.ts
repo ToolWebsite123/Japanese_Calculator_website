@@ -2604,10 +2604,9 @@ const ja = {
     heroSubtitle:
       "26種の計算ツールをブラウザで今すぐ利用できます。登録不要・スマホ対応・すべて無料です。",
     heroChips: [
-      { label: "税込・税抜ボタン", href: "/web-calculator#webcalc-tax-heading" },
-      { label: "GT・メモリ機能", href: "/web-calculator#webcalc-memory-heading" },
-      { label: "計算履歴", href: "/web-calculator" },
-      { label: "キーボード入力", href: "/web-calculator#webcalc-shortcuts-heading" },
+      { label: "税込・税抜計算", href: "/consumption-tax-calculator" },
+      { label: "パーセント計算", href: "/percentage-calculator" },
+      { label: "関数電卓", href: "/scientific-calculator" },
       { label: "26種の計算ツール", href: "/calculators" },
     ],
     introTitle: "このサイトについて",
