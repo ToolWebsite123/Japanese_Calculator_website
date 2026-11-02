@@ -37,7 +37,7 @@ export function LegalPageLayout({
             className={[
               "mt-8 space-y-8 text-sm leading-7 text-text-secondary sm:text-base",
               "[&_h2]:text-[#231942] dark:[&_h2]:text-[#d6ccf0]",
-              "[&_a]:text-[#231942] [&_a]:underline-offset-4 hover:[&_a]:opacity-80 hover:[&_a]:underline",
+              "[&_a]:text-[#231942] dark:[&_a]:text-[#d6ccf0] [&_a]:underline-offset-4 hover:[&_a]:opacity-80 hover:[&_a]:underline",
               "dark:[&_a]:text-[#d6ccf0]",
             ].join(" ")}
           >
