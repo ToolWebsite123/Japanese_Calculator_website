@@ -46,13 +46,11 @@ export function UnitConverterWorkedExamples({
         id="unit-converter-examples-heading"
         className="text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]"
       >
-        {page.examplesTitle}
+        {page.exampleTitle}
       </h2>
 
       <div className="mt-8">
         <SurfacePanel className="space-y-2">
-          <h3 className="text-lg font-bold text-text-primary">{page.exampleTitle}</h3>
-
           <div>
             <h4 className="font-bold text-text-primary">{page.inputLabel}</h4>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-text-secondary sm:text-base">
