@@ -80,59 +80,63 @@ export function HomeUsageGuide() {
         </ol>
 
         <h3 className="mt-8 text-base font-bold text-text-primary">ボタンと機能</h3>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full border-collapse bg-surface text-sm sm:text-base">
-            <thead>
-              <tr>
-                <th scope="col" className={tableHeadClass}>
-                  ボタン・機能
-                </th>
-                <th scope="col" className={tableHeadClass}>
-                  役割
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {BUTTON_ROWS.map((row) => (
-                <tr key={row[0]}>
-                  <td
-                    className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
-                  >
-                    {row[0]}
-                  </td>
-                  <td className={tableCellClass}>{row[1]}</td>
+        <div className="mt-3 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-sm sm:text-base">
+              <thead>
+                <tr>
+                  <th scope="col" className={tableHeadClass}>
+                    ボタン・機能
+                  </th>
+                  <th scope="col" className={tableHeadClass}>
+                    役割
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {BUTTON_ROWS.map((row) => (
+                  <tr key={row[0]}>
+                    <td
+                      className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
+                    >
+                      {row[0]}
+                    </td>
+                    <td className={tableCellClass}>{row[1]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <h3 className="mt-8 text-base font-bold text-text-primary">キーボードでの操作</h3>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full border-collapse bg-surface text-sm sm:text-base">
-            <thead>
-              <tr>
-                <th scope="col" className={tableHeadClass}>
-                  キー
-                </th>
-                <th scope="col" className={tableHeadClass}>
-                  動作
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {KEYBOARD_ROWS.map((row) => (
-                <tr key={row[0]}>
-                  <td
-                    className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
-                  >
-                    {row[0]}
-                  </td>
-                  <td className={tableCellClass}>{row[1]}</td>
+        <div className="mt-3 max-w-4xl overflow-hidden rounded-2xl border border-border bg-surface shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-sm sm:text-base">
+              <thead>
+                <tr>
+                  <th scope="col" className={tableHeadClass}>
+                    キー
+                  </th>
+                  <th scope="col" className={tableHeadClass}>
+                    動作
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {KEYBOARD_ROWS.map((row) => (
+                  <tr key={row[0]}>
+                    <td
+                      className={`${tableCellClass} whitespace-nowrap font-medium text-text-primary`}
+                    >
+                      {row[0]}
+                    </td>
+                    <td className={tableCellClass}>{row[1]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
