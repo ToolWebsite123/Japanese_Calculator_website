@@ -110,7 +110,7 @@ export function HistoryPanel({ open, onClose, onSelect, route }: HistoryPanelPro
 
         {allHistory.length > 0 && (
           <div className="border-t border-border p-4">
-            <SecondaryButton fullWidth onClick={clearHistory} className="text-brand">
+            <SecondaryButton fullWidth onClick={clearHistory} className="text-brand dark:text-[#d6ccf0]">
               {t.common.historyClear}
             </SecondaryButton>
           </div>
