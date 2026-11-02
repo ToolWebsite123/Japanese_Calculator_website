@@ -1,5 +1,6 @@
 import ja from "@/lib/i18n/ja";
 import { HOME_META_DESCRIPTION, HOME_META_TITLE, SITE_NAME, SITE_URL } from "./site";
+import { buildWebApplicationJsonLd } from "./page-schema";
 
 export function buildWebSiteJsonLd() {
   return {
@@ -10,6 +11,15 @@ export function buildWebSiteJsonLd() {
     description: HOME_META_DESCRIPTION,
     inLanguage: "ja-JP",
   };
+}
+
+export function buildHomeCalculatorJsonLd() {
+  return buildWebApplicationJsonLd({
+    name: "オンライン電卓（Web電卓）",
+    description:
+      "ブラウザですぐ使える無料のオンライン電卓。税込・税抜（10%/8%）、GT、メモリ機能、計算履歴、キーボード入力に対応し、入力データは端末内でのみ処理されます。",
+    path: "/",
+  });
 }
 
 export function buildFaqPageJsonLd() {
