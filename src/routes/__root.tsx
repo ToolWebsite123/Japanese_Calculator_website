@@ -188,6 +188,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
+    // Apply the saved/system theme before first paint so dark-mode
+    // users never see a light flash (or a light page) after
+    // navigation. ThemeContext keeps the class in sync afterwards.
+    scripts: [
+      {
+        children:
+          'try{var t=localStorage.getItem("dentaku-pro-theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}',
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
