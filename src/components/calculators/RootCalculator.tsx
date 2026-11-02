@@ -535,8 +535,6 @@ export function RootCalculator() {
         <LinkedText text={t.rootPage.introParagraph} />
       </p>
 
-      <ButtonGuideTable title={t.rootPage.buttonGuideTitle} rows={ROOT_BUTTON_GUIDE} />
-
       <section aria-labelledby="root-concept-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="root-concept-heading" className={guideHeadingClass}>
           {t.rootPage.guideConceptTitle}
@@ -640,6 +638,8 @@ export function RootCalculator() {
           ))}
         </ul>
       </section>
+
+      <ButtonGuideTable title={t.rootPage.buttonGuideTitle} rows={ROOT_BUTTON_GUIDE} />
 
       <CalculatorHowToSection title={ROOT_HOW_TO.title} steps={ROOT_HOW_TO.steps} />
 
