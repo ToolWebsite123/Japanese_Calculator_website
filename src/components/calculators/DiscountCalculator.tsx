@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider } from "@/components/ui/primitives";
+import { SelectWell, SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { UnitListbox } from "@/components/calculators/UnitListbox";
 import { LinkedText } from "@/components/calculator/LinkedText";
@@ -151,47 +151,61 @@ export function DiscountCalculator() {
   const [rateOriginal, setRateOriginal] = useState("12800");
   const [rateSale, setRateSale] = useState("9600");
 
-  const fwd = useMemo(
-    () =>
-      tryCalc(() =>
-        calcForward({
-          original: parseFloat(original) || 0,
-          discountValue: parseFloat(fwdDiscount) || 0,
-          discountUnit: fwdUnit,
-          taxMode,
-          taxRate: parseFloat(taxRate) || 0,
-          round,
-          ...(stacked
-            ? {
-                secondValue: parseFloat(secondDiscount) || 0,
-                secondUnit,
-              }
-            : {}),
-        }),
-      ),
-    [original, fwdDiscount, fwdUnit, taxMode, taxRate, round, stacked, secondDiscount, secondUnit],
-  );
+  // Results appear only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator). Each mode keeps its own
+  // last result, exactly as the three live computations did before.
+  const [fwd, setFwd] = useState<Calc<ReturnType<typeof calcForward>>>({
+    value: null,
+    error: null,
+  });
+  const [rev, setRev] = useState<Calc<ReturnType<typeof calcReverse>>>({
+    value: null,
+    error: null,
+  });
+  const [rate, setRate] = useState<Calc<ReturnType<typeof calcRateFromPrices>>>({
+    value: null,
+    error: null,
+  });
 
-  const rev = useMemo(
-    () =>
-      tryCalc(() =>
-        calcReverse({
-          discountedPrice: parseFloat(discounted) || 0,
-          discountValue: parseFloat(revDiscount) || 0,
-          discountUnit: revUnit,
-          round,
-        }),
-      ),
-    [discounted, revDiscount, revUnit, round],
-  );
-
-  const rate = useMemo(
-    () =>
-      tryCalc(() =>
-        calcRateFromPrices(parseFloat(rateOriginal) || 0, parseFloat(rateSale) || 0),
-      ),
-    [rateOriginal, rateSale],
-  );
+  function handleCalculate() {
+    if (mode === "forward") {
+      setFwd(
+        tryCalc(() =>
+          calcForward({
+            original: parseFloat(original) || 0,
+            discountValue: parseFloat(fwdDiscount) || 0,
+            discountUnit: fwdUnit,
+            taxMode,
+            taxRate: parseFloat(taxRate) || 0,
+            round,
+            ...(stacked
+              ? {
+                  secondValue: parseFloat(secondDiscount) || 0,
+                  secondUnit,
+                }
+              : {}),
+          }),
+        ),
+      );
+    } else if (mode === "reverse") {
+      setRev(
+        tryCalc(() =>
+          calcReverse({
+            discountedPrice: parseFloat(discounted) || 0,
+            discountValue: parseFloat(revDiscount) || 0,
+            discountUnit: revUnit,
+            round,
+          }),
+        ),
+      );
+    } else {
+      setRate(
+        tryCalc(() =>
+          calcRateFromPrices(parseFloat(rateOriginal) || 0, parseFloat(rateSale) || 0),
+        ),
+      );
+    }
+  }
 
   const wariNote = useMemo(() => {
     if (mode === "forward" && fwdUnit === "wari")
@@ -398,6 +412,10 @@ export function DiscountCalculator() {
               </SelectWell>
             </label>
           )}
+
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            計算する
+          </PrimaryButton>
 
           {wariNote && <p className="text-xs text-text-tertiary">{wariNote}</p>}
           {activeError && <p className="text-sm text-red-600">{activeError}</p>}
@@ -640,34 +658,34 @@ export function DiscountCalculator() {
             </thead>
             <tbody>
               <tr>
-                <td className={tdClass}>3,980円の30%オフ</td>
-                <td className={tdClass}>1,194円</td>
-                <td className={tdClass}>2,786円</td>
+                <td data-label="計算" className={tdClass}>3,980円の30%オフ</td>
+                <td data-label="割引額" className={tdClass}>1,194円</td>
+                <td data-label="結果" className={tdClass}>2,786円</td>
               </tr>
               <tr>
-                <td className={tdClass}>1,080円の10%オフ</td>
-                <td className={tdClass}>108円</td>
-                <td className={tdClass}>972円</td>
+                <td data-label="計算" className={tdClass}>1,080円の10%オフ</td>
+                <td data-label="割引額" className={tdClass}>108円</td>
+                <td data-label="結果" className={tdClass}>972円</td>
               </tr>
               <tr>
-                <td className={tdClass}>10,000円の20%オフ → さらに10%オフ</td>
-                <td className={tdClass}>2,000円＋800円（合計28%オフ）</td>
-                <td className={tdClass}>7,200円</td>
+                <td data-label="計算" className={tdClass}>10,000円の20%オフ → さらに10%オフ</td>
+                <td data-label="割引額" className={tdClass}>2,000円＋800円（合計28%オフ）</td>
+                <td data-label="結果" className={tdClass}>7,200円</td>
               </tr>
               <tr>
-                <td className={tdClass}>5,000円の20%オフ（税抜・消費税10%）</td>
-                <td className={tdClass}>1,000円</td>
-                <td className={tdClass}>税込4,400円</td>
+                <td data-label="計算" className={tdClass}>5,000円の20%オフ（税抜・消費税10%）</td>
+                <td data-label="割引額" className={tdClass}>1,000円</td>
+                <td data-label="結果" className={tdClass}>税込4,400円</td>
               </tr>
               <tr>
-                <td className={tdClass}>700円は30%オフ後の価格（逆算）</td>
-                <td className={tdClass}>300円</td>
-                <td className={tdClass}>元の定価1,000円</td>
+                <td data-label="計算" className={tdClass}>700円は30%オフ後の価格（逆算）</td>
+                <td data-label="割引額" className={tdClass}>300円</td>
+                <td data-label="結果" className={tdClass}>元の定価1,000円</td>
               </tr>
               <tr>
-                <td className={tdClass}>12,800円 → 9,600円（割引率を求める）</td>
-                <td className={tdClass}>3,200円</td>
-                <td className={tdClass}>25%オフ（2.5割引）</td>
+                <td data-label="計算" className={tdClass}>12,800円 → 9,600円（割引率を求める）</td>
+                <td data-label="割引額" className={tdClass}>3,200円</td>
+                <td data-label="結果" className={tdClass}>25%オフ（2.5割引）</td>
               </tr>
             </tbody>
           </table>
@@ -695,36 +713,36 @@ export function DiscountCalculator() {
             </thead>
             <tbody>
               <tr>
-                <td className={tdClass}>1,000円</td>
-                <td className={tdClass}>900円</td>
-                <td className={tdClass}>800円</td>
-                <td className={tdClass}>700円</td>
-                <td className={tdClass}>600円</td>
-                <td className={tdClass}>500円</td>
+                <td data-label="元の価格" className={tdClass}>1,000円</td>
+                <td data-label="10%オフ" className={tdClass}>900円</td>
+                <td data-label="20%オフ" className={tdClass}>800円</td>
+                <td data-label="30%オフ" className={tdClass}>700円</td>
+                <td data-label="40%オフ" className={tdClass}>600円</td>
+                <td data-label="50%オフ" className={tdClass}>500円</td>
               </tr>
               <tr>
-                <td className={tdClass}>3,000円</td>
-                <td className={tdClass}>2,700円</td>
-                <td className={tdClass}>2,400円</td>
-                <td className={tdClass}>2,100円</td>
-                <td className={tdClass}>1,800円</td>
-                <td className={tdClass}>1,500円</td>
+                <td data-label="元の価格" className={tdClass}>3,000円</td>
+                <td data-label="10%オフ" className={tdClass}>2,700円</td>
+                <td data-label="20%オフ" className={tdClass}>2,400円</td>
+                <td data-label="30%オフ" className={tdClass}>2,100円</td>
+                <td data-label="40%オフ" className={tdClass}>1,800円</td>
+                <td data-label="50%オフ" className={tdClass}>1,500円</td>
               </tr>
               <tr>
-                <td className={tdClass}>5,000円</td>
-                <td className={tdClass}>4,500円</td>
-                <td className={tdClass}>4,000円</td>
-                <td className={tdClass}>3,500円</td>
-                <td className={tdClass}>3,000円</td>
-                <td className={tdClass}>2,500円</td>
+                <td data-label="元の価格" className={tdClass}>5,000円</td>
+                <td data-label="10%オフ" className={tdClass}>4,500円</td>
+                <td data-label="20%オフ" className={tdClass}>4,000円</td>
+                <td data-label="30%オフ" className={tdClass}>3,500円</td>
+                <td data-label="40%オフ" className={tdClass}>3,000円</td>
+                <td data-label="50%オフ" className={tdClass}>2,500円</td>
               </tr>
               <tr>
-                <td className={tdClass}>10,000円</td>
-                <td className={tdClass}>9,000円</td>
-                <td className={tdClass}>8,000円</td>
-                <td className={tdClass}>7,000円</td>
-                <td className={tdClass}>6,000円</td>
-                <td className={tdClass}>5,000円</td>
+                <td data-label="元の価格" className={tdClass}>10,000円</td>
+                <td data-label="10%オフ" className={tdClass}>9,000円</td>
+                <td data-label="20%オフ" className={tdClass}>8,000円</td>
+                <td data-label="30%オフ" className={tdClass}>7,000円</td>
+                <td data-label="40%オフ" className={tdClass}>6,000円</td>
+                <td data-label="50%オフ" className={tdClass}>5,000円</td>
               </tr>
             </tbody>
           </table>
