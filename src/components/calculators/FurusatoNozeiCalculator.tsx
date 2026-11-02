@@ -380,6 +380,33 @@ export function FurusatoNozeiCalculator() {
         </p>
       </section>
 
+      <section aria-labelledby="furusato-cases-heading" className="mt-16 border-t border-border pt-16">
+        <h2 id="furusato-cases-heading" className={guideHeadingClass}>
+          計算例（モデルケース）
+        </h2>
+        <p className={guideBodyClass}>
+          代表的な3つのケースを、上の計算機で実際に計算した結果です。いずれも社会保険料は年収×15％の自動見積もりで計算しています。
+        </p>
+        <div className="mt-4 space-y-3">
+          {EXAMPLE_CASES.map((c) => (
+            <div
+              key={c.title}
+              className="rounded-lg border border-border bg-surface-sunken px-4 py-3"
+            >
+              <p className="font-semibold text-text-primary">{c.title}</p>
+              <p className="mt-1 text-sm text-text-secondary">{c.condition}</p>
+              <p className="mt-2 text-sm text-text-secondary">
+                控除上限額の目安：
+                <span className="tabular-display ml-1 text-base font-bold text-brand">
+                  {c.limit}
+                </span>
+              </p>
+              <p className="mt-1 text-sm text-text-secondary">{c.detail}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section aria-labelledby="furusato-limit-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="furusato-limit-heading" className={guideHeadingClass}>
           年収別の控除上限額 早見表
@@ -419,33 +446,6 @@ export function FurusatoNozeiCalculator() {
               ))}
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <section aria-labelledby="furusato-cases-heading" className="mt-16 border-t border-border pt-16">
-        <h2 id="furusato-cases-heading" className={guideHeadingClass}>
-          計算例（モデルケース）
-        </h2>
-        <p className={guideBodyClass}>
-          代表的な3つのケースを、上の計算機で実際に計算した結果です。いずれも社会保険料は年収×15％の自動見積もりで計算しています。
-        </p>
-        <div className="mt-4 space-y-3">
-          {EXAMPLE_CASES.map((c) => (
-            <div
-              key={c.title}
-              className="rounded-lg border border-border bg-surface-sunken px-4 py-3"
-            >
-              <p className="font-semibold text-text-primary">{c.title}</p>
-              <p className="mt-1 text-sm text-text-secondary">{c.condition}</p>
-              <p className="mt-2 text-sm text-text-secondary">
-                控除上限額の目安：
-                <span className="tabular-display ml-1 text-base font-bold text-brand">
-                  {c.limit}
-                </span>
-              </p>
-              <p className="mt-1 text-sm text-text-secondary">{c.detail}</p>
-            </div>
-          ))}
         </div>
       </section>
 
