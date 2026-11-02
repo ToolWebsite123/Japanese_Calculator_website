@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
@@ -63,6 +64,14 @@ function getServerThemeSnapshot(): Theme {
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const theme = useSyncExternalStore(subscribeTheme, readTheme, getServerThemeSnapshot);
   const mounted = useIsMounted();
+
+  // Apply the resolved theme to <html> on mount and on every change.
+  // Without this, a stored dark preference was never applied after a
+  // full page load: the toggle state said "dark" while the page
+  // rendered light, and the first click appeared to do nothing.
+  useEffect(() => {
+    applyThemeClass(theme);
+  }, [theme]);
 
   const setTheme = useCallback((next: Theme) => {
     localStorage.setItem(THEME_STORAGE_KEY, next);
