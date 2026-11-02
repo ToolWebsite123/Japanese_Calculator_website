@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
-import { SelectWell, SurfacePanel, Divider, SecondaryButton } from "@/components/ui/primitives";
+import {
+  SelectWell,
+  SurfacePanel,
+  Divider,
+  PrimaryButton,
+  SecondaryButton,
+} from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
@@ -125,44 +131,40 @@ export function UnemploymentInsuranceCalculator() {
   const [tenure, setTenure] = useState<TenureBracket>("5-10");
   const [reason, setReason] = useState<LeaveReason>("company");
 
-  const computed = useMemo(() => {
-    try {
-      return {
-        result: calculateUnemployment({
-          sixMonthWageTotal: parseFloat(wage) || 0,
-          age,
-          tenure,
-          reason,
-        }),
-        error: null as string | null,
-      };
-    } catch (e) {
-      return { result: null, error: e instanceof Error ? e.message : "入力が無効です" };
-    }
-  }, [wage, age, tenure, reason]);
-  const result = computed.result;
+  // Result appears only after the user presses 計算する (site-wide
+  // pattern, same as the BMI calculator) — nothing is computed or
+  // shown on page load or while typing.
+  const [result, setResult] = useState<ReturnType<typeof calculateUnemployment> | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const loggedKeyRef = useRef<string>("");
-  useEffect(() => {
-    if (!result) return;
-    const key = `${wage}|${age}|${tenure}|${reason}`;
-    if (loggedKeyRef.current === key) return;
-    const timer = setTimeout(() => {
-      loggedKeyRef.current = key;
+  function handleCalculate() {
+    try {
+      const r = calculateUnemployment({
+        sixMonthWageTotal: parseFloat(wage) || 0,
+        age,
+        tenure,
+        reason,
+      });
+      setResult(r);
+      setError(null);
       addEntry({
         expression: `失業保険 賃金${wage}円`,
-        result: formatYen(result.totalBenefit),
+        result: formatYen(r.totalBenefit),
         route: "/unemployment-insurance-calculation",
       });
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [result, wage, age, tenure, reason, addEntry]);
+    } catch (e) {
+      setResult(null);
+      setError(e instanceof Error ? e.message : "入力が無効です");
+    }
+  }
 
   function handleClear() {
     setWage("1800000");
     setAge("30-34");
     setTenure("5-10");
     setReason("company");
+    setResult(null);
+    setError(null);
   }
 
   return (
@@ -234,13 +236,15 @@ export function UnemploymentInsuranceCalculator() {
             </SelectWell>
           </label>
 
+          <PrimaryButton fullWidth onClick={handleCalculate}>
+            計算する
+          </PrimaryButton>
+
           <SecondaryButton fullWidth onClick={handleClear}>
             クリア
           </SecondaryButton>
 
-          {computed.error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{computed.error}</p>
-          )}
+          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
           {result && (
             <div translate="no" className="space-y-6">
@@ -361,8 +365,8 @@ export function UnemploymentInsuranceCalculator() {
             <tbody>
               {EXAMPLE_ROWS.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="条件" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="受給総額の目安" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -391,8 +395,8 @@ export function UnemploymentInsuranceCalculator() {
             <tbody>
               {DAYS_SELF_ROWS.map((row) => (
                 <tr key={row[0]} className="border-b border-border">
-                  <td className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
-                  <td className="px-3 py-2.5 text-text-primary">{row[1]}</td>
+                  <td data-label="被保険者期間" className="px-3 py-2.5 text-text-secondary">{row[0]}</td>
+                  <td data-label="所定給付日数" className="px-3 py-2.5 text-text-primary">{row[1]}</td>
                 </tr>
               ))}
             </tbody>
@@ -416,6 +420,7 @@ export function UnemploymentInsuranceCalculator() {
                   {row.map((cell, i) => (
                     <td
                       key={cell + i}
+                      data-label={DAYS_COMPANY_HEAD[i]}
                       className={`px-3 py-2.5 ${i === 0 ? "font-medium text-text-primary" : "text-text-secondary"}`}
                     >
                       {cell}
