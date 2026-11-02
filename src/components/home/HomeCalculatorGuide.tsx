@@ -105,7 +105,7 @@ function GuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
 
 export function HomeCalculatorGuide() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section id="how-to" className="mx-auto max-w-6xl scroll-mt-28 px-4 py-12 sm:px-6 sm:py-16">
       <h2 className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
         Web電卓の使い方と便利な機能
       </h2>
