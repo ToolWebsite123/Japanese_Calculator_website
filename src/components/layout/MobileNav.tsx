@@ -41,17 +41,17 @@ function DrawerLink({
       className={[
         "group relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium transition-all duration-150",
         active
-          ? "bg-brand-muted text-brand"
+          ? "bg-brand-muted text-brand dark:text-[#d6ccf0]"
           : "text-brand hover:bg-surface-sunken hover:opacity-80 dark:text-[#d6ccf0]",
       ].join(" ")}
     >
       {active && (
-        <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-brand" />
+        <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-brand dark:bg-[#a794e0]" />
       )}
       <span
         className={[
           "flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)]",
-          active ? "bg-brand text-white" : "bg-surface-sunken text-brand",
+          active ? "bg-brand text-white" : "bg-surface-sunken text-brand dark:text-[#d6ccf0]",
         ].join(" ")}
       >
         <CalculatorIcon className="h-4 w-4" />
@@ -174,7 +174,7 @@ export function MobileNav({
           >
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <div className="text-lg font-bold text-brand">{t.appName}</div>
+                <div className="text-lg font-bold text-brand dark:text-[#d6ccf0]">{t.appName}</div>
                 <div className="text-xs text-text-tertiary">{t.appTagline}</div>
               </div>
               <IconButton
@@ -197,7 +197,7 @@ export function MobileNav({
                 className={[
                   "group relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium transition-all duration-150",
                   pathsEqual(pathname, "/")
-                    ? "bg-brand-muted text-brand"
+                    ? "bg-brand-muted text-brand dark:text-[#d6ccf0]"
                     : "text-brand hover:bg-surface-sunken hover:opacity-80 dark:text-[#d6ccf0]",
                 ].join(" ")}
               >
@@ -206,7 +206,7 @@ export function MobileNav({
                     "flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)]",
                     pathsEqual(pathname, "/")
                       ? "bg-brand text-white"
-                      : "bg-surface-sunken text-brand",
+                      : "bg-surface-sunken text-brand dark:text-[#d6ccf0]",
                   ].join(" ")}
                 >
                   <svg
@@ -228,7 +228,7 @@ export function MobileNav({
                 className={[
                   "group relative flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium transition-all duration-150",
                   pathsEqual(pathname, "/calculators")
-                    ? "bg-brand-muted text-brand"
+                    ? "bg-brand-muted text-brand dark:text-[#d6ccf0]"
                     : "text-brand hover:bg-surface-sunken hover:opacity-80 dark:text-[#d6ccf0]",
                 ].join(" ")}
               >
@@ -237,7 +237,7 @@ export function MobileNav({
                     "flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)]",
                     pathsEqual(pathname, "/calculators")
                       ? "bg-brand text-white"
-                      : "bg-surface-sunken text-brand",
+                      : "bg-surface-sunken text-brand dark:text-[#d6ccf0]",
                   ].join(" ")}
                 >
                   <CalculatorIcon className="h-4 w-4" />
