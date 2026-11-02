@@ -293,7 +293,7 @@ export function FurusatoNozeiCalculator() {
                   <div className="text-sm font-medium text-text-tertiary">
                     控除上限額（寄付上限の目安）
                   </div>
-                  <div className="tabular-display mt-2 text-3xl font-bold text-brand">
+                  <div className="tabular-display mt-2 text-3xl font-bold text-brand dark:text-[#d6ccf0]">
                     {formatYen(result.donationLimit)}
                   </div>
                 </div>
@@ -397,7 +397,7 @@ export function FurusatoNozeiCalculator() {
               <p className="mt-1 text-sm text-text-secondary">{c.condition}</p>
               <p className="mt-2 text-sm text-text-secondary">
                 控除上限額の目安：
-                <span className="tabular-display ml-1 text-base font-bold text-brand">
+                <span className="tabular-display ml-1 text-base font-bold text-brand dark:text-[#d6ccf0]">
                   {c.limit}
                 </span>
               </p>
@@ -481,7 +481,7 @@ export function FurusatoNozeiCalculator() {
           このページは年収と家族構成だけの目安計算です。医療費控除や住宅ローン控除、生命保険料控除などがある方は、実際の控除額を入力できる{" "}
           <a
             href="/furusato-nozei-simulation-calculation"
-            className="font-medium text-brand underline underline-offset-2"
+            className="font-medium text-brand underline underline-offset-2 dark:text-[#d6ccf0]"
           >
             詳細シミュレーション
           </a>{" "}
