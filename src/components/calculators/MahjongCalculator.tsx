@@ -420,8 +420,28 @@ export function MahjongCalculator() {
           </li>
         </ol>
         <p className={guideBodyClass}>
-          同じ手がツモなら、子3人から <strong className="text-text-primary">3,900点ずつ（3,900オール）</strong>{" "}
-          を受け取ります。
+          同じ手がツモなら、子3人から{" "}
+          <strong className="text-text-primary">3,900点ずつ（3,900オール）</strong> を受け取ります。
+        </p>
+        <p className={guideBodyClass}>子が40符3翻をツモでアガった場合：</p>
+        <ol className="mt-3 list-decimal space-y-2 pl-5">
+          <li className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            基本点は 40 × 2<sup>2+3</sup> ＝ 1,280点です。
+          </li>
+          <li className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            ツモの支払いは、親が基本点の2倍（2,560 → 切り上げて{" "}
+            <strong className="text-text-primary">2,600点</strong>）、子2人が基本点の1倍（1,280 →
+            切り上げて <strong className="text-text-primary">1,300点</strong>）ずつです。
+          </li>
+          <li className="text-sm leading-relaxed text-text-secondary sm:text-base">
+            合計は <strong className="text-text-primary">5,200点</strong>{" "}
+            で、「2,600・1,300」と申告します。
+          </li>
+        </ol>
+        <p className={guideBodyClass}>
+          子が30符4翻をロンでアガると <strong className="text-text-primary">7,700点</strong>{" "}
+          です（基本点1,920 × 4 ＝ 7,680 →
+          切り上げ）。同じ30符4翻でも、親のロンなら11,600点、子のツモなら親3,900点・子2,000点ずつの合計7,900点と、アガり方で金額も受け取り方も変わります。
         </p>
       </section>
 
@@ -436,6 +456,38 @@ export function MahjongCalculator() {
             </li>
           ))}
         </ul>
+        <h3 className="mt-8 text-lg font-semibold text-text-primary">符計算の具体例</h3>
+        <p className={guideBodyClass}>
+          門前で単騎待ちをロンでアガり、面子に么九牌の暗刻と中張牌の明刻がある手では、符は次のように積み上がります。
+        </p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <tbody>
+              {[
+                ["副底（必ず加わる基礎の符）", "20符"],
+                ["門前ロン", "10符"],
+                ["単騎待ち", "2符"],
+                ["么九牌の暗刻", "8符"],
+                ["中張牌の明刻", "2符"],
+                ["合計 42符 → 10符単位に切り上げ", "50符"],
+              ].map(([label, value]) => (
+                <tr key={label} className="border-b border-border last:border-0">
+                  <th scope="row" className="px-3 py-2 text-left font-medium text-text-secondary">
+                    {label}
+                  </th>
+                  <td className="tabular-display px-3 py-2 text-right font-semibold text-text-primary">
+                    {value}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className={guideBodyClass}>
+          この手が子で2翻あれば、50符2翻のロンで{" "}
+          <strong className="text-text-primary">3,200点</strong>{" "}
+          になります。このページの符計算ヘルパーでも、同じ条件を選んで内訳を確認できます。
+        </p>
       </section>
 
       <section aria-labelledby="mj-mistakes-heading" className="mt-16 border-t border-border pt-16">
