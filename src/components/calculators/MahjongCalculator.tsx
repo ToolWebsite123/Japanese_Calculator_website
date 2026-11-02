@@ -141,6 +141,7 @@ function MahjongScoreTable({ rows }: { rows: string[][] }) {
               {row.map((cell, i) => (
                 <td
                   key={cell}
+                  data-label={SCORE_TABLE_HEAD[i]}
                   className={`border border-border px-3 py-2 ${
                     i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
                   }`}
@@ -475,7 +476,10 @@ export function MahjongCalculator() {
                   <th scope="row" className="px-3 py-2 text-left font-medium text-text-secondary">
                     {label}
                   </th>
-                  <td className="tabular-display px-3 py-2 text-right font-semibold text-text-primary">
+                  <td
+                    data-label=""
+                    className="tabular-display px-3 py-2 text-right font-semibold text-text-primary"
+                  >
                     {value}
                   </td>
                 </tr>
