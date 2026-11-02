@@ -58,7 +58,7 @@ export function HomeToolChooser() {
                   </span>
                 </span>
                 <ArrowRight
-                  className="h-4 w-4 shrink-0 text-brand transition-transform group-hover:translate-x-0.5"
+                  className="h-4 w-4 shrink-0 text-brand transition-transform group-hover:translate-x-0.5 dark:text-[#d6ccf0]"
                   aria-hidden="true"
                 />
               </Link>
@@ -69,7 +69,7 @@ export function HomeToolChooser() {
           ほかの計算機も見たい →{" "}
           <Link
             to="/calculators"
-            className="font-bold text-brand underline-offset-2 hover:underline"
+            className="font-bold text-brand underline-offset-2 hover:underline dark:text-[#d6ccf0]"
           >
             計算機一覧（全27種）
           </Link>
