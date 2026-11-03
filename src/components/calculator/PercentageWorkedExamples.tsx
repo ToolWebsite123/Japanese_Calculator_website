@@ -7,7 +7,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { formatDisplayNumber } from "@/lib/format";
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
+  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
 }
 
 function formatAmount(value: number): string {
