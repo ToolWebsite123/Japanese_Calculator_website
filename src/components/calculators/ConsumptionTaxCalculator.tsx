@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import {
   SelectWell,
   SurfacePanel,
@@ -15,6 +15,7 @@ import { RelatedCalculators } from "@/components/calculators/RelatedCalculators"
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
+import { GuideTable } from "@/components/calculator/GuideTable";
 import { formatYen } from "@/lib/format";
 import {
   calcFromTaxExcluded,
@@ -98,46 +99,6 @@ const guideHeadingClass =
 const guideSubHeadingClass =
   "mt-8 text-base font-semibold text-[#231942] sm:text-lg dark:text-[#d6ccf0]";
 const guideBodyClass = "mt-3 text-sm leading-relaxed text-text-secondary sm:text-base";
-
-function TaxGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
-  return (
-    <div className="mt-4 overflow-x-auto">
-      <table className="w-full border-collapse text-sm sm:text-base">
-        <thead>
-          <tr>
-            {head.map((cell) => (
-              <th
-                key={cell}
-                scope="col"
-                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
-              >
-                {cell}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((cell, i) => (
-                <td
-                  key={cell}
-                  data-label={head[i]}
-                  data-wide={cell.length > 40 ? true : undefined}
-                  className={`border border-border px-3 py-2 ${
-                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
-                  }`}
-                >
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 const TAX_TABLES = {
   title: "消費税の早見表",
@@ -274,7 +235,7 @@ export function ConsumptionTaxCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         消費税 計算
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         maxWidthClass="max-w-[500px]"
         actions={result ? <CopyResultButton value={formatYen(resultMode === "fromExcluded" ? result.totalAmount : result.baseAmount)} /> : undefined}
@@ -418,7 +379,7 @@ export function ConsumptionTaxCalculator() {
             </div>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
@@ -465,13 +426,13 @@ export function ConsumptionTaxCalculator() {
         </h2>
         <p className={guideBodyClass}>{TAX_TABLES.intro}</p>
         <h3 className={guideSubHeadingClass}>{TAX_TABLES.excludedToIncluded10Title}</h3>
-        <TaxGuideTable head={TAX_TABLES.excludedHead} rows={TAX_TABLES.excludedToIncluded10Rows} />
+        <GuideTable wideCells head={TAX_TABLES.excludedHead} rows={TAX_TABLES.excludedToIncluded10Rows} />
         <h3 className={guideSubHeadingClass}>{TAX_TABLES.excludedToIncluded8Title}</h3>
-        <TaxGuideTable head={TAX_TABLES.excludedHead} rows={TAX_TABLES.excludedToIncluded8Rows} />
+        <GuideTable wideCells head={TAX_TABLES.excludedHead} rows={TAX_TABLES.excludedToIncluded8Rows} />
         <h3 className={guideSubHeadingClass}>{TAX_TABLES.includedToExcluded10Title}</h3>
-        <TaxGuideTable head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded10Rows} />
+        <GuideTable wideCells head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded10Rows} />
         <h3 className={guideSubHeadingClass}>{TAX_TABLES.includedToExcluded8Title}</h3>
-        <TaxGuideTable head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded8Rows} />
+        <GuideTable wideCells head={TAX_TABLES.includedHead} rows={TAX_TABLES.includedToExcluded8Rows} />
       </section>
 
       <section aria-labelledby="tax-reduced-heading" className="mt-16 border-t border-border pt-16">
