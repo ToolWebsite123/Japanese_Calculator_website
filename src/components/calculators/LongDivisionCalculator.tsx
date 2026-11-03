@@ -5,12 +5,12 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
+import { CalculatorCard } from "@/components/ui/FormField";
 import {
   Divider,
   InputWell,
   PrimaryButton,
   SelectWell,
-  SurfacePanel,
 } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import {
@@ -258,8 +258,7 @@ export function LongDivisionCalculator() {
         {page.title}
       </h1>
 
-      <div className="mx-auto max-w-2xl">
-        <SurfacePanel>
+      <CalculatorCard maxWidthClass="max-w-2xl">
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="block">
               <span className="mb-2 block text-sm font-medium text-text-secondary">
@@ -401,12 +400,13 @@ export function LongDivisionCalculator() {
           ) : submitted ? (
             <p className="mt-6 text-sm text-text-secondary">{page.errorNote}</p>
           ) : null}
-        </SurfacePanel>
-      </div>
+      </CalculatorCard>
 
-      <p className="mt-12 text-center text-base text-text-secondary sm:text-lg">
-        <LinkedText text={page.description} activeHref={HREF} />
-      </p>
+      <div className="mt-8 space-y-1.5">
+        <p className="text-sm text-text-secondary sm:text-base">
+          <LinkedText text={page.description} activeHref={HREF} />
+        </p>
+      </div>
       <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
         <LinkedText text={page.introParagraph} activeHref={HREF} />
       </p>
