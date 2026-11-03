@@ -16,6 +16,7 @@ import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToS
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useLocale } from "@/context/LocaleContext";
+import { socialInsurancePage } from "@/lib/i18n/pages/social-insurance";
 import { useHistory } from "@/context/HistoryContext";
 import { formatYen } from "@/lib/format";
 import { MathEq, MathOp } from "@/components/ui/MathDisplay";
@@ -30,7 +31,8 @@ function percentLabel(rate: number): string {
 }
 
 export function SocialInsuranceCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, socialInsurancePage };
   const { addEntry } = useHistory();
 
   const [salary, setSalary] = useState<string>("300000");
