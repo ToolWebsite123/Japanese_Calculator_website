@@ -188,20 +188,20 @@ export function CompoundInterestCalculator() {
                 </div>
               )}
 
-              {contributionNum === 0 && (
-                <div className="mt-8">
-                  <CompoundInterestWorkedExamples
-                    principal={principal}
-                    rate={rate}
-                    years={years}
-                    frequency={frequency}
-                  />
-                </div>
-              )}
             </>
           )}
         </div>
       </CalculatorCard>
+
+      <div className="mt-8 space-y-1.5">
+        <p className="text-sm text-text-secondary sm:text-base">
+          {t.compoundInterestPage.description}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+        <LinkedText text={t.compoundInterestPage.introParagraph} />
+      </p>
 
       {calc && calc.yearly.length > 0 && (
         <section aria-labelledby="compound-projection-heading" className="mt-12">
@@ -258,16 +258,6 @@ export function CompoundInterestCalculator() {
         </section>
       )}
 
-      <div className="mt-8 space-y-1.5">
-        <p className="text-sm text-text-secondary sm:text-base">
-          {t.compoundInterestPage.description}
-        </p>
-      </div>
-
-      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
-        <LinkedText text={t.compoundInterestPage.introParagraph} />
-      </p>
-
       <section aria-labelledby="compound-compare-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="compound-compare-heading" className={guideHeadingClass}>
           {t.compoundInterestPage.guideCompareTitle}
@@ -299,6 +289,16 @@ export function CompoundInterestCalculator() {
             </tbody>
           </table>
         </div>
+        {contributionNum === 0 && (
+          <div className="mt-6">
+            <CompoundInterestWorkedExamples
+              principal={principal}
+              rate={rate}
+              years={years}
+              frequency={frequency}
+            />
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="compound-72-heading" className="mt-16 border-t border-border pt-16">
