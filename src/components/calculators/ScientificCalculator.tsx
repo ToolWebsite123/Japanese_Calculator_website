@@ -913,7 +913,7 @@ export function ScientificCalculator() {
         <ul className="mt-4 list-disc space-y-2 pl-5">
           {t.scientificPage.guideMistakes.map((m) => (
             <li key={m} className="text-sm leading-relaxed text-text-secondary sm:text-base">
-              {m}
+              <LinkedText text={m} activeHref="/scientific-calculator" />
             </li>
           ))}
         </ul>
