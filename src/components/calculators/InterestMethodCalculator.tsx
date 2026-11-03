@@ -17,6 +17,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { InterestMethodWorkedExamples } from "@/components/calculator/InterestMethodWorkedExamples";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { useLocale } from "@/context/LocaleContext";
+import { interestMethod, interestMethodPage } from "@/lib/i18n/pages/interest";
 import { useHistory } from "@/context/HistoryContext";
 import { formatYen } from "@/lib/format";
 import {
@@ -31,7 +32,8 @@ const guideHeadingClass =
   "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
 
 export function InterestMethodCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, interestMethod, interestMethodPage };
   const { addEntry } = useHistory();
   const page = t.interestMethodPage;
 
