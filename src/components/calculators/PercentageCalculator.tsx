@@ -11,6 +11,7 @@ import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { PrimaryButton } from "@/components/ui/primitives";
 import { Divider, InputWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { percentagePage } from "@/lib/i18n/pages/percentage";
 import {
   changePercent,
   percentOf,
@@ -75,7 +76,8 @@ function ResultInline({ value }: { value: string }) {
 }
 
 export function PercentageCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, percentagePage };
 
   const [p1X, setP1X] = useState<string>("20");
   const [p1Y, setP1Y] = useState<string>("150");
