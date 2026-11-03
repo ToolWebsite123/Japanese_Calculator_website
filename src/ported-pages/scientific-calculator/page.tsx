@@ -1,12 +1,12 @@
 import Script from "next/script";
-import ja from "@/lib/i18n/ja";
+import { scientificPage } from "@/lib/i18n/pages/scientific";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { ScientificCalculator } from "@/components/calculators/ScientificCalculator";
 
 
 
 export default function ScientificPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.scientificPage.faqItems, ja.scientificPage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(scientificPage.faqItems, scientificPage.title);
 
   return (
     <>
