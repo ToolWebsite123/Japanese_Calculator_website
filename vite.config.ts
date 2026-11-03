@@ -25,10 +25,15 @@ const nitroOptions = {
         // Workers Assets' default html_handling instead 308-redirects
         // *.html requests to the extensionless path before the worker
         // runs. "none" disables that rewriting (the only .html asset is
-        // this file; every page is SSR), and run_worker_first lets
-        // src/server.ts answer the exact path itself.
+        // this file; every page is SSR), so the assets layer serves the
+        // file at its literal path directly. The extensionless path
+        // matches no file and falls through to the worker, where
+        // src/server.ts answers it with the same body.
+        // NOTE: do not set run_worker_first to a path array here — the
+        // Pages deploy pipeline's wrangler expects a boolean and rejects
+        // the whole generated config (deploy step fails) when it is an
+        // array.
         html_handling: "none",
-        run_worker_first: ["/google39f0ca4d252248af.html", "/google39f0ca4d252248af"],
       },
     },
   },
