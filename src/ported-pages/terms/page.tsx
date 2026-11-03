@@ -3,7 +3,7 @@ import { buildLegalPageJsonLd } from "@/lib/seo/legal-jsonld";
 import Link from "next/link";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
 
-const LAST_UPDATED = "2026年7月8日";
+const LAST_UPDATED = "2026年11月3日";
 
 
 
@@ -42,13 +42,22 @@ export default function TermsPage() {
             2. サービス内容
           </h2>
           <p className="mt-3">
-            当サイトは、関数計算、分数計算、ルート計算、金融計算、BMI計算、単位変換など、各種の無料計算ツールを提供します。サービス内容は、運営上の必要に応じて、追加、変更、停止される場合があります。
+            当サイトは、関数計算、分数計算、ルート計算、金融計算、BMI計算、単位変換など、各種の無料計算ツールを提供します。なお、本サービスの利用に料金はかかりません。
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            3. 禁止事項
+            3. サービスの変更・中断・終了
+          </h2>
+          <p className="mt-3">
+            運営者は、システムの保守、障害の発生、災害、その他やむを得ない事由がある場合、事前の予告なく、サービス内容の追加・変更、一時的な中断、または提供の終了を行うことがあります。これらにより利用者または第三者に生じた損害については、7.（責任の制限）の定めに従います。
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
+            4. 禁止事項
           </h2>
           <p className="mt-3">利用者は、以下の行為を行ってはなりません。</p>
           <ul className="mt-3 list-disc space-y-2 pl-6">
@@ -64,7 +73,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            4. 知的財産権
+            5. 知的財産権
           </h2>
           <p className="mt-3">
             当サイトに掲載される文章、構成、デザイン、プログラム、ロゴその他一切のコンテンツに関する権利は、当サイト運営者または正当な権利者に帰属します。法令で認められる場合を除き、無断で複製、転載、改変、再配布することはできません。
@@ -73,7 +82,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            5. 保証の否認
+            6. 保証の否認
           </h2>
           <p className="mt-3">
             当サイトは、計算結果や掲載情報について、できる限り正確で有用な内容となるよう努めますが、その完全性、正確性、最新性、特定目的への適合性を保証するものではありません。計算結果の取り扱いに関する詳細な注意事項については、
@@ -84,7 +93,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            6. 責任の制限
+            7. 責任の制限
           </h2>
           <p className="mt-3">
             当サイトの利用または利用不能、計算結果の使用、情報の誤り、サービス変更または中断等により利用者または第三者に生じた損害について、当サイト運営者は責任を負いません。ただし、適用法令により免責が認められない範囲がある場合は、その範囲に限り法令に従います。
@@ -93,7 +102,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            7. 準拠法および管轄
+            8. 準拠法および管轄
           </h2>
           <p className="mt-3">
             本規約の解釈および適用は、日本法に準拠します。また、本サイトに関して紛争が生じた場合は、日本の裁判所を第一審の専属的合意管轄裁判所とします。
@@ -102,10 +111,21 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            8. 規約の変更
+            9. 規約の変更
           </h2>
           <p className="mt-3">
             当サイトは、必要に応じて本規約を変更することがあります。変更後の規約は、当ページに掲載した時点または当サイト上で別途定めた時点から効力を生じます。重要な変更がある場合は、内容を更新し、最終更新日を表示します。
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
+            10. 運営者およびお問い合わせ
+          </h2>
+          <p className="mt-3">
+            本サービスは、電卓.オンライン運営事務局が運営しています。本規約や本サービスに関するお問い合わせは、
+            <Link href="/contact">お問い合わせページ</Link>
+            に記載のメールアドレス（japaneselanguagecalculator@gmail.com）へご連絡ください。
           </p>
         </section>
       </LegalPageLayout>
