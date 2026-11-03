@@ -11,6 +11,7 @@ import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToS
 import { UnitConverterWorkedExamples } from "@/components/calculator/UnitConverterWorkedExamples";
 import { SegmentedControl, SelectWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { units as unitsDict, unitsPage } from "@/lib/i18n/pages/units";
 import { useHistory } from "@/context/HistoryContext";
 import {
   convertToAllUnits,
@@ -98,7 +99,8 @@ function GuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
 }
 
 export function UnitConverter() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, units: unitsDict, unitsPage };
   const { addEntry } = useHistory();
   const [category, setCategory] = useState<UnitCategory>("length");
   const [value, setValue] = useState("1");
