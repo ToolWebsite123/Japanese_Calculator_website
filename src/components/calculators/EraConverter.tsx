@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
+import { FormCard, FormField, ResultCard } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -128,7 +128,7 @@ export function EraConverter() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.eraPage.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         actions={copyValue ? <CopyResultButton value={copyValue} /> : undefined}
       >
@@ -192,7 +192,7 @@ export function EraConverter() {
             <ResultCard label={t.era.western} value={`${westernResult}年`} highlight />
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
