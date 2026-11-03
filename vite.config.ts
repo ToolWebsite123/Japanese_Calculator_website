@@ -12,30 +12,23 @@ import path from "node:path";
 // published types only declare nodeCompat/deployConfig for `cloudflare`.
 // This object is therefore built separately and passed by reference —
 // inlining it as a literal would trip the wrapper's excess-property check.
+//
+// Do NOT add a `wrangler` key here. Production deploy logs (2026-11-03)
+// proved the Cloudflare Pages pipeline validates the generated
+// dist/_worker.js/wrangler.json strictly and rejects the whole deploy
+// when the config carries an `assets` key ("Configuration file for Pages
+// projects does not support \"assets\""; an array `assets.run_worker_first`
+// also fails its boolean type check). Any `wrangler.assets` option —
+// including the html_handling override once used for the GSC
+// verification file — therefore blocks EVERY publish. The GSC file is
+// served by src/server.ts at its extensionless path instead, and domain
+// verification uses a DNS TXT record, which needs no config support.
 const nitroOptions = {
   cloudflare: {
     // Same values the build already generates with (see .output/nitro.json);
     // declared here so the object shares known keys with the wrapper's type.
     nodeCompat: true,
     deployConfig: true,
-    wrangler: {
-      assets: {
-        // The GSC verification file (public/google39f0ca4d252248af.html)
-        // must be served at its exact .html path with 200. Cloudflare
-        // Workers Assets' default html_handling instead 308-redirects
-        // *.html requests to the extensionless path before the worker
-        // runs. "none" disables that rewriting (the only .html asset is
-        // this file; every page is SSR), so the assets layer serves the
-        // file at its literal path directly. The extensionless path
-        // matches no file and falls through to the worker, where
-        // src/server.ts answers it with the same body.
-        // NOTE: do not set run_worker_first to a path array here — the
-        // Pages deploy pipeline's wrangler expects a boolean and rejects
-        // the whole generated config (deploy step fails) when it is an
-        // array.
-        html_handling: "none",
-      },
-    },
   },
 };
 
