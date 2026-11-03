@@ -56,14 +56,14 @@ const SECURITY_HEADERS: Record<string, string> = {
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
 };
 
-// Google Search Console HTML-file verification: the file in public/ must
-// answer at its EXACT path with 200. The hosting layer (Cloudflare Workers
-// Assets, default html_handling) redirects any *.html request to the
-// extensionless path with a 308 before app code runs, which can fail
-// Google's exact-URL check — so vite.config.ts also sets
-// html_handling: "none" + run_worker_first for this path, and this handler
-// serves the body itself as the app-level guarantee once the worker runs
-// first. The body must stay byte-identical to
+// Google Search Console HTML-file verification: in practice the hosting
+// layer (Cloudflare Workers Assets, default html_handling) redirects any
+// *.html request to the extensionless path with a 308 before app code
+// runs, so this site cannot answer at the exact .html path through this
+// pipeline (a vite.config wrangler override was tried on 2026-11-03 and
+// broke the Pages deploy step — never re-add it). This handler therefore
+// serves the verification body itself at the extensionless alias path
+// below. The body must stay byte-identical to
 // public/google39f0ca4d252248af.html.
 const GSC_VERIFICATION_PATH = "/google39f0ca4d252248af.html";
 // Until now the extensionless path was also served the same body by the
