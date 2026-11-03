@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
+import { GuideTable } from "@/components/calculator/GuideTable";
 import { PercentageWorkedExamples } from "@/components/calculator/PercentageWorkedExamples";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
@@ -27,45 +28,6 @@ const inlineInputClass =
 const guideHeadingClass =
   "text-2xl font-bold tracking-tight text-[#231942] sm:text-3xl dark:text-[#d6ccf0]";
 const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
-
-function PercentGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
-  return (
-    <div className="mt-4 overflow-x-auto">
-      <table className="w-full border-collapse text-sm sm:text-base">
-        <thead>
-          <tr>
-            {head.map((cell) => (
-              <th
-                key={cell}
-                scope="col"
-                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
-              >
-                {cell}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((cell, i) => (
-                <td
-                  key={cell}
-                  data-label={head[i]}
-                  className={`border border-border px-3 py-2 ${
-                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
-                  }`}
-                >
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 function ResultInline({ value }: { value: string }) {
   return (
@@ -151,7 +113,7 @@ export function PercentageCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.percentagePage.title}
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[520px]">
+      <FormCard compact maxWidthClass="max-w-[520px]">
         <div className="space-y-3 sm:space-y-4">
           <div className="w-full">
             <div className="flex flex-wrap items-center gap-2">
@@ -279,7 +241,7 @@ export function PercentageCalculator() {
             {t.common.calculate}
           </PrimaryButton>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
@@ -347,7 +309,7 @@ export function PercentageCalculator() {
         <h2 id="percent-buai-heading" className={guideHeadingClass}>
           {t.percentagePage.guideBuaiTitle}
         </h2>
-        <PercentGuideTable head={t.percentagePage.guideBuaiHead} rows={t.percentagePage.guideBuaiRows} />
+        <GuideTable head={t.percentagePage.guideBuaiHead} rows={t.percentagePage.guideBuaiRows} />
         <h3 className="mt-8 text-lg font-semibold text-text-primary">{t.percentagePage.guideCommonTitle}</h3>
         <ul className="mt-3 flex flex-wrap gap-2">
           {t.percentagePage.guideCommonItems.map((item) => (
