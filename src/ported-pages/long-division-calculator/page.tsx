@@ -1,14 +1,14 @@
 import Script from "next/script";
 import { LongDivisionCalculator } from "@/components/calculators/LongDivisionCalculator";
-import ja from "@/lib/i18n/ja";
+import { longDivisionPage } from "@/lib/i18n/pages/long-division";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 
 
 
 export default function LongDivisionPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.longDivisionPage.faqItems,
-    ja.longDivisionPage.title,
+    longDivisionPage.faqItems,
+    longDivisionPage.title,
   );
 
   return (
