@@ -222,10 +222,6 @@ export function CharacterCounter() {
         {t.title}
       </h1>
 
-      <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:text-base">
-        {INTRO}
-      </p>
-
       <CalculatorCard>
         <div className="space-y-6">
           <div className="space-y-1.5">
@@ -373,6 +369,10 @@ export function CharacterCounter() {
           </div>
         </div>
       </CalculatorCard>
+
+      <div className="mt-8 space-y-1.5">
+        <p className="text-sm text-text-secondary sm:text-base">{INTRO}</p>
+      </div>
 
       <section
         aria-labelledby="character-rules-heading"
