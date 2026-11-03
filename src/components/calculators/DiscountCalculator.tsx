@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import { SelectWell, SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { UnitListbox } from "@/components/calculators/UnitListbox";
@@ -227,7 +227,7 @@ export function DiscountCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         割引計算機
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+      <FormCard compact maxWidthClass="max-w-[500px]">
         <div className="space-y-2.5 sm:space-y-3">
           <label className="block space-y-1.5">
             <span className="text-sm font-medium text-text-secondary">計算の種類</span>
@@ -609,7 +609,7 @@ export function DiscountCalculator() {
             </div>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">{DESCRIPTION}</p>
