@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import {
   SelectWell,
   SurfacePanel,
@@ -172,7 +172,7 @@ export function UnemploymentInsuranceCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         失業保険 受給額計算
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         maxWidthClass="max-w-[500px]"
         actions={result ? <CopyResultButton value={formatYen(result.totalBenefit)} /> : undefined}
@@ -323,7 +323,7 @@ export function UnemploymentInsuranceCalculator() {
             令和8年8月1日改定の公式レートに基づく概算です。正式な支給額はハローワークの決定に従います。
           </p>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
