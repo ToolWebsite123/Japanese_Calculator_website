@@ -137,6 +137,46 @@ export function getCalculatorsByDeclaredCategory(category: CalculatorCategory): 
   return NAV_ITEMS.filter((item) => item.category === category);
 }
 
+/**
+ * The footer's curated tool list, in display order: only the most-used
+ * calculators (19 of 27, owner decision 2026-11-03) so the footer stays
+ * light in two rows of three category columns. The remaining tools stay
+ * reachable from the mega menu, the /calculators hub and in-page links.
+ */
+export const FOOTER_HREFS = [
+  // basic
+  "/time-calculator",
+  "/percentage-calculator",
+  "/discount-calculation",
+  "/character-counter",
+  // scientific
+  "/scientific-calculator",
+  "/fraction-calculator",
+  "/squareroot-calculator",
+  "/graph-calculator",
+  // finance
+  "/furusato-nozei-calculation",
+  "/compound-interest-calculator",
+  "/interest-calculator",
+  "/consumption-tax-calculator",
+  "/income-tax-calculation",
+  // health
+  "/bmi-calculator",
+  "/due-date-calculation",
+  // conversion
+  "/unit-converter",
+  "/tsubo-converter",
+  "/era-converter",
+  // more
+  "/mahjong-score-calculation",
+] as const;
+
+export function getFooterCalculators(category: CalculatorCategory): NavItem[] {
+  return FOOTER_HREFS.map((href) => NAV_ITEMS.find((item) => item.href === href)).filter(
+    (item): item is NavItem => item !== undefined && item.category === category,
+  );
+}
+
 export function getFeaturedCalculators(category: CalculatorCategory): NavItem[] {
   return CATEGORY_META[category].featuredHrefs
     .map((href) => NAV_ITEMS.find((item) => item.href === href))
