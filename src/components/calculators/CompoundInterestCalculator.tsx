@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
+import { FormCard, FormField, ResultCard } from "@/components/ui/FormField";
 import { PrimaryButton, SecondaryButton, SelectWell } from "@/components/ui/primitives";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
@@ -83,7 +83,7 @@ export function CompoundInterestCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.compoundInterestPage.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         maxWidthClass="max-w-[480px]"
         actions={calc ? <CopyResultButton value={formatYen(calc.futureValue)} /> : undefined}
@@ -193,7 +193,7 @@ export function CompoundInterestCalculator() {
             </>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
