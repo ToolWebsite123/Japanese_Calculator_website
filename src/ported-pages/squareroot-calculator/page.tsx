@@ -1,12 +1,12 @@
 import Script from "next/script";
-import ja from "@/lib/i18n/ja";
+import { rootPage } from "@/lib/i18n/pages/root";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { RootCalculator } from "@/components/calculators/RootCalculator";
 
 
 
 export default function RootPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.rootPage.faqItems, ja.rootPage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(rootPage.faqItems, rootPage.title);
 
   return (
     <>
