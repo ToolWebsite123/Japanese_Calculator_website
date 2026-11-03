@@ -1,12 +1,12 @@
 import Script from "next/script";
 import { TimeCalculator } from "@/components/calculators/TimeCalculator";
-import ja from "@/lib/i18n/ja";
+import { timePage } from "@/lib/i18n/pages/time";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 
 
 
 export default function TimePage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.timePage.faqItems, ja.timePage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(timePage.faqItems, timePage.title);
 
   return (
     <>
