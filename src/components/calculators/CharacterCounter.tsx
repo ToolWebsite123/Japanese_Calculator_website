@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import { SecondaryButton, SurfacePanel } from "@/components/ui/primitives";
 import { Textarea } from "@/components/ui/textarea";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -223,7 +223,7 @@ export function CharacterCounter() {
         {t.title}
       </h1>
 
-      <CalculatorCard>
+      <FormCard>
         <div className="space-y-6">
           <div className="space-y-1.5">
             <label
@@ -369,7 +369,7 @@ export function CharacterCounter() {
             {copied && <span className="self-center text-sm text-brand dark:text-[#d6ccf0]">{ja.common.copied}</span>}
           </div>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">{INTRO}</p>
