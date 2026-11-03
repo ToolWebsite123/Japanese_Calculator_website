@@ -215,6 +215,7 @@ const ja = {
     contact: "お問い合わせ",
     terms: "利用規約",
     calculators: "計算ツール",
+    allCalculators: "すべての電卓",
     scientificCalculator: "関数電卓",
     squareRootCalculator: "ルート計算機",
     bmiCalculation: "BMIの計算",
