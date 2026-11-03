@@ -7,7 +7,6 @@ import { FormField } from "@/components/ui/FormField";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import {
-  Divider,
   PrimaryButton,
   SecondaryButton,
   SegmentedControl,
@@ -225,15 +224,6 @@ export function InterestMethodCalculator() {
                 )}
               </div>
 
-              {unit === "years" && (
-                <Divider>
-                  <InterestMethodWorkedExamples
-                    principal={principal}
-                    rate={rate}
-                    years={period}
-                  />
-                </Divider>
-              )}
             </>
           )}
         </div>
@@ -314,6 +304,15 @@ export function InterestMethodCalculator() {
             </tbody>
           </table>
         </div>
+        {unit === "years" && (
+          <div className="mt-6">
+            <InterestMethodWorkedExamples
+              principal={principal}
+              rate={rate}
+              years={period}
+            />
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="interest-tax-heading" className="mt-16 border-t border-border pt-16">
