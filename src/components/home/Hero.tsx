@@ -14,7 +14,7 @@ export function Hero() {
       <span className="mb-1.5 rounded-full bg-brand-muted px-3 py-0.5 text-[11px] font-bold tracking-wide text-brand dark:text-[#d6ccf0]">
         無料・登録不要
       </span>
-      <h1 className="text-center text-3xl font-bold tracking-tight text-[#231942] sm:text-4xl dark:text-[#d6ccf0]">
+      <h1 className="hp-h1 text-center text-3xl font-bold tracking-tight text-[#231942] sm:text-4xl dark:text-[#d6ccf0]">
         オンライン
         <span className="bg-gradient-to-r from-[#3f2d78] to-[#6d5bd0] bg-clip-text text-transparent dark:from-[#a794e0] dark:to-[#d6ccf0]">
           電卓
