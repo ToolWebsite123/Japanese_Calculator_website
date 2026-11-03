@@ -252,9 +252,16 @@ export function GraphCalculator() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <SecondaryButton onClick={() => zoom(0.5)}>拡大</SecondaryButton>
-            <SecondaryButton onClick={() => zoom(2)}>縮小</SecondaryButton>
-            <SecondaryButton onClick={() => setRange({ xMin: -10, xMax: 10, yMin: -10, yMax: 10 })}>
+            <SecondaryButton className="min-w-24 px-5" onClick={() => zoom(0.5)}>
+              拡大
+            </SecondaryButton>
+            <SecondaryButton className="min-w-24 px-5" onClick={() => zoom(2)}>
+              縮小
+            </SecondaryButton>
+            <SecondaryButton
+              className="min-w-24 px-5"
+              onClick={() => setRange({ xMin: -10, xMax: 10, yMin: -10, yMax: 10 })}
+            >
               リセット
             </SecondaryButton>
             <span className="text-xs text-text-tertiary">
