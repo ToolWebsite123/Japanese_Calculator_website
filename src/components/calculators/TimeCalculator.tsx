@@ -14,6 +14,7 @@ import {
   SurfacePanel,
 } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { time, timePage } from "@/lib/i18n/pages/time";
 import {
   addToClock,
   clockDifference,
@@ -92,7 +93,8 @@ const TIME_FORMULAS = [
 ] as const;
 
 export function TimeCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, time, timePage };
 
   const [hoursA, setHoursA] = useState<string>("2");
   const [minutesA, setMinutesA] = useState<string>("30");
