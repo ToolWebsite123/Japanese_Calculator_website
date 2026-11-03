@@ -1,14 +1,14 @@
 import Script from "next/script";
 import { CompoundInterestCalculator } from "@/components/calculators/CompoundInterestCalculator";
-import ja from "@/lib/i18n/ja";
+import { compoundInterestPage } from "@/lib/i18n/pages/compound-interest";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 
 
 
 export default function CompoundInterestPage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.compoundInterestPage.faqItems,
-    ja.compoundInterestPage.title,
+    compoundInterestPage.faqItems,
+    compoundInterestPage.title,
   );
 
   return (
