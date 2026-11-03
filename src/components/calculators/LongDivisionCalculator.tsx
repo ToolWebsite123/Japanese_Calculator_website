@@ -5,7 +5,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import {
   Divider,
   InputWell,
@@ -260,7 +260,7 @@ export function LongDivisionCalculator() {
         {page.title}
       </h1>
 
-      <CalculatorCard maxWidthClass="max-w-2xl">
+      <FormCard maxWidthClass="max-w-2xl">
           <div className="grid gap-4 sm:grid-cols-3">
             <label className="block">
               <span className="mb-2 block text-sm font-medium text-text-secondary">
@@ -402,7 +402,7 @@ export function LongDivisionCalculator() {
           ) : submitted ? (
             <p className="mt-6 text-sm text-text-secondary">{page.errorNote}</p>
           ) : null}
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
