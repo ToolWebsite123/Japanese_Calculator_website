@@ -5,16 +5,12 @@ import { Display } from "@/components/calculator/Display";
 import { ButtonGrid, type ButtonConfig } from "@/components/calculator/ButtonGrid";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { HistoryPanel } from "@/components/calculator/HistoryPanel";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import { ChipButton } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
-import {
-  appendOperator,
-  buildEvalExpression,
-  closeParenthesis,
-  openParenthesis,
-} from "@/lib/calculators/expression-input";
+import { buildEvalExpression } from "@/lib/calculators/expression-input";
+import { useCalculatorInput } from "@/components/calculator/useCalculatorInput";
 import { evaluateExpression } from "@/lib/calculators/standard";
 import { sqrtValue, taxExcluded, taxIncluded } from "@/lib/calculators/desk-features";
 import { formatDisplayNumber, CALCULATOR_ERROR_DISPLAY } from "@/lib/format";
@@ -37,8 +33,6 @@ export function StandardCalculator({
   const { t } = useLocale();
   const { addEntry } = useHistory();
 
-  const [display, setDisplay] = useState("0");
-  const [expression, setExpression] = useState("");
   // Single memory cell; MC/MR/M+/M− act on it. (The options strip that
   // switched between M1–M3 cells, the tax rate, the evaluation order and
   // the decimal places was removed from the homepage calculator by the
@@ -46,50 +40,31 @@ export function StandardCalculator({
   // defaults: memory cell 1, tax rate 10%, "math" evaluation order —
   // operator precedence, 2+2×2=6 — and automatic decimal formatting.)
   const [memory, setMemory] = useState(0);
-  const [justEvaluated, setJustEvaluated] = useState(false);
-  const [awaitingOperand, setAwaitingOperand] = useState(true);
-  const [error, setError] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
   const taxRate = 10;
 
-  const inputDigit = useCallback(
-    (digit: string) => {
-      setError(false);
-      setAwaitingOperand(false);
-      if (justEvaluated) {
-        setDisplay(digit === "." ? "0." : digit);
-        setExpression("");
-        setJustEvaluated(false);
-        return;
-      }
-      setDisplay((prev) => {
-        if (prev === "0" && digit !== ".") return digit;
-        if (digit === "." && prev.includes(".")) return prev;
-        if (prev.length >= 16) return prev;
-        return prev + digit;
-      });
-    },
-    [justEvaluated],
-  );
-
-  const inputOperator = useCallback(
-    (op: string) => {
-      setError(false);
-      const current = error ? "0" : display;
-      if (justEvaluated) {
-        setExpression(`${current} ${op} `);
-        setJustEvaluated(false);
-        setDisplay("0");
-        setAwaitingOperand(true);
-        return;
-      }
-      setExpression((prev) => appendOperator(prev, current, op, awaitingOperand));
-      setDisplay("0");
-      setAwaitingOperand(true);
-    },
-    [display, error, justEvaluated, awaitingOperand],
-  );
+  // AC also resets the grand total, like a physical desk calculator.
+  const resetGrandTotal = useCallback(() => setGrandTotal(0), []);
+  const {
+    display,
+    setDisplay,
+    expression,
+    setExpression,
+    justEvaluated,
+    setJustEvaluated,
+    awaitingOperand,
+    setAwaitingOperand,
+    error,
+    setError,
+    inputDigit,
+    inputOperator,
+    handleClear,
+    handleBackspace,
+    handlePercent,
+    handleParen,
+    toggleSign,
+  } = useCalculatorInput(resetGrandTotal);
 
   const handleEquals = useCallback(() => {
     if (justEvaluated) return;
@@ -112,16 +87,6 @@ export function StandardCalculator({
       setAwaitingOperand(true);
     }
   }, [justEvaluated, expression, display, awaitingOperand, addEntry]);
-
-  const handleClear = useCallback(() => {
-    setDisplay("0");
-    setExpression("");
-    setJustEvaluated(false);
-    setAwaitingOperand(true);
-    setError(false);
-    // AC also resets the grand total, like a physical desk calculator.
-    setGrandTotal(0);
-  }, []);
 
   const handleGrandTotal = useCallback(() => {
     setError(false);
@@ -172,48 +137,6 @@ export function StandardCalculator({
     });
   }, [justEvaluated]);
 
-  const handleBackspace = useCallback(() => {
-    if (justEvaluated || error) {
-      handleClear();
-      return;
-    }
-    setDisplay((prev) => {
-      const next = prev.length <= 1 ? "0" : prev.slice(0, -1);
-      if (next === "0") setAwaitingOperand(true);
-      return next;
-    });
-  }, [justEvaluated, error, handleClear]);
-
-  const handlePercent = useCallback(() => {
-    const val = parseFloat(display);
-    if (!Number.isFinite(val)) return;
-    setDisplay(formatDisplayNumber(val / 100));
-    setAwaitingOperand(false);
-  }, [display]);
-
-  const handleParen = useCallback(
-    (paren: "(" | ")") => {
-      setError(false);
-      if (justEvaluated) {
-        setExpression(paren === "(" ? "(" : "");
-        setDisplay("0");
-        setJustEvaluated(false);
-        setAwaitingOperand(true);
-        return;
-      }
-      if (paren === "(") {
-        setExpression((prev) => openParenthesis(prev, display, awaitingOperand));
-        setDisplay("0");
-        setAwaitingOperand(true);
-      } else {
-        setExpression((prev) => closeParenthesis(prev, display, awaitingOperand));
-        setDisplay("0");
-        setAwaitingOperand(true);
-      }
-    },
-    [display, justEvaluated, awaitingOperand],
-  );
-
   const handleMemory = useCallback(
     (action: "MC" | "MR" | "M+" | "M-") => {
       const val = parseFloat(display);
@@ -240,14 +163,6 @@ export function StandardCalculator({
     },
     [display, memory, awaitingOperand, justEvaluated],
   );
-
-  const toggleSign = useCallback(() => {
-    setDisplay((d) => {
-      if (d === "0" || d === CALCULATOR_ERROR_DISPLAY) return d;
-      setAwaitingOperand(false);
-      return d.startsWith("-") ? d.slice(1) : `-${d}`;
-    });
-  }, []);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -343,7 +258,7 @@ export function StandardCalculator({
 
   return (
     <>
-      <CalculatorCard
+      <FormCard
         actions={
           <div className="flex items-center gap-2">
             <ChipButton onClick={() => setHistoryOpen(true)}>{t.nav.history}</ChipButton>
@@ -366,7 +281,7 @@ export function StandardCalculator({
             </div>
           </div>
         </div>
-      </CalculatorCard>
+      </FormCard>
       <HistoryPanel
         route="/"
         open={historyOpen}
