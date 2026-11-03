@@ -49,6 +49,8 @@ const LINK_MAP: Array<{ text: string; href: string }> = [
   { text: "筆算", href: "/long-division-calculator" },
   { text: "割引 計算", href: "/discount-calculation" },
   { text: "割引計算", href: "/discount-calculation" },
+  { text: "消費税計算機", href: "/consumption-tax-calculator" },
+  { text: "消費税計算", href: "/consumption-tax-calculator" },
   { text: "出産予定日 計算", href: "/due-date-calculation" },
   { text: "出産予定日計算", href: "/due-date-calculation" },
   { text: "出産予定日", href: "/due-date-calculation" },
