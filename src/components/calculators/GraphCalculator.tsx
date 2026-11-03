@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import { InputWell, SecondaryButton } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -188,7 +188,7 @@ export function GraphCalculator() {
         グラフ計算機
       </h1>
 
-      <CalculatorCard maxWidthClass="max-w-3xl">
+      <FormCard maxWidthClass="max-w-3xl">
         <div className="space-y-5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-base font-semibold text-text-primary">y ＝</span>
@@ -318,7 +318,7 @@ export function GraphCalculator() {
             </div>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">{INTRO}</p>
