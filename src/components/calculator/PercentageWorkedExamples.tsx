@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { MathEq, MathFraction, MathOp } from "@/components/ui/MathDisplay";
 import { SurfacePanel } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { percentagePage } from "@/lib/i18n/pages/percentage";
 import { formatDisplayNumber } from "@/lib/format";
 
 function formatTemplate(template: string, ...values: string[]): string {
@@ -417,7 +418,8 @@ export function PercentageWorkedExamples({
   changeFrom: string;
   changeTo: string;
 }) {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, percentagePage };
   const page = t.percentagePage;
 
   return (
