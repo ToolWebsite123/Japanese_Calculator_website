@@ -10,6 +10,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { PrimaryButton, SelectWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { bmi, bmiPage } from "@/lib/i18n/pages/bmi";
 import { useHistory } from "@/context/HistoryContext";
 import {
   calculateBmi,
@@ -161,7 +162,8 @@ const guideSubHeadingClass =
 const guideBodyClass = "mt-3 text-sm leading-relaxed text-text-secondary sm:text-base";
 
 export function BmiCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, bmi, bmiPage };
   const { addEntry } = useHistory();
   const [height, setHeight] = useState("170");
   const [weight, setWeight] = useState("65");
