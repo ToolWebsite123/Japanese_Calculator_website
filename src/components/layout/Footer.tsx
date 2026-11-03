@@ -45,6 +45,8 @@ export function Footer() {
     { href: "/bmi-calculator", label: t.footer.bmiCalculation },
     { href: "/due-date-calculation", label: t.footer.dueDateCalculation },
     { href: "/furusato-nozei-calculation", label: t.footer.hometownTaxDonation },
+    { href: "/mahjong-score-calculation", label: t.footer.mahjongScore },
+    { href: "/consumption-tax-calculator", label: t.footer.consumptionTax },
   ];
 
   const linkClass = "text-sm text-black transition hover:opacity-80 dark:text-text-primary";
