@@ -7,6 +7,33 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import path from "node:path";
 
+// Nitro forwards `cloudflare.wrangler` into the generated wrangler config
+// at build time (nitro's CloudflareOptions), but the Lovable wrapper's
+// published types only declare nodeCompat/deployConfig for `cloudflare`.
+// This object is therefore built separately and passed by reference —
+// inlining it as a literal would trip the wrapper's excess-property check.
+const nitroOptions = {
+  cloudflare: {
+    // Same values the build already generates with (see .output/nitro.json);
+    // declared here so the object shares known keys with the wrapper's type.
+    nodeCompat: true,
+    deployConfig: true,
+    wrangler: {
+      assets: {
+        // The GSC verification file (public/google39f0ca4d252248af.html)
+        // must be served at its exact .html path with 200. Cloudflare
+        // Workers Assets' default html_handling instead 308-redirects
+        // *.html requests to the extensionless path before the worker
+        // runs. "none" disables that rewriting (the only .html asset is
+        // this file; every page is SSR), and run_worker_first lets
+        // src/server.ts answer the exact path itself.
+        html_handling: "none",
+        run_worker_first: ["/google39f0ca4d252248af.html", "/google39f0ca4d252248af"],
+      },
+    },
+  },
+};
+
 export default defineConfig({
   vite: {
     resolve: {
@@ -24,4 +51,5 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  nitro: nitroOptions,
 });
