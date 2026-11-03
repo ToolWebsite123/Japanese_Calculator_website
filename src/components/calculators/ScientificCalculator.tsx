@@ -12,6 +12,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorCard } from "@/components/ui/FormField";
 import { ChipButton } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { scientific, scientificPage } from "@/lib/i18n/pages/scientific";
 import { useHistory } from "@/context/HistoryContext";
 import {
   appendOperator,
@@ -62,7 +63,8 @@ function normalizeSciExpr(expr: string): string {
 }
 
 export function ScientificCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, scientific, scientificPage };
   const { addEntry } = useHistory();
 
   const [display, setDisplay] = useState("0");
