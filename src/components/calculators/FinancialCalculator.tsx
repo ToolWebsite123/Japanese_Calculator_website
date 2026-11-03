@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
+import { FormCard, FormField, ResultCard } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -26,7 +26,8 @@ import {
   type TvmResult,
   type TvmSolveTarget,
 } from "@/lib/calculators/financial";
-import { formatDisplayNumber, formatYen } from "@/lib/format";
+import { formatAmount, formatDisplayNumber, formatTemplate, formatYen } from "@/lib/format";
+import { ExampleStep, Num, Var } from "@/components/calculator/WorkedExample";
 import { calculateLoan, type RepaymentType } from "@/lib/calculators/loan";
 
 const SOLVE_TARGETS: TvmSolveTarget[] = ["PV", "FV", "PMT", "IY", "N"];
@@ -39,42 +40,6 @@ function formatTvmValue(target: TvmSolveTarget, value: number): string {
     return formatDisplayNumber(value, 4);
   }
   return formatYen(value);
-}
-
-function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
-}
-
-function formatAmount(value: number): string {
-  return Math.round(value).toLocaleString("ja-JP");
-}
-
-function Num({ children }: { children: ReactNode }) {
-  return <span>{children}</span>;
-}
-
-function Var({ children }: { children: ReactNode }) {
-  return <span className="italic">{children}</span>;
-}
-
-function ExampleStep({
-  title,
-  math,
-  stepId,
-}: {
-  title: string;
-  math: ReactNode | ReactNode[];
-  stepId: string;
-}) {
-  const lines = Array.isArray(math) ? math : [math];
-  return (
-    <div className="mt-2">
-      <p className="font-semibold text-text-primary">{title}</p>
-      {lines.map((line, index) => (
-        <MathEq key={`${stepId}-${index}`}>{line}</MathEq>
-      ))}
-    </div>
-  );
 }
 
 function fmt(n: number, max = 8): string {
@@ -801,7 +766,7 @@ export function FinancialCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {tPage.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         actions={
           mode === "tvm" && result ? (
@@ -1018,7 +983,7 @@ export function FinancialCalculator() {
             </>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
