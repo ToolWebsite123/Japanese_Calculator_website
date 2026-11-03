@@ -3,13 +3,10 @@
 import type { ReactNode } from "react";
 import { MathEq, MathFraction, MathOp } from "@/components/ui/MathDisplay";
 import { SurfacePanel } from "@/components/ui/primitives";
+import { ExampleStep, Num, Var } from "@/components/calculator/WorkedExample";
 import { useLocale } from "@/context/LocaleContext";
 import { percentagePage } from "@/lib/i18n/pages/percentage";
-import { formatDisplayNumber } from "@/lib/format";
-
-function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
-}
+import { formatDisplayNumber, formatTemplate } from "@/lib/format";
 
 function formatAmount(value: number): string {
   return Math.round(value * 100) / 100 === Math.round(value)
@@ -23,23 +20,6 @@ function formatPercentResult(value: number): string {
   if (rounded > 0) return `+${body}`;
   if (rounded < 0) return `-${body}`;
   return body;
-}
-
-function Num({ children }: { children: ReactNode }) {
-  return <span>{children}</span>;
-}
-
-function Var({ children }: { children: ReactNode }) {
-  return <span className="italic">{children}</span>;
-}
-
-function ExampleStep({ title, math, stepId }: { title: string; math: ReactNode; stepId: string }) {
-  return (
-    <div className="mt-2">
-      <p className="font-semibold text-text-primary">{title}</p>
-      <MathEq key={stepId}>{math}</MathEq>
-    </div>
-  );
 }
 
 function DiscountExample({
