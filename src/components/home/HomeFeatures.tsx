@@ -1,23 +1,25 @@
 // Homepage feature documentation (approved draft,
-// HOMEPAGE-SEO-MASTER-REPORT §10): the four calculator settings —
-// calculation order, memory + GT, history/copy, decimal places.
+// HOMEPAGE-SEO-MASTER-REPORT §10): the calculator's four core
+// behaviours — calculation order, memory + GT, history/copy, decimals.
+// (Wording updated 2026-11-03 to match the fixed-behaviour calculator:
+// standard order only, one memory cell, tax keys at 10%, auto decimals.)
 
 const FEATURES: { title: string; text: string }[] = [
   {
-    title: "計算順序（標準／左から順に）",
-    text: "標準モードでは、数学の決まりどおり掛け算・割り算を先に計算します（2+2×2＝6）。「左から順に」モードでは、押した順にひとつずつ計算します（2+2×2＝8）。レジや事務用の電卓の感覚で使いたいときは「左から順に」が向いています。設定は電卓の上部でいつでも切り替えられます。",
+    title: "計算順序（標準の順序で自動計算）",
+    text: "数学の決まりどおり、掛け算・割り算を先に計算する標準の順序で式全体を自動計算します（2+2×2＝6）。モードの切り替えは不要です。先に計算したい部分がある場合は、括弧キーで囲むとその中を優先して計算できます（（2＋2）×2＝8）。",
   },
   {
-    title: "メモリー（M1〜M3）とGT",
-    text: "メモリーは3つのセル（M1・M2・M3）を切り替えて使えます。買い物の途中で小計を保持する、複数の計算結果を別々に残す、といった使い分けができます。GTキーを押すと、それまでに「＝」で計算した結果の総計を確認できます。",
+    title: "メモリーとGT",
+    text: "メモリーは1つで、M+／M−キーで表示中の値を加減算して保持し、MRキーで呼び出せます。買い物の途中で小計を保持する、といった使い方ができます。GTキーを押すと、それまでに「＝」で計算した結果の総計を確認できます。",
   },
   {
     title: "履歴とコピー",
     text: "「履歴」ボタンを押すと、過去の計算式と結果の一覧が表示されます。一覧の項目を選ぶと、その式と結果が電卓に戻るので、似た計算のやり直しや検算に便利です。履歴はお使いのブラウザの中にのみ保存されます。結果はコピーボタンでそのまま貼り付けられます。",
   },
   {
-    title: "小数桁の設定",
-    text: "結果の小数桁は「自動」のほか、0〜6桁までの固定表示に切り替えられます。金額の計算では0桁、割合の計算では2〜3桁など、用途に合わせて選んでください。",
+    title: "小数の自動表示",
+    text: "結果の小数桁は自動で調整され、末尾の不要な0は表示されません。桁数の設定は不要で、割り算の結果なども読みやすい形で表示されます。",
   },
 ];
 
@@ -32,7 +34,7 @@ export function HomeFeatures() {
           id="home-features-heading"
           className="text-xl font-bold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]"
         >
-          便利な機能と設定
+          便利な機能
         </h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           {FEATURES.map((feature) => (
