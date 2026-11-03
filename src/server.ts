@@ -56,6 +56,21 @@ const SECURITY_HEADERS: Record<string, string> = {
   "permissions-policy": "camera=(), microphone=(), geolocation=()",
 };
 
+// Google Search Console HTML-file verification: the file in public/ must
+// answer at its EXACT path with 200. The hosting layer (Cloudflare Workers
+// Assets, default html_handling) redirects any *.html request to the
+// extensionless path with a 308 before app code runs, which can fail
+// Google's exact-URL check — so vite.config.ts also sets
+// html_handling: "none" + run_worker_first for this path, and this handler
+// serves the body itself as the app-level guarantee once the worker runs
+// first. The body must stay byte-identical to
+// public/google39f0ca4d252248af.html.
+const GSC_VERIFICATION_PATH = "/google39f0ca4d252248af.html";
+// Until now the extensionless path was also served the same body by the
+// CDN's .html handling; keep answering it so that URL does not change.
+const GSC_VERIFICATION_ALIAS_PATH = "/google39f0ca4d252248af";
+const GSC_VERIFICATION_BODY = "google-site-verification: google39f0ca4d252248af.html\n";
+
 function withSecurityHeaders(response: Response): Response {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("text/html")) return response;
@@ -73,6 +88,16 @@ export default {
     // the redirect permanent (301) here. Root "/" itself is untouched.
     if (request.method === "GET" || request.method === "HEAD") {
       const url = new URL(request.url);
+      if (url.pathname === GSC_VERIFICATION_PATH || url.pathname === GSC_VERIFICATION_ALIAS_PATH) {
+        return new Response(request.method === "HEAD" ? null : GSC_VERIFICATION_BODY, {
+          status: 200,
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+            "cache-control": "public, max-age=0, must-revalidate",
+            "content-length": String(new TextEncoder().encode(GSC_VERIFICATION_BODY).length),
+          },
+        });
+      }
       if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
         url.pathname = url.pathname.replace(/\/+$/, "");
         return new Response(null, {
