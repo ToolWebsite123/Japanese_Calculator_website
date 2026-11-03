@@ -9,6 +9,7 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { useLocale } from "@/context/LocaleContext";
+import { fraction, fractionPage } from "@/lib/i18n/pages/fraction";
 import { useHistory } from "@/context/HistoryContext";
 import { MathFraction, MathEq, MathOp } from "@/components/ui/MathDisplay";
 import {
@@ -203,7 +204,8 @@ function RenderStep({
 }
 
 export function FractionCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, fraction, fractionPage };
   const { addEntry } = useHistory();
 
   const [mode, setMode] = useState<"calc" | "decimal">("calc");
