@@ -102,7 +102,7 @@ import {
   getAgeTargetRange,
   estimateBodyFatPercent,
 } from "../src/lib/calculators/bmi";
-import ja from "../src/lib/i18n/ja";
+import { bmiPage } from "../src/lib/i18n/pages/bmi";
 
 const approx = (a: number, b: number, eps = 1e-9) => Math.abs(a - b) <= eps;
 
@@ -711,7 +711,7 @@ test("BMI: invalid inputs throw the controlled Japanese messages", () => {
 /* ---------------- BMI Step B: WHO table + quick-lookup matrix ---------------- */
 
 test("BMI Step B: matrix cells match the BMI formula (1 decimal, half-up)", () => {
-  const { head, rows } = ja.bmiPage.guideMatrix;
+  const { head, rows } = bmiPage.guideMatrix;
   const cell = (heightLabel: string, weightLabel: string) => {
     const row = rows.find((r) => r[0] === heightLabel);
     assert.ok(row, `row ${heightLabel} exists`);
@@ -729,7 +729,7 @@ test("BMI Step B: matrix cells match the BMI formula (1 decimal, half-up)", () =
 });
 
 test("BMI Step B: WHO classification table has the 8 WHO bands", () => {
-  const { whoRows } = ja.bmiPage.guideFormula;
+  const { whoRows } = bmiPage.guideFormula;
   assert.equal(whoRows.length, 8);
   assert.deepEqual(whoRows[3], ["18.50～24.99", "普通体重"]);
   assert.deepEqual(whoRows[7], ["40.00以上", "肥満（3度）"]);
