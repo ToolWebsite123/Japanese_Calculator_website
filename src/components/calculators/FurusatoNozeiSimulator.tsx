@@ -575,9 +575,9 @@ export function FurusatoNozeiSimulator() {
         </h2>
         <p className={guideBodyClass}>
           上限額は目安であり、最終的な控除額は確定申告・住民税の決定通知で確定します。年収と家族構成だけの簡単な目安でよい方は{" "}
-          <a href="/furusato-nozei-calculation" className="font-medium text-brand underline underline-offset-2 dark:text-[#d6ccf0]">
+          <Link href="/furusato-nozei-calculation" className="font-medium text-brand underline underline-offset-2 dark:text-[#d6ccf0]">
             かんたんシミュレーション
-          </a>{" "}
+          </Link>{" "}
           もあわせてご利用ください。
         </p>
       </section>
