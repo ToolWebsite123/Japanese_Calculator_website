@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/primitives";
 import { MathEq, MathFraction, MathOp } from "@/components/ui/MathDisplay";
 import { useLocale } from "@/context/LocaleContext";
+import { algebra, algebraPage } from "@/lib/i18n/pages/algebra";
 import { useHistory } from "@/context/HistoryContext";
 import {
   evaluateExpressionSafe,
@@ -342,7 +343,8 @@ function SimplifySteps({ input, data }: { input: string; data: SimplifyResult })
 }
 
 export function AlgebraCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, algebra, algebraPage };
   const { addEntry } = useHistory();
   const [mode, setMode] = useState<"simplify" | "evaluate" | "solve">("simplify");
   const [simplifyExpr, setSimplifyExpr] = useState("(x + 2)(x + 3)");
