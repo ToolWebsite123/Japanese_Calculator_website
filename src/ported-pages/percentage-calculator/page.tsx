@@ -1,12 +1,12 @@
 import Script from "next/script";
 import { PercentageCalculator } from "@/components/calculators/PercentageCalculator";
-import ja from "@/lib/i18n/ja";
+import { percentagePage } from "@/lib/i18n/pages/percentage";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 
 
 
 export default function PercentagePage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.percentagePage.faqItems, ja.percentagePage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(percentagePage.faqItems, percentagePage.title);
 
   return (
     <>
