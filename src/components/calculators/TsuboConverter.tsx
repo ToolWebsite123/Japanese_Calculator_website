@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField, ResultCard } from "@/components/ui/FormField";
+import { FormCard, FormField, ResultCard } from "@/components/ui/FormField";
 import { PrimaryButton, SegmentedControl, SelectWell } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
@@ -149,7 +149,7 @@ export function TsuboConverter() {
         坪・畳・㎡（平米）変換計算機
       </h1>
 
-      <CalculatorCard>
+      <FormCard>
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
@@ -192,7 +192,7 @@ export function TsuboConverter() {
             />
           </div>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">{INTRO}</p>
