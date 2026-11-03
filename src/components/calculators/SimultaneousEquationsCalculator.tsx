@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -419,6 +420,16 @@ export function SimultaneousEquationsCalculator() {
           </p>
         ))}
         <p className={guideBodyClass}>{page.guideUsageBody}</p>
+        <p className={guideBodyClass}>
+          1つの文字式の展開や方程式の計算には、
+          <Link
+            href="/algebra-calculator"
+            className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+          >
+            代数計算機（文字式計算機）
+          </Link>
+          もあわせてご利用ください。
+        </p>
       </section>
 
       <section aria-labelledby="simul-example-heading" className={sectionClass}>
