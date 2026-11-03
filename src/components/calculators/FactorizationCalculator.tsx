@@ -22,6 +22,7 @@ import {
 } from "@/lib/calculators/factorize";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useLocale } from "@/context/LocaleContext";
+import { factorization, factorizationPage } from "@/lib/i18n/pages/factorization";
 import { primeFactorize, type PrimeFactor } from "@/lib/calculators/scientific";
 import type { ReactNode } from "react";
 
@@ -50,7 +51,8 @@ function FactorizeSteps({ input, data }: { input: string; data: FactorizeResult 
 }
 
 export function FactorizationCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, factorization, factorizationPage };
   const { addEntry } = useHistory();
   const [mode, setMode] = useState<"poly" | "prime">("poly");
   const [expr, setExpr] = useState("x^2 + 5x + 6");
