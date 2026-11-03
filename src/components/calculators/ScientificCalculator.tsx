@@ -9,17 +9,13 @@ import { ButtonGuideTable } from "@/components/calculator/ButtonGuideTable";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import { ChipButton } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { scientific, scientificPage } from "@/lib/i18n/pages/scientific";
 import { useHistory } from "@/context/HistoryContext";
-import {
-  appendOperator,
-  buildEvalExpression,
-  closeParenthesis,
-  openParenthesis,
-} from "@/lib/calculators/expression-input";
+import { buildEvalExpression } from "@/lib/calculators/expression-input";
+import { useCalculatorInput } from "@/components/calculator/useCalculatorInput";
 import {
   evaluateScientific,
   primeFactorize,
@@ -67,14 +63,28 @@ export function ScientificCalculator() {
   const t = { ...core, scientific, scientificPage };
   const { addEntry } = useHistory();
 
-  const [display, setDisplay] = useState("0");
-  const [expression, setExpression] = useState("");
+  const {
+    display,
+    setDisplay,
+    expression,
+    setExpression,
+    justEvaluated,
+    setJustEvaluated,
+    awaitingOperand,
+    setAwaitingOperand,
+    error,
+    setError,
+    inputDigit,
+    inputOperator,
+    handleClear,
+    handleBackspace,
+    handlePercent,
+    handleParen,
+    toggleSign,
+  } = useCalculatorInput();
   const [mode, setMode] = useState<AngleMode>("deg");
   const [complexMode, setComplexMode] = useState(false);
   const [invMode, setInvMode] = useState(false);
-  const [justEvaluated, setJustEvaluated] = useState(false);
-  const [awaitingOperand, setAwaitingOperand] = useState(true);
-  const [error, setError] = useState(false);
   const [variables, setVariables] = useState<Record<string, number>>({
     x: 0,
     y: 0,
@@ -99,44 +109,6 @@ export function ScientificCalculator() {
       setPFactResult(e instanceof Error ? e.message : "無効な数値");
     }
   }, [display]);
-
-  const inputDigit = useCallback(
-    (digit: string) => {
-      setError(false);
-      setAwaitingOperand(false);
-      if (justEvaluated) {
-        setDisplay(digit === "." ? "0." : digit);
-        setExpression("");
-        setJustEvaluated(false);
-        return;
-      }
-      setDisplay((prev) => {
-        if (prev === "0" && digit !== ".") return digit;
-        if (digit === "." && prev.includes(".")) return prev;
-        if (prev.length >= 16) return prev;
-        return prev + digit;
-      });
-    },
-    [justEvaluated],
-  );
-
-  const inputOperator = useCallback(
-    (op: string) => {
-      setError(false);
-      const current = error ? "0" : display;
-      if (justEvaluated) {
-        setExpression(`${current} ${op} `);
-        setJustEvaluated(false);
-        setDisplay("0");
-        setAwaitingOperand(true);
-        return;
-      }
-      setExpression((prev) => appendOperator(prev, current, op, awaitingOperand));
-      setDisplay("0");
-      setAwaitingOperand(true);
-    },
-    [display, error, justEvaluated, awaitingOperand],
-  );
 
   const handleEquals = useCallback(() => {
     if (justEvaluated) return;
@@ -167,56 +139,6 @@ export function ScientificCalculator() {
       setAwaitingOperand(true);
     }
   }, [justEvaluated, expression, display, awaitingOperand, error, mode, complexMode, addEntry]);
-
-  const handleClear = useCallback(() => {
-    setDisplay("0");
-    setExpression("");
-    setJustEvaluated(false);
-    setAwaitingOperand(true);
-    setError(false);
-  }, []);
-
-  const handleBackspace = useCallback(() => {
-    if (justEvaluated || error) {
-      handleClear();
-      return;
-    }
-    setDisplay((prev) => {
-      const next = prev.length <= 1 ? "0" : prev.slice(0, -1);
-      if (next === "0") setAwaitingOperand(true);
-      return next;
-    });
-  }, [justEvaluated, error, handleClear]);
-
-  const handlePercent = useCallback(() => {
-    const val = parseFloat(display);
-    if (!Number.isFinite(val)) return;
-    setDisplay(formatDisplayNumber(val / 100));
-    setAwaitingOperand(false);
-  }, [display]);
-
-  const handleParen = useCallback(
-    (paren: "(" | ")") => {
-      setError(false);
-      if (justEvaluated) {
-        setExpression(paren === "(" ? "(" : "");
-        setDisplay("0");
-        setJustEvaluated(false);
-        setAwaitingOperand(true);
-        return;
-      }
-      if (paren === "(") {
-        setExpression((prev) => openParenthesis(prev, display, awaitingOperand));
-        setDisplay("0");
-        setAwaitingOperand(true);
-      } else {
-        setExpression((prev) => closeParenthesis(prev, display, awaitingOperand));
-        setDisplay("0");
-        setAwaitingOperand(true);
-      }
-    },
-    [display, justEvaluated, awaitingOperand],
-  );
 
   const insertE = useCallback(() => {
     setDisplay(formatDisplayNumber(Math.E));
@@ -329,14 +251,6 @@ export function ScientificCalculator() {
     setDisplay(formatDisplayNumber(Math.PI));
     setJustEvaluated(false);
     setAwaitingOperand(false);
-  }, []);
-
-  const toggleSign = useCallback(() => {
-    setDisplay((d) => {
-      if (d === "0" || d === CALCULATOR_ERROR_DISPLAY) return d;
-      setAwaitingOperand(false);
-      return d.startsWith("-") ? d.slice(1) : `-${d}`;
-    });
   }, []);
 
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -583,7 +497,7 @@ export function ScientificCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.scientificPage.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         maxWidthClass="max-w-[480px] lg:max-w-[860px]"
       >
@@ -717,7 +631,7 @@ export function ScientificCalculator() {
           </div>
           </div>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <HistoryPanel
         route="/scientific-calculator"
