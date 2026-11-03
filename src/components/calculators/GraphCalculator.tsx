@@ -188,10 +188,6 @@ export function GraphCalculator() {
         グラフ計算機
       </h1>
 
-      <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:text-base">
-        {INTRO}
-      </p>
-
       <CalculatorCard maxWidthClass="max-w-3xl">
         <div className="space-y-5">
           <div className="flex flex-wrap items-center gap-2">
@@ -316,6 +312,10 @@ export function GraphCalculator() {
           )}
         </div>
       </CalculatorCard>
+
+      <div className="mt-8 space-y-1.5">
+        <p className="text-sm text-text-secondary sm:text-base">{INTRO}</p>
+      </div>
 
       <section aria-labelledby="graph-about-heading" className="mt-16 border-t border-border pt-16">
         <h2 id="graph-about-heading" className={guideHeadingClass}>
