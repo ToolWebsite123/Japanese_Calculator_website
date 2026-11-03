@@ -1,31 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
-import { MathEq, MathOp } from "@/components/ui/MathDisplay";
+import { MathOp } from "@/components/ui/MathDisplay";
 import { SurfacePanel } from "@/components/ui/primitives";
+import { ExampleStep } from "@/components/calculator/WorkedExample";
 import { useLocale } from "@/context/LocaleContext";
 import { unitsPage } from "@/lib/i18n/pages/units";
-
-function ExampleStep({
-  title,
-  math,
-  stepId,
-}: {
-  title: string;
-  math: ReactNode | ReactNode[];
-  stepId: string;
-}) {
-  const lines = Array.isArray(math) ? math : [math];
-
-  return (
-    <div className="mt-2">
-      <p className="font-semibold text-text-primary">{title}</p>
-      {lines.map((line, index) => (
-        <MathEq key={`${stepId}-${index}`}>{line}</MathEq>
-      ))}
-    </div>
-  );
-}
 
 export function UnitConverterWorkedExamples({
   value,
