@@ -6,6 +6,7 @@ import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
@@ -563,6 +564,16 @@ export function AlgebraCalculator() {
             </tbody>
           </table>
         </div>
+        <p className={guideBodyClass}>
+          連立方程式の計算には、専用の
+          <Link
+            href="/simultaneous-equations-calculator"
+            className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+          >
+            連立方程式計算機
+          </Link>
+          が便利です。
+        </p>
       </section>
 
       <section aria-labelledby="algebra-examples-heading" className="mt-16 border-t border-border pt-16">
