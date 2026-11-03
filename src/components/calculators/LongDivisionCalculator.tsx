@@ -13,6 +13,7 @@ import {
   SelectWell,
 } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { longDivision, longDivisionPage } from "@/lib/i18n/pages/long-division";
 import {
   computeLongDivision,
   type LongDivisionComputation,
@@ -168,7 +169,7 @@ function HissanLayout({ result }: { result: LongDivisionComputation }) {
 
 function buildNarration(
   result: LongDivisionComputation,
-  page: ReturnType<typeof useLocale>["t"]["longDivisionPage"],
+  page: typeof longDivisionPage,
 ): string[] {
   const B = result.scaledDivisor;
   const A = String(result.scaledDividend);
@@ -202,7 +203,8 @@ function buildNarration(
 }
 
 export function LongDivisionCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, longDivision, longDivisionPage };
   const page = t.longDivisionPage;
   const [dividendStr, setDividendStr] = useState("1234");
   const [divisorStr, setDivisorStr] = useState("7");
