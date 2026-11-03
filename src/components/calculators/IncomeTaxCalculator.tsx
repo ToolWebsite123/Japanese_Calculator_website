@@ -13,6 +13,7 @@ import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { useHistory } from "@/context/HistoryContext";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { formatYen } from "@/lib/format";
@@ -489,6 +490,16 @@ export function IncomeTaxCalculator() {
             <li key={item}>{item}</li>
           ))}
         </ul>
+        <p className={guideBodyClass}>
+          ふるさと納税の控除上限額そのものを試算したいときは、各種控除まで反映できる
+          <Link
+            href="/furusato-nozei-simulation-calculation"
+            className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+          >
+            ふるさと納税の詳細シミュレーション
+          </Link>
+          もご利用ください。
+        </p>
       </section>
 
       <section aria-labelledby="tax-mistakes-heading" className="mt-16 border-t border-border pt-16">
