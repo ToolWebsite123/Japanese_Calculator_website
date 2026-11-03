@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
@@ -212,7 +212,7 @@ export function TimeCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.timePage.title}
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[480px]">
+      <FormCard compact maxWidthClass="max-w-[480px]">
         <div className="space-y-2.5 sm:space-y-3">
           <SegmentedControl
             value={mode}
@@ -428,7 +428,7 @@ export function TimeCalculator() {
             {t.common.calculate}
           </PrimaryButton>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
