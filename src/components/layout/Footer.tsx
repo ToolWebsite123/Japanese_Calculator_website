@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useLocale } from "@/context/LocaleContext";
 import {
   CATEGORY_ORDER,
-  getCalculatorsByDeclaredCategory,
   getCategoryMeta,
+  getFooterCalculators,
   getNavLabel,
 } from "@/lib/catalog";
 
@@ -35,12 +35,13 @@ function LogoIcon({ className }: { className?: string }) {
 }
 
 /**
- * Site footer: brand block + site links on top, then every calculator
- * grouped under its catalog category (data-driven from the shared
- * catalog — the same source as the mega menu and the hub page — so each
- * of the 27 tools appears exactly once, under its own category). The
- * category grid is 2 columns on phones, 3 on small screens and 6 on
- * wide screens, inside the footer's max-w-6xl container.
+ * Site footer: brand block + site links on top, then the curated
+ * most-used calculators grouped under their catalog categories
+ * (data-driven from the shared catalog — the same source as the mega
+ * menu and the hub page; the full 27-tool list lives in the mega menu
+ * and on /calculators). The category grid is 2 columns on phones and
+ * 3 on wider screens, so the six categories form two rows of three,
+ * inside the footer's max-w-6xl container.
  */
 export function Footer() {
   const { t } = useLocale();
@@ -97,10 +98,10 @@ export function Footer() {
         </div>
 
         <nav aria-label="フッター計算ツールナビゲーション" className="mt-12" suppressHydrationWarning>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
             {CATEGORY_ORDER.map((category) => {
               const meta = getCategoryMeta(category);
-              const items = getCalculatorsByDeclaredCategory(category);
+              const items = getFooterCalculators(category);
               if (items.length === 0) return null;
               return (
                 <div key={category}>
