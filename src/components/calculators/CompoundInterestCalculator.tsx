@@ -11,6 +11,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CompoundInterestWorkedExamples } from "@/components/calculator/CompoundInterestWorkedExamples";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { useLocale } from "@/context/LocaleContext";
+import { compoundInterest, compoundInterestPage } from "@/lib/i18n/pages/compound-interest";
 import { useHistory } from "@/context/HistoryContext";
 import { formatYen } from "@/lib/format";
 import { calcCompoundInterest } from "@/lib/calculators/compound-interest";
@@ -20,7 +21,8 @@ const guideHeadingClass =
 const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
 
 export function CompoundInterestCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, compoundInterest, compoundInterestPage };
   const { addEntry } = useHistory();
   const [principal, setPrincipal] = useState<string>("1000000");
   const [rate, setRate] = useState<string>("5");
