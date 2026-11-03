@@ -18,7 +18,8 @@ type NavbarProps = {
 
 /**
  * The site's single header (redesigned 2026-11-02): one sticky bar,
- * ~80px tall. Left: brand (logo + name + tagline). Center (desktop):
+ * ~64px tall (slimmed from 80px 2026-11-03, with one uniform gap-4
+ * spacing scale between the bar's element groups). Left: brand (logo + name + tagline). Center (desktop):
  * main navigation with the calculator dropdown. Right: search + theme
  * toggle. On small screens the search collapses to an icon that expands
  * a search row inside this same header; navigation moves to the
@@ -52,8 +53,8 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
       }}
       suppressHydrationWarning
     >
-      <div className="relative mx-auto flex h-20 max-w-6xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
-        <div className="flex min-w-0 shrink-0 items-center gap-2">
+      <div className="relative mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
+        <div className="flex min-w-0 shrink-0 items-center gap-4">
           <IconButton
             onClick={onMenuOpen}
             className="lg:hidden"
@@ -106,7 +107,7 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
 
         <NavbarCalcLinks />
 
-        <div className="ml-auto flex min-w-0 items-center gap-3">
+        <div className="ml-auto flex min-w-0 items-center gap-4">
           <div className="hidden w-48 min-w-0 md:block lg:w-60">
             <SearchInput size="compact" placeholder="計算機を検索…" />
           </div>
