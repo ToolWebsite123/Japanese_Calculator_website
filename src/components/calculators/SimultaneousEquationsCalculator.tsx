@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard } from "@/components/ui/FormField";
+import { FormCard } from "@/components/ui/FormField";
 import {
   Divider,
   InputWell,
@@ -232,7 +232,7 @@ export function SimultaneousEquationsCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {page.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         actions={copyValue ? <CopyResultButton value={copyValue} /> : undefined}
       >
@@ -405,7 +405,7 @@ export function SimultaneousEquationsCalculator() {
             )}
           </div>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">{page.description}</p>
