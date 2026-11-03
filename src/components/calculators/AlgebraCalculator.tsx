@@ -35,7 +35,7 @@ const thClass = "border-b border-border bg-surface-sunken px-3 py-2.5 text-left 
 const tdClass = "border-b border-border px-3 py-2.5 text-text-secondary";
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
+  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
 }
 
 function Num({ children }: { children: ReactNode }) {
