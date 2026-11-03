@@ -1,12 +1,12 @@
 import Script from "next/script";
-import ja from "@/lib/i18n/ja";
+import { fractionPage } from "@/lib/i18n/pages/fraction";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { FractionCalculator } from "@/components/calculators/FractionCalculator";
 
 
 
 export default function FractionPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.fractionPage.faqItems, ja.fractionPage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(fractionPage.faqItems, fractionPage.title);
 
   return (
     <>
