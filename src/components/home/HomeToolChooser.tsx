@@ -30,6 +30,11 @@ const CHOICES: { need: string; label: string; to: string }[] = [
   { need: "土地や部屋の広さを換算したい", label: "坪・畳・㎡変換", to: "/tsubo-converter" },
   { need: "関数のグラフを描きたい", label: "グラフ計算機", to: "/graph-calculator" },
   { need: "麻雀の点数を知りたい", label: "麻雀 点数計算", to: "/mahjong-score-calculation" },
+  {
+    need: "連立方程式を解きたい",
+    label: "連立方程式計算機",
+    to: "/simultaneous-equations-calculator",
+  },
 ];
 
 export function HomeToolChooser() {
