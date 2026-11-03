@@ -6,18 +6,20 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CalculatorIcon } from "@/components/icons/CalculatorIcon";
 import { useLocale } from "@/context/LocaleContext";
 import { NAV_ITEMS, type CalculatorCategory, type NavItem } from "@/lib/constants";
-import { CATEGORY_ORDER, getNavLabel, searchCalculators } from "@/lib/catalog";
+import {
+  CATEGORY_ORDER,
+  getCalculatorsByDeclaredCategory,
+  getNavLabel,
+  searchCalculators,
+} from "@/lib/catalog";
 import { pathsEqual } from "@/lib/path";
 
 /**
  * The menu groups strictly by each tool's declared category, so every
- * calculator appears exactly once. (The shared catalog helper treats
- * "more" as a catch-all list of all secondary tools, which would flood
- * this menu with duplicates; here その他 holds only its own tool, 麻雀.)
+ * calculator appears exactly once (getCalculatorsByDeclaredCategory —
+ * here その他 holds only its own tool, 麻雀).
  */
-function menuItemsByCategory(category: CalculatorCategory): NavItem[] {
-  return NAV_ITEMS.filter((item) => item.category === category);
-}
+const menuItemsByCategory = getCalculatorsByDeclaredCategory;
 
 /** Sidebar labels for the mega menu, as approved in the design spec. */
 const MENU_CATEGORY_LABELS: Record<CalculatorCategory, string> = {
