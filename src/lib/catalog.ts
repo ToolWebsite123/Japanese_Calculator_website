@@ -126,6 +126,17 @@ export function getCalculatorsByCategory(category: CalculatorCategory): NavItem[
   return NAV_ITEMS.filter((item) => item.category === category);
 }
 
+/**
+ * Tools grouped strictly by each item's declared category, so every
+ * calculator appears exactly once. (getCalculatorsByCategory treats
+ * "more" as a catch-all list of all secondary tools, which would flood
+ * grouped listings with duplicates; here "more" holds only its own
+ * tools.) Used by the mega menu and the footer.
+ */
+export function getCalculatorsByDeclaredCategory(category: CalculatorCategory): NavItem[] {
+  return NAV_ITEMS.filter((item) => item.category === category);
+}
+
 export function getFeaturedCalculators(category: CalculatorCategory): NavItem[] {
   return CATEGORY_META[category].featuredHrefs
     .map((href) => NAV_ITEMS.find((item) => item.href === href))
