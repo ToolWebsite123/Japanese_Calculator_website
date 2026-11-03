@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import {
   SurfacePanel,
   Divider,
@@ -235,7 +235,7 @@ export function FurusatoNozeiSimulator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         ふるさと納税 控除上限額 詳細シミュレーション
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         actions={result ? <CopyResultButton value={formatYen(result.donationLimit)} /> : undefined}
       >
@@ -492,7 +492,7 @@ export function FurusatoNozeiSimulator() {
             本シミュレーションはあくまで目安です。株式の譲渡益・配当所得・不動産所得など給与以外の所得や、本ツールで扱わない控除がある場合は控除上限額が変わります。最終的な金額はお住まいの自治体または税理士にご確認ください。
           </p>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
