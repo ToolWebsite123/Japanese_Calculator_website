@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/primitives";
 import { MathEq, MathOp, MathPower, MathRadical } from "@/components/ui/MathDisplay";
 import { useLocale } from "@/context/LocaleContext";
+import { root, rootPage } from "@/lib/i18n/pages/root";
 import { useHistory } from "@/context/HistoryContext";
 import {
   calculateRoot,
@@ -312,7 +313,8 @@ const guideHeadingClass =
 const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
 
 export function RootCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, root, rootPage };
   const { addEntry } = useHistory();
   const [mode, setMode] = useState<RootMode>("square");
   const [radicand, setRadicand] = useState("16");
