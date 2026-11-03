@@ -1,6 +1,9 @@
 import Script from "next/script";
+import Link from "next/link";
 import { buildLegalPageJsonLd } from "@/lib/seo/legal-jsonld";
 import { LegalPageLayout } from "@/components/legal/LegalPageLayout";
+
+const LAST_UPDATED = "2026年11月3日";
 
 
 
@@ -23,6 +26,7 @@ export default function AboutPage() {
       <LegalPageLayout
         title="このサイトについて"
         description="電卓.オンラインで提供している各種計算ツールの特徴と、サイト運営に関する基本方針をご案内します。"
+        lastUpdated={LAST_UPDATED}
       >
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
@@ -30,6 +34,9 @@ export default function AboutPage() {
           </h2>
           <p className="mt-3">
             電卓.オンラインは、無料で使えるブラウザベースの計算ツールをまとめた日本語サイトです。基本的な四則演算に使える電卓をはじめ、関数電卓、分数電卓、ルート計算機、文字式計算機、金融電卓、複利計算、BMI計算、単位変換など、日常生活から学習、仕事の試算まで幅広く使える計算機を一つのサイト内で利用できます。アプリのインストールや会員登録は不要で、ページを開いてすぐに使い始められることを重視しています。
+          </p>
+          <p className="mt-3">
+            計算ツールは全27種類で、基本計算、関数・数学、金融、健康、変換、その他のカテゴリに分けて掲載しています。日常のちょっとした計算から、税金や保険料の試算、学習の確認まで、計算が苦手な方でも迷わず使える構成を目指しています。
           </p>
           <p className="mt-3">
             このサイトの目的は、必要な計算をできるだけ手軽に、分かりやすく、そして安心して行える環境を提供することです。複雑な式を毎回手入力したり、用途ごとに別々のサービスを探したりしなくても、目的に合った計算機へすぐアクセスできる構成を目指しています。スマートフォン、タブレット、PCのいずれでも利用しやすいよう、画面サイズに応じた使いやすさにも配慮しています。
@@ -50,13 +57,27 @@ export default function AboutPage() {
 
         <section>
           <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
-            計算ロジックと運営方針
+            計算の正確さへの取り組みと運営方針
           </h2>
           <p className="mt-3">
             各計算機は、それぞれの目的に応じた一般的な計算式、定義、考え方をもとに実装しています。関数計算、分数処理、ルート計算、金融関連の試算などは、用途ごとに必要なロジックを分けて構成し、実際の利用シーンで使いやすい入力方法や表示方法になるよう調整しています。重要な判断に使う前提の専門システムではありませんが、日常的な確認や比較、学習時の補助として役立つ品質を保てるよう努めています。
           </p>
           <p className="mt-3">
             そのため、公開して終わりではなく、動作確認、表示の見直し、改善を継続しながら運営しています。結果の見やすさ、入力しやすさ、計算の安定性を少しずつ整え、使いやすい無料ツール集として長く利用していただけるよう改善を続けていきます。
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-xl font-semibold tracking-tight text-[#231942] sm:text-2xl dark:text-[#d6ccf0]">
+            運営者情報
+          </h2>
+          <p className="mt-3">サイト名：電卓.オンライン</p>
+          <p className="mt-3">URL：https://www.xn--2kr778m.online/</p>
+          <p className="mt-3">運営者：電卓.オンライン運営事務局</p>
+          <p className="mt-3">
+            お問い合わせ：メール（japaneselanguagecalculator@gmail.com）または
+            <Link href="/contact">お問い合わせページ</Link>
+            からご連絡ください。
           </p>
         </section>
       </LegalPageLayout>
