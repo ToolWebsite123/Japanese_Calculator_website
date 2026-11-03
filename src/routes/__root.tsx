@@ -1,8 +1,7 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
-  createRootRouteWithContext,
+  createRootRoute,
   useNavigate,
   useRouter,
   HeadContent,
@@ -161,7 +160,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -260,17 +259,15 @@ function FontStylesheetLoader() {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
-
+  // No QueryClientProvider (LCP fix F2): react-query is unused app-wide,
+  // so its provider only cost entry-chunk bytes on every page.
   return (
-    <QueryClientProvider client={queryClient}>
-      <Providers>
-        <FontStylesheetLoader />
-        <SafeNavigationListener />
-        <AppShell>
-          <Outlet />
-        </AppShell>
-      </Providers>
-    </QueryClientProvider>
+    <Providers>
+      <FontStylesheetLoader />
+      <SafeNavigationListener />
+      <AppShell>
+        <Outlet />
+      </AppShell>
+    </Providers>
   );
 }
