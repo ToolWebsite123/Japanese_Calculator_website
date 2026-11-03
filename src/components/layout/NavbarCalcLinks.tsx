@@ -163,7 +163,7 @@ export function NavbarCalcLinks() {
         {homeActive && underline}
       </Link>
 
-      <div ref={dropdownRef} className="relative ml-3 flex items-stretch px-1">
+      <div ref={dropdownRef} className="relative ml-6 flex items-stretch px-1">
         <button
           ref={buttonRef}
           type="button"
