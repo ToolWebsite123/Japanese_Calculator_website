@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { MathEq, MathOp } from "@/components/ui/MathDisplay";
 import { SurfacePanel } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { unitsPage } from "@/lib/i18n/pages/units";
 
 function ExampleStep({
   title,
@@ -37,7 +38,8 @@ export function UnitConverterWorkedExamples({
   toLabel: string;
   result: string;
 }) {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, unitsPage };
   const page = t.unitsPage;
 
   return (
