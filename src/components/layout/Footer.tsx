@@ -40,6 +40,7 @@ export function Footer() {
   ];
 
   const calculatorLinks = [
+    { href: "/calculators", label: t.footer.allCalculators },
     { href: "/scientific-calculator", label: t.footer.scientificCalculator },
     { href: "/squareroot-calculator", label: t.footer.squareRootCalculator },
     { href: "/bmi-calculator", label: t.footer.bmiCalculation },
