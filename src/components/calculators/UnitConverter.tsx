@@ -9,7 +9,7 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { UnitConverterWorkedExamples } from "@/components/calculator/UnitConverterWorkedExamples";
-import { SegmentedControl, SelectWell, Divider } from "@/components/ui/primitives";
+import { SegmentedControl, SelectWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
 import { useHistory } from "@/context/HistoryContext";
 import {
@@ -282,14 +282,6 @@ export function UnitConverter() {
                   </ul>
                 </div>
               )}
-              <Divider>
-                <UnitConverterWorkedExamples
-                  value={value}
-                  fromLabel={units.find((u) => u.id === fromId)?.label ?? fromId}
-                  toLabel={units.find((u) => u.id === toId)?.label ?? toId}
-                  result={formatDisplayNumber(result, 6)}
-                />
-              </Divider>
             </>
           )}
 
@@ -322,6 +314,16 @@ export function UnitConverter() {
           {t.unitsPage.examplesTitle}
         </h2>
         <GuideTable head={t.unitsPage.examplesTableHead} rows={t.unitsPage.examplesRows} />
+        {result !== null && (
+          <div className="mt-6">
+            <UnitConverterWorkedExamples
+              value={value}
+              fromLabel={units.find((u) => u.id === fromId)?.label ?? fromId}
+              toLabel={units.find((u) => u.id === toId)?.label ?? toId}
+              result={formatDisplayNumber(result, 6)}
+            />
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="units-tsubo-heading" className={sectionClass}>
