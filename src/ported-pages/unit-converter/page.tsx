@@ -1,12 +1,12 @@
 import Script from "next/script";
 import { UnitConverter } from "@/components/calculators/UnitConverter";
-import ja from "@/lib/i18n/ja";
+import { unitsPage } from "@/lib/i18n/pages/units";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 
 
 
 export default function UnitConverterPage() {
-  const faqJsonLd = buildCalculatorFaqJsonLd(ja.unitsPage.faqItems, ja.unitsPage.title);
+  const faqJsonLd = buildCalculatorFaqJsonLd(unitsPage.faqItems, unitsPage.title);
 
   return (
     <>
