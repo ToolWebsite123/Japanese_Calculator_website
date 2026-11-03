@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import { SurfacePanel, Divider, PrimaryButton } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
@@ -199,7 +199,7 @@ export function FurusatoNozeiCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         ふるさと納税 控除上限額かんたんシミュレーション
       </h1>
-      <CalculatorCard compact maxWidthClass="max-w-[500px]">
+      <FormCard compact maxWidthClass="max-w-[500px]">
         <div className="space-y-2.5 sm:space-y-3">
           <FormField
             label="年収（円）"
@@ -353,7 +353,7 @@ export function FurusatoNozeiCalculator() {
             ※ 自己負担は常に2,000円です。上限額を超えて寄付するとその超過分は自己負担となり、実質負担が増えます。実際の控除上限額は医療費控除・住宅ローン控除・iDeCoなど本ツールで扱わない控除により変動します。
           </p>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
