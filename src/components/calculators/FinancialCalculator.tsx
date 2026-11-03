@@ -6,6 +6,7 @@ import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
@@ -1039,6 +1040,17 @@ export function FinancialCalculator() {
           {tFin.explanationText}
         </p>
       </SurfacePanel>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+        複利の増え方だけを詳しく試算したいときは、
+        <Link
+          href="/compound-interest-calculator"
+          className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+        >
+          複利計算機
+        </Link>
+        もご利用ください。
+      </p>
 
       <section aria-labelledby="financial-formula-heading" className="mt-16 border-t border-border pt-16">
         <h2
