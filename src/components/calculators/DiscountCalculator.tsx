@@ -6,6 +6,7 @@ import { SelectWell, SurfacePanel, Divider, PrimaryButton } from "@/components/u
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { UnitListbox } from "@/components/calculators/UnitListbox";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { formatYen } from "@/lib/format";
@@ -786,7 +787,14 @@ export function DiscountCalculator() {
         </p>
         <p className={guideBodyClass}>
           <strong className="text-text-primary">2. 税込価格に、もう一度税を足してしまう</strong>
-          ──税込表示の価格にはすでに消費税が含まれています。税込価格を入力するときは「税込価格を入力」を選んでください。
+          ──税込表示の価格にはすでに消費税が含まれています。税込価格を入力するときは「税込価格を入力」を選んでください。税込・税抜の換算や税額の内訳を確認したいときは、
+          <Link
+            href="/consumption-tax-calculator"
+            className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+          >
+            消費税計算
+          </Link>
+          をご利用ください。
         </p>
         <p className={guideBodyClass}>
           <strong className="text-text-primary">3. 「割」と「％」を取り違える</strong>
