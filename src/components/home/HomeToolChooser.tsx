@@ -29,6 +29,7 @@ const CHOICES: { need: string; label: string; to: string }[] = [
   { need: "長さや重さを換算したい", label: "単位変換", to: "/unit-converter" },
   { need: "土地や部屋の広さを換算したい", label: "坪・畳・㎡変換", to: "/tsubo-converter" },
   { need: "関数のグラフを描きたい", label: "グラフ計算機", to: "/graph-calculator" },
+  { need: "麻雀の点数を知りたい", label: "麻雀 点数計算", to: "/mahjong-score-calculation" },
 ];
 
 export function HomeToolChooser() {
