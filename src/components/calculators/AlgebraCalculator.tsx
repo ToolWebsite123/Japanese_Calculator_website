@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
@@ -28,7 +28,8 @@ import {
   simplifyExpression,
   type SimplifyResult,
 } from "@/lib/calculators/polynomial";
-import { formatDisplayNumber } from "@/lib/format";
+import { formatDisplayNumber, formatTemplate } from "@/lib/format";
+import { ExampleStep, Num } from "@/components/calculator/WorkedExample";
 
 const guideBodyClass = "mt-4 text-sm leading-relaxed text-text-secondary sm:text-base";
 const tableWrapClass = "mt-4 overflow-x-auto";
@@ -36,37 +37,8 @@ const tableClass = "w-full border-collapse text-sm sm:text-base";
 const thClass = "border-b border-border bg-surface-sunken px-3 py-2.5 text-left font-semibold text-text-primary";
 const tdClass = "border-b border-border px-3 py-2.5 text-text-secondary";
 
-function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
-}
-
-function Num({ children }: { children: ReactNode }) {
-  return <span>{children}</span>;
-}
-
 function VarX() {
   return <span className="italic">x</span>;
-}
-
-function ExampleStep({
-  title,
-  math,
-  stepId,
-}: {
-  title: string;
-  math: ReactNode | ReactNode[];
-  stepId: string;
-}) {
-  const lines = Array.isArray(math) ? math : [math];
-
-  return (
-    <div className="mt-2">
-      <p className="font-semibold text-text-primary">{title}</p>
-      {lines.map((line, index) => (
-        <MathEq key={`${stepId}-${index}`}>{line}</MathEq>
-      ))}
-    </div>
-  );
 }
 
 function normalizeAlgebra(expr: string): string {
@@ -424,7 +396,7 @@ export function AlgebraCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.algebraPage.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         actions={result ? <CopyResultButton value={result} /> : undefined}
       >
         <div className="space-y-4">
@@ -524,7 +496,7 @@ export function AlgebraCalculator() {
             </div>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
