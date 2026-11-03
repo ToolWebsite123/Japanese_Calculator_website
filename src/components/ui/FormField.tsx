@@ -51,7 +51,7 @@ export function ResultCard({
   );
 }
 
-export function CalculatorCard({
+export function FormCard({
   title,
   description,
   children,
