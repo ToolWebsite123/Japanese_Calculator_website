@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { useLocale } from "@/context/LocaleContext";
+import {
+  CATEGORY_ORDER,
+  getCalculatorsByDeclaredCategory,
+  getCategoryMeta,
+  getNavLabel,
+} from "@/lib/catalog";
 
 function LogoIcon({ className }: { className?: string }) {
   return (
@@ -28,6 +34,14 @@ function LogoIcon({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Site footer: brand block + site links on top, then every calculator
+ * grouped under its catalog category (data-driven from the shared
+ * catalog — the same source as the mega menu and the hub page — so each
+ * of the 27 tools appears exactly once, under its own category). The
+ * category grid is 2 columns on phones, 3 on small screens and 6 on
+ * wide screens, inside the footer's max-w-6xl container.
+ */
 export function Footer() {
   const { t } = useLocale();
 
@@ -39,18 +53,8 @@ export function Footer() {
     { href: "/disclaimer", label: t.footer.disclaimer },
   ];
 
-  const calculatorLinks = [
-    { href: "/calculators", label: t.footer.allCalculators },
-    { href: "/scientific-calculator", label: t.footer.scientificCalculator },
-    { href: "/squareroot-calculator", label: t.footer.squareRootCalculator },
-    { href: "/bmi-calculator", label: t.footer.bmiCalculation },
-    { href: "/due-date-calculation", label: t.footer.dueDateCalculation },
-    { href: "/furusato-nozei-calculation", label: t.footer.hometownTaxDonation },
-    { href: "/mahjong-score-calculation", label: t.footer.mahjongScore },
-    { href: "/consumption-tax-calculator", label: t.footer.consumptionTax },
-  ];
-
   const linkClass = "text-sm text-black transition hover:opacity-80 dark:text-text-primary";
+  const headingClass = "mb-3 text-sm font-semibold text-black dark:text-text-primary";
 
   return (
     <footer className="border-t border-border/20 px-4 py-12 sm:px-6 sm:py-16" suppressHydrationWarning>
@@ -68,37 +72,53 @@ export function Footer() {
             <p className="text-sm leading-relaxed text-black/70 dark:text-text-secondary" suppressHydrationWarning>
               {t.home.footerTagline}
             </p>
+            <p>
+              <Link
+                href="/calculators"
+                className="text-sm font-semibold text-black transition hover:opacity-80 dark:text-text-primary"
+                suppressHydrationWarning
+              >
+                {t.footer.allCalculators}
+              </Link>
+            </p>
           </div>
 
-          <div className="flex flex-col gap-12 sm:flex-row sm:gap-16 lg:gap-24">
-            <nav aria-label="フッター about ナビゲーション" suppressHydrationWarning>
-              <ul className="flex flex-col gap-2">
-                {legalLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className={linkClass} suppressHydrationWarning>
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <nav aria-label="フッター計算ツールナビゲーション" suppressHydrationWarning>
-              <h3 className="mb-3 text-sm font-semibold text-black dark:text-text-primary">
-                {t.footer.calculators}
-              </h3>
-              <ul className="flex flex-col gap-2">
-                {calculatorLinks.map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className={linkClass}>
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
+          <nav aria-label="フッター about ナビゲーション" suppressHydrationWarning>
+            <ul className="flex flex-col gap-2">
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={linkClass} suppressHydrationWarning>
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
+
+        <nav aria-label="フッター計算ツールナビゲーション" className="mt-12" suppressHydrationWarning>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 xl:grid-cols-6">
+            {CATEGORY_ORDER.map((category) => {
+              const meta = getCategoryMeta(category);
+              const items = getCalculatorsByDeclaredCategory(category);
+              if (items.length === 0) return null;
+              return (
+                <div key={category}>
+                  <h3 className={headingClass}>{t.categories[meta.nameKey]}</h3>
+                  <ul className="flex flex-col gap-2">
+                    {items.map((item) => (
+                      <li key={item.href}>
+                        <Link href={item.href} className={linkClass}>
+                          {getNavLabel(item)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </nav>
 
         <div className="mt-10 border-t border-border/20 pt-6">
           <p className="text-xs text-black/70 dark:text-text-secondary">{t.home.footerCopyright}</p>
