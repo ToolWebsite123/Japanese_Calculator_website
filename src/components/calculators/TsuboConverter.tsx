@@ -149,10 +149,6 @@ export function TsuboConverter() {
         坪・畳・㎡（平米）変換計算機
       </h1>
 
-      <p className="mb-6 text-sm leading-relaxed text-text-secondary sm:text-base">
-        {INTRO}
-      </p>
-
       <CalculatorCard>
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -197,6 +193,10 @@ export function TsuboConverter() {
           </div>
         </div>
       </CalculatorCard>
+
+      <div className="mt-8 space-y-1.5">
+        <p className="text-sm text-text-secondary sm:text-base">{INTRO}</p>
+      </div>
 
       <section
         aria-labelledby="tsubo-formula-heading"
