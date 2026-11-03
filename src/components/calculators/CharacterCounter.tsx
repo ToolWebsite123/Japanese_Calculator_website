@@ -8,9 +8,10 @@ import { RelatedCalculators } from "@/components/calculators/RelatedCalculators"
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import ja from "@/lib/i18n/ja";
+import { characterCount } from "@/lib/i18n/pages/character-counter";
 import { countCharacters } from "@/lib/calculators/character-count";
 
-const t = ja.characterCount;
+const t = characterCount;
 
 const INTRO =
   "文字数計算機は、入力した文章の文字数・単語数・文章数・段落数・行数と読了時間の目安を、入力と同時にリアルタイムで集計する無料ツールです。ひらがな・カタカナ・漢字・英数字の内訳に加えて、バイト数（UTF-8）と原稿用紙（400字詰め）の枚数換算、文字数制限のチェックも表示します。原稿やレポートの文字数制限の確認、SNS投稿の下書きチェック、ブログ記事の読了時間の目安づくりなどにご利用ください。入力した文章はブラウザ内でのみ集計され、外部に送信されることはありません。";
