@@ -157,7 +157,9 @@ export function NavbarCalcLinks() {
   return (
     <nav
       aria-label="メインナビゲーション"
-      className="absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-stretch lg:flex"
+      // Centred at 47% instead of 50%: the owner asked for the centre
+      // nav (ホーム first) to sit a little further left (2026-11-03).
+      className="absolute left-[47%] top-0 hidden h-full -translate-x-1/2 items-stretch lg:flex"
       suppressHydrationWarning
     >
       <Link href="/" className={linkClass(homeActive)} aria-current={homeActive ? "page" : undefined}>
