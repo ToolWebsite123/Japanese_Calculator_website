@@ -276,17 +276,6 @@ export function PercentageCalculator() {
           <PrimaryButton fullWidth onClick={handleCalculate}>
             {t.common.calculate}
           </PrimaryButton>
-
-          <Divider>
-            <PercentageWorkedExamples
-              originalPrice={p1Y}
-              discountPercent={p1X}
-              proportionPart={p2X}
-              proportionWhole={p2Y}
-              changeFrom={p3X}
-              changeTo={p3Y}
-            />
-          </Divider>
         </div>
       </CalculatorCard>
 
@@ -339,6 +328,16 @@ export function PercentageCalculator() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="mt-6">
+          <PercentageWorkedExamples
+            originalPrice={p1Y}
+            discountPercent={p1X}
+            proportionPart={p2X}
+            proportionWhole={p2Y}
+            changeFrom={p3X}
+            changeTo={p3Y}
+          />
         </div>
       </section>
 
