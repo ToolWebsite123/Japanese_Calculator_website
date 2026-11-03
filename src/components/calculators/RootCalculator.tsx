@@ -31,7 +31,7 @@ import { formatDisplayNumber } from "@/lib/format";
 import { ROOT_BUTTON_GUIDE } from "@/lib/calculator-guides/root";
 
 function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replace(`{${index}}`, value), template);
+  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
 }
 
 function Num({ children }: { children: ReactNode }) {
