@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CalculatorCard, FormField } from "@/components/ui/FormField";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import {
@@ -319,6 +320,16 @@ export function FactorizationCalculator() {
             </tbody>
           </table>
         </div>
+        <p className={guideBodyClass}>
+          展開や文字式の整理・計算には、
+          <Link
+            href="/algebra-calculator"
+            className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+          >
+            文字式計算機（代数計算機）
+          </Link>
+          もあわせてご利用ください。
+        </p>
       </section>
 
       <section aria-labelledby="factor-examples-heading" className="mt-16 border-t border-border pt-16">
@@ -331,7 +342,7 @@ export function FactorizationCalculator() {
         <ul className="mt-4 list-disc space-y-2 pl-5">
           {t.factorizationPage.guideExamples.map((ex) => (
             <li key={ex} className="text-sm leading-relaxed text-text-secondary sm:text-base">
-              {ex}
+              <LinkedText text={ex} activeHref="/factorization-calculator" />
             </li>
           ))}
         </ul>
