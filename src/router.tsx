@@ -1,14 +1,14 @@
-import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { PageLoading } from "./components/layout/PageLoading";
 import { routeTree } from "./routeTree.gen";
 
 export const getRouter = () => {
-  const queryClient = new QueryClient();
-
+  // No QueryClient in the router context (LCP fix F2): nothing in the app
+  // uses react-query (no useQuery/useMutation anywhere), so the library
+  // only added dead weight to the entry chunk every page preloads.
   const router = createRouter({
     routeTree,
-    context: { queryClient },
+    context: {},
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     // Preload routes on hover/touch intent so calculator pages open
