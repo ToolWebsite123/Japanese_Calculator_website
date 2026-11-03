@@ -8,6 +8,7 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { formatYen } from "@/lib/format";
+import Link from "@/compat/next-link";
 import {
   calcFurusatoNozei,
   remainingDonationRoom,
@@ -480,12 +481,12 @@ export function FurusatoNozeiCalculator() {
         </h2>
         <p className={guideBodyClass}>
           このページは年収と家族構成だけの目安計算です。医療費控除や住宅ローン控除、生命保険料控除などがある方は、実際の控除額を入力できる{" "}
-          <a
+          <Link
             href="/furusato-nozei-simulation-calculation"
             className="font-medium text-brand underline underline-offset-2 dark:text-[#d6ccf0]"
           >
             詳細シミュレーション
-          </a>{" "}
+          </Link>{" "}
           をご利用ください。控除が多い方ほど、上限額の差が大きくなります。
         </p>
       </section>
