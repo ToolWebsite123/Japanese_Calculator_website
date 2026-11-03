@@ -18,6 +18,10 @@ import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToS
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { useLocale } from "@/context/LocaleContext";
+import {
+  simultaneousEquations,
+  simultaneousEquationsPage,
+} from "@/lib/i18n/pages/simultaneous-equations";
 import { useHistory } from "@/context/HistoryContext";
 import {
   cramerNumerators3,
@@ -101,7 +105,8 @@ function EquationRow({
 }
 
 export function SimultaneousEquationsCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, simultaneousEquations, simultaneousEquationsPage };
   const { addEntry } = useHistory();
   const [vars, setVars] = useState<"2" | "3">("2");
 
