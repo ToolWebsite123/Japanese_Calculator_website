@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { MathEq, MathOp, MathPower } from "@/components/ui/MathDisplay";
 import { Divider, SurfacePanel } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { interestMethodPage } from "@/lib/i18n/pages/interest";
 import { formatDisplayNumber, formatJapaneseUnits } from "@/lib/format";
 
 function formatTemplate(template: string, ...values: string[]): string {
@@ -60,7 +61,8 @@ export function InterestMethodWorkedExamples({
   rate: string;
   years: string;
 }) {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, interestMethodPage };
   const page = t.interestMethodPage;
 
   const p = parseFloat(principal);
