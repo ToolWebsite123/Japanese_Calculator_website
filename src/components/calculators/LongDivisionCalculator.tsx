@@ -20,7 +20,7 @@ import {
 
 function fmt(template: string, ...args: string[]): string {
   return args.reduce<string>(
-    (str, arg, i) => str.replace(`{${i}}`, arg),
+    (str, arg, i) => str.replaceAll(`{${i}}`, arg),
     template,
   );
 }
