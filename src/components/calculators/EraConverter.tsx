@@ -10,6 +10,7 @@ import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSecti
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { PrimaryButton, SegmentedControl, SelectWell } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { era, eraPage } from "@/lib/i18n/pages/era";
 import { useHistory } from "@/context/HistoryContext";
 import { ERAS, eraToWestern, westernToEra, type EraId } from "@/lib/calculators/era";
 
@@ -48,7 +49,8 @@ const ERA_MISTAKES = [
 ] as const;
 
 export function EraConverter() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, era, eraPage };
   const { addEntry } = useHistory();
   const [direction, setDirection] = useState<"toEra" | "toWestern">("toEra");
   const [westernYear, setWesternYear] = useState("2026");
