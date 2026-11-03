@@ -138,43 +138,35 @@ export function getCalculatorsByDeclaredCategory(category: CalculatorCategory): 
 }
 
 /**
- * The footer's curated tool list, in display order: only the most-used
- * calculators (19 of 27, owner decision 2026-11-03) so the footer stays
- * light in two rows of three category columns. The remaining tools stay
- * reachable from the mega menu, the /calculators hub and in-page links.
+ * The footer's link list, in display order: only the 12 most-used
+ * calculators (owner decision 2026-11-03), shown as two plain columns
+ * of six next to the legal links in the footer's single row. Every
+ * other tool stays reachable from the mega menu, the /calculators hub
+ * and in-page links.
  */
 export const FOOTER_HREFS = [
-  // basic
+  // first column
+  "/character-counter",
+  "/bmi-calculator",
+  "/furusato-nozei-calculation",
+  "/scientific-calculator",
+  "/unit-converter",
+  "/consumption-tax-calculator",
+  // second column
   "/time-calculator",
   "/percentage-calculator",
-  "/discount-calculation",
-  "/character-counter",
-  // scientific
-  "/scientific-calculator",
-  "/fraction-calculator",
-  "/squareroot-calculator",
-  "/graph-calculator",
-  // finance
-  "/furusato-nozei-calculation",
   "/compound-interest-calculator",
-  "/interest-calculator",
-  "/consumption-tax-calculator",
-  "/income-tax-calculation",
-  // health
-  "/bmi-calculator",
+  "/discount-calculation",
   "/due-date-calculation",
-  // conversion
-  "/unit-converter",
-  "/tsubo-converter",
-  "/era-converter",
-  // more
-  "/mahjong-score-calculation",
+  "/income-tax-calculation",
 ] as const;
 
-export function getFooterCalculators(category: CalculatorCategory): NavItem[] {
-  return FOOTER_HREFS.map((href) => NAV_ITEMS.find((item) => item.href === href)).filter(
-    (item): item is NavItem => item !== undefined && item.category === category,
+export function getFooterLinkColumns(): NavItem[][] {
+  const items = FOOTER_HREFS.map((href) => NAV_ITEMS.find((item) => item.href === href)).filter(
+    (item): item is NavItem => item !== undefined,
   );
+  const half = Math.ceil(items.length / 2);
+  return [items.slice(0, half), items.slice(half)];
 }
 
 export function getFeaturedCalculators(category: CalculatorCategory): NavItem[] {
