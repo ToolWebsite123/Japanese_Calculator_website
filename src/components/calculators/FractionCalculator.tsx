@@ -84,7 +84,7 @@ const OPS: { op: FractionOp; label: string }[] = [
 
 function formatStepText(template: string, args?: (string | number)[]): string {
   if (!args) return template;
-  return args.reduce<string>((str, arg, i) => str.replace(`{${i}}`, String(arg)), template);
+  return args.reduce<string>((str, arg, i) => str.replaceAll(`{${i}}`, String(arg)), template);
 }
 
 function FractionInputBox({
