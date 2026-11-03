@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/primitives";
 import { MathEq, MathFraction, MathOp, MathPower } from "@/components/ui/MathDisplay";
 import { useLocale } from "@/context/LocaleContext";
+import { financial, financialPage } from "@/lib/i18n/pages/financial";
 import { useHistory } from "@/context/HistoryContext";
 import {
   solveTimeValueOfMoney,
@@ -668,7 +669,8 @@ function FinancialStepsPanel({
 }
 
 export function FinancialCalculator() {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, financial, financialPage };
   const { addEntry } = useHistory();
   const tFin = t.financial;
   const tPage = t.financialPage;
