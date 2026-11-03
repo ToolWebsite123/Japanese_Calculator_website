@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import {
   SelectWell,
   SurfacePanel,
@@ -78,7 +78,7 @@ export function SocialInsuranceCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.socialInsurancePage?.title || "社会保険料 計算"}
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         maxWidthClass="max-w-[500px]"
         actions={r ? <CopyResultButton value={formatYen(r.totalDeduction)} /> : undefined}
@@ -380,7 +380,7 @@ export function SocialInsuranceCalculator() {
             これは概算計算です。正確な金額については専門家または日本年金機構・協会けんぽにご確認ください。
           </p>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
