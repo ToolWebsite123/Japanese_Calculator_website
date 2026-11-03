@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { MathEq, MathFraction, MathOp, MathPower } from "@/components/ui/MathDisplay";
 import { SurfacePanel } from "@/components/ui/primitives";
 import { useLocale } from "@/context/LocaleContext";
+import { compoundInterest, compoundInterestPage } from "@/lib/i18n/pages/compound-interest";
 import { formatDisplayNumber, formatJapaneseUnits } from "@/lib/format";
 
 function formatTemplate(template: string, ...values: string[]): string {
@@ -54,7 +55,8 @@ export function CompoundInterestWorkedExamples({
   years: string;
   frequency: number;
 }) {
-  const { t } = useLocale();
+  const { t: core } = useLocale();
+  const t = { ...core, compoundInterest, compoundInterestPage };
   const page = t.compoundInterestPage;
 
   const p = parseFloat(principal);
