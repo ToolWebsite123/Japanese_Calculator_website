@@ -1,5 +1,5 @@
 import Script from "next/script";
-import ja from "@/lib/i18n/ja";
+import { socialInsurancePage } from "@/lib/i18n/pages/social-insurance";
 import { buildCalculatorFaqJsonLd } from "@/lib/seo/calculator-jsonld";
 import { SocialInsuranceCalculator } from "@/components/calculators/SocialInsuranceCalculator";
 
@@ -7,8 +7,8 @@ import { SocialInsuranceCalculator } from "@/components/calculators/SocialInsura
 
 export default function SocialInsurancePage() {
   const faqJsonLd = buildCalculatorFaqJsonLd(
-    ja.socialInsurancePage.faqItems,
-    ja.socialInsurancePage.title,
+    socialInsurancePage.faqItems,
+    socialInsurancePage.title,
   );
 
   return (
