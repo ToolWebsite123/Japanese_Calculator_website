@@ -23,9 +23,24 @@ export function RelatedCalculators({
   const current = NAV_ITEMS.find((i) => i.href === activeHref);
   if (!current) return null;
 
-  const sameCategory = getCalculatorsByCategory(current.category).filter(
-    (i) => i.href !== current.href,
-  );
+  // Rotate the same-category peers: start from the item right after the
+  // current page in catalog order and wrap around, instead of always taking
+  // the first four. Every page in a category now both gives and receives
+  // Related links (previously, category members past position four — e.g.
+  // Simultaneous Equations, Graph, Consumption Tax, the Furusato pair —
+  // were never picked). A page that is the only declared member of its
+  // category (Mahjong in "more", which getCalculatorsByCategory treats as
+  // a catch-all) has no true peers and falls through to the popular fill.
+  const categoryItems = getCalculatorsByCategory(current.category);
+  const declaredMembers = NAV_ITEMS.filter((i) => i.category === current.category);
+  const currentIndex = categoryItems.findIndex((i) => i.href === current.href);
+  const sameCategory =
+    currentIndex >= 0 && declaredMembers.length > 1
+      ? [
+          ...categoryItems.slice(currentIndex + 1),
+          ...categoryItems.slice(0, currentIndex),
+        ].filter((i) => i.href !== current.href)
+      : [];
 
   const picked: NavItem[] = [...sameCategory];
   const takenHrefs = new Set<string>(picked.map((i) => i.href));
