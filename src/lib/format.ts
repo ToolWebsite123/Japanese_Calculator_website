@@ -1,3 +1,13 @@
+/** Fill {0}, {1}, … placeholders in an i18n template string. */
+export function formatTemplate(template: string, ...values: string[]): string {
+  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
+}
+
+/** Round to whole yen and group thousands (1,234,567). */
+export function formatAmount(value: number): string {
+  return Math.round(value).toLocaleString("ja-JP");
+}
+
 /** Format a number as Japanese Yen (¥1,234,567). */
 export function formatYen(value: number, fractionDigits = 0): string {
   if (!Number.isFinite(value)) return "—";
