@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/primitives";
 import { RelatedCalculators } from "@/components/calculators/RelatedCalculators";
 import { LinkedText } from "@/components/calculator/LinkedText";
+import Link from "@/compat/next-link";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
@@ -392,6 +393,17 @@ export function SocialInsuranceCalculator() {
             activeHref="/social-insurance-calculator"
           />
         )}
+      </p>
+
+      <p className="mt-4 text-sm leading-relaxed text-text-secondary sm:text-base">
+        社会保険料控除額は、ふるさと納税の控除上限額の計算にも使われます。源泉徴収票の金額をもとに、
+        <Link
+          href="/furusato-nozei-simulation-calculation"
+          className="text-brand underline underline-offset-2 hover:text-brand/80 dark:text-[#d6ccf0] dark:hover:text-[#d6ccf0]/80"
+        >
+          ふるさと納税の控除上限額を詳しく計算する
+        </Link>
+        こともできます。
       </p>
 
       <section aria-labelledby="social-mechanism-heading" className="mt-16 border-t border-border pt-16">
