@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import {
   SelectWell,
   SurfacePanel,
@@ -16,6 +16,7 @@ import { LinkedText } from "@/components/calculator/LinkedText";
 import Link from "@/compat/next-link";
 import { CalculatorHowToSection } from "@/components/calculator/CalculatorHowToSection";
 import { CalculatorFaqSection } from "@/components/calculator/CalculatorFaqSection";
+import { GuideTable } from "@/components/calculator/GuideTable";
 import { formatYen } from "@/lib/format";
 import {
   calcIncomeTax,
@@ -93,46 +94,6 @@ const guideHeadingClass =
 const guideSubHeadingClass =
   "mt-8 text-base font-semibold text-[#231942] sm:text-lg dark:text-[#d6ccf0]";
 const guideBodyClass = "mt-3 text-sm leading-relaxed text-text-secondary sm:text-base";
-
-function IncomeGuideTable({ head, rows }: { head: string[]; rows: string[][] }) {
-  return (
-    <div className="mt-4 overflow-x-auto">
-      <table className="w-full border-collapse text-sm sm:text-base">
-        <thead>
-          <tr>
-            {head.map((cell) => (
-              <th
-                key={cell}
-                scope="col"
-                className="border border-border bg-surface-sunken px-3 py-2 text-left font-semibold text-text-primary"
-              >
-                {cell}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((cell, i) => (
-                <td
-                  key={cell}
-                  data-label={head[i]}
-                  data-wide={cell.length > 40 ? true : undefined}
-                  className={`border border-border px-3 py-2 ${
-                    i === 0 ? "font-medium text-text-primary" : "text-text-secondary"
-                  }`}
-                >
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 const TAX_TRUST = {
   title: "この計算について",
@@ -259,7 +220,7 @@ export function IncomeTaxCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         所得税 計算
       </h1>
-      <CalculatorCard
+      <FormCard
         compact
         maxWidthClass="max-w-[500px]"
         actions={result ? <CopyResultButton value={formatYen(result.totalTax)} /> : undefined}
@@ -423,7 +384,7 @@ export function IncomeTaxCalculator() {
             本ツールの結果は概算です。実際の税額は医療費控除・扶養控除・住宅ローン控除など個別の事情によって変わります。復興特別所得税は2037年までの各年分に適用されます。正確な金額は年末調整・確定申告、または税理士にご確認ください。
           </p>
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
@@ -457,7 +418,7 @@ export function IncomeTaxCalculator() {
         </ol>
         <p className={guideBodyClass}>{TAX_FLOW.note}</p>
         <h3 className={guideSubHeadingClass}>{TAX_FLOW.bracketTitle}</h3>
-        <IncomeGuideTable head={TAX_FLOW.bracketHead} rows={TAX_FLOW.bracketRows} />
+        <GuideTable wideCells head={TAX_FLOW.bracketHead} rows={TAX_FLOW.bracketRows} />
       </section>
 
       <section aria-labelledby="tax-example-heading" className="mt-16 border-t border-border pt-16">
@@ -477,7 +438,7 @@ export function IncomeTaxCalculator() {
           {TAX_HAYAMI.title}
         </h2>
         <p className={guideBodyClass}>{TAX_HAYAMI.intro}</p>
-        <IncomeGuideTable head={TAX_HAYAMI.head} rows={TAX_HAYAMI.rows} />
+        <GuideTable wideCells head={TAX_HAYAMI.head} rows={TAX_HAYAMI.rows} />
         <p className={guideBodyClass}>{TAX_HAYAMI.note}</p>
       </section>
 
