@@ -1,48 +1,16 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { MathEq, MathOp, MathPower } from "@/components/ui/MathDisplay";
 import { Divider, SurfacePanel } from "@/components/ui/primitives";
+import { ExampleStep, Num, Var } from "@/components/calculator/WorkedExample";
 import { useLocale } from "@/context/LocaleContext";
 import { interestMethodPage } from "@/lib/i18n/pages/interest";
-import { formatDisplayNumber, formatJapaneseUnits } from "@/lib/format";
-
-function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
-}
-
-function formatAmount(value: number): string {
-  return Math.round(value).toLocaleString("ja-JP");
-}
-
-function Num({ children }: { children: ReactNode }) {
-  return <span>{children}</span>;
-}
-
-function Var({ children }: { children: ReactNode }) {
-  return <span className="italic">{children}</span>;
-}
-
-function ExampleStep({
-  title,
-  math,
-  stepId,
-}: {
-  title: string;
-  math: ReactNode | ReactNode[];
-  stepId: string;
-}) {
-  const lines = Array.isArray(math) ? math : [math];
-
-  return (
-    <div className="mt-2">
-      <p className="font-semibold text-text-primary">{title}</p>
-      {lines.map((line, index) => (
-        <MathEq key={`${stepId}-${index}`}>{line}</MathEq>
-      ))}
-    </div>
-  );
-}
+import {
+  formatAmount,
+  formatDisplayNumber,
+  formatJapaneseUnits,
+  formatTemplate,
+} from "@/lib/format";
 
 function PartResult({ label, text }: { label: string; text: string }) {
   return (
