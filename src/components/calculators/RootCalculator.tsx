@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { CalculatorCard, FormField } from "@/components/ui/FormField";
+import { FormCard, FormField } from "@/components/ui/FormField";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { CopyResultButton } from "@/components/calculator/CopyResultButton";
 import { ButtonGuideTable } from "@/components/calculator/ButtonGuideTable";
@@ -28,25 +28,9 @@ import {
   type RootMode,
   type RootResult,
 } from "@/lib/calculators/root";
-import { formatDisplayNumber } from "@/lib/format";
+import { formatDisplayNumber, formatTemplate } from "@/lib/format";
+import { ExampleStep, Num } from "@/components/calculator/WorkedExample";
 import { ROOT_BUTTON_GUIDE } from "@/lib/calculator-guides/root";
-
-function formatTemplate(template: string, ...values: string[]): string {
-  return values.reduce((text, value, index) => text.replaceAll(`{${index}}`, value), template);
-}
-
-function Num({ children }: { children: ReactNode }) {
-  return <span>{children}</span>;
-}
-
-function ExampleStep({ title, math, stepId }: { title: string; math: ReactNode; stepId: string }) {
-  return (
-    <div className="mt-2">
-      <p className="font-semibold text-text-primary">{title}</p>
-      <MathEq key={stepId}>{math}</MathEq>
-    </div>
-  );
-}
 
 function productTerms(root: string, n: number): ReactNode {
   const parts: ReactNode[] = [];
@@ -390,7 +374,7 @@ export function RootCalculator() {
       <h1 className="mb-4 text-center text-2xl font-bold tracking-tight text-text-primary sm:mb-5 sm:text-3xl dark:text-[#d6ccf0]">
         {t.rootPage.title}
       </h1>
-      <CalculatorCard
+      <FormCard
         actions={
           result ? <CopyResultButton value={formatDisplayNumber(result.value, 8)} /> : undefined
         }
@@ -525,7 +509,7 @@ export function RootCalculator() {
             </div>
           )}
         </div>
-      </CalculatorCard>
+      </FormCard>
 
       <div className="mt-8 space-y-1.5">
         <p className="text-sm text-text-secondary sm:text-base">
