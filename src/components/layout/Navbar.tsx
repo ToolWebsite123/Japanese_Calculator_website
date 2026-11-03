@@ -52,7 +52,7 @@ export function Navbar({ onMenuOpen, menuOpen = false, menuId }: NavbarProps) {
       }}
       suppressHydrationWarning
     >
-      <div className="relative mx-auto flex h-20 max-w-7xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
+      <div className="relative mx-auto flex h-20 max-w-6xl items-center gap-3 px-4 sm:gap-4 sm:px-6">
         <div className="flex min-w-0 shrink-0 items-center gap-2">
           <IconButton
             onClick={onMenuOpen}
