@@ -6,15 +6,17 @@ export function Hero() {
   return (
     <section className="border-b border-border bg-gradient-to-b from-brand-muted/50 via-brand-muted/20 to-transparent px-4 pt-0 pb-3 sm:px-6 sm:pt-1 sm:pb-4 flex flex-col items-center">
       {/* Professional heading treatment (owner decision 2026-11-03):
-          the heading group sits in a clean flat box (raised surface,
-          thin ring border, NO shadow — the owner asked for the shadow
-          to be removed the same evening) — a small brand pill above
-          the H1, the H1 itself two-tone with the 電卓 part in a brand
-          gradient, and a short brand accent bar under it — the same
-          accent the site's H2s and nav use. The hero stays
-          calculator-only below the heading, so the full calculator
-          remains visible in the first screen. */}
-      <div className="flex flex-col items-center rounded-2xl bg-surface-raised px-5 py-2.5 ring-1 ring-border dark:ring-white/10">
+          the heading group sits in a clean flat box — plain raised
+          surface only, NO shadow and NO ring/border edge (a CSS ring
+          is itself a box-shadow, and the owner asked twice for the
+          shadow to go, so the box carries no edge effect at all) —
+          a small brand pill above the H1, the H1 itself two-tone
+          with the 電卓 part in a brand gradient, and a short brand
+          accent bar under it — the same accent the site's H2s and
+          nav use. The hero stays calculator-only below the heading,
+          so the full calculator remains visible in the first
+          screen. */}
+      <div className="flex flex-col items-center rounded-2xl bg-surface-raised px-5 py-2.5">
         <span className="mb-1 rounded-full bg-brand-muted px-3 py-0.5 text-[11px] font-bold tracking-wide text-brand dark:text-[#d6ccf0]">
           無料・登録不要
         </span>
