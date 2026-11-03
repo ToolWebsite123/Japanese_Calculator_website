@@ -170,6 +170,75 @@ main h2::before {
   background: #a794e0;
 }
 
+/* Professional page headings: every page H1 inside <main> gets the
+   homepage heading treatment (owner decision 2026-11-03) — a
+   無料・登録不要 pill above, a brand-gradient title and a brand
+   accent bar below — so calculator pages, the hub and form pages
+   share the homepage's heading design. Pure CSS, like the H2 system
+   above. Excluded: the homepage hero H1 (.hp-h1), which carries the
+   real-markup version of this treatment, and legal-page H1s (they
+   sit inside a <header>), whose layout already has its own designed
+   header with title and bar. */
+main :not(header) > h1[class]:not(.hp-h1) {
+  font-size: 1.875rem;
+  line-height: 1.2;
+  background-image: linear-gradient(90deg, #231942 0%, #3f2d78 58%, #6d5bd0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (min-width: 640px) {
+  main :not(header) > h1[class]:not(.hp-h1) {
+    font-size: 2.25rem;
+  }
+}
+
+.dark main :not(header) > h1[class]:not(.hp-h1) {
+  background-image: linear-gradient(90deg, #d6ccf0 0%, #a794e0 100%);
+}
+
+main :not(header) > h1[class]:not(.hp-h1)::before {
+  content: "無料・登録不要";
+  display: block;
+  width: fit-content;
+  margin: 0 auto 0.5rem 0;
+  padding: 0.125rem 0.75rem;
+  border-radius: 9999px;
+  background: var(--color-brand-muted);
+  color: var(--color-brand);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.45;
+}
+
+.dark main :not(header) > h1[class]:not(.hp-h1)::before {
+  color: #d6ccf0;
+}
+
+main :not(header) > h1[class]:not(.hp-h1)::after {
+  content: "";
+  display: block;
+  width: 3.5rem;
+  height: 0.25rem;
+  border-radius: 9999px;
+  margin: 0.5rem auto 0 0;
+  background: var(--color-brand);
+}
+
+.dark main :not(header) > h1[class]:not(.hp-h1)::after {
+  background: #a794e0;
+}
+
+/* Centred page headings (the calculator pages) centre the pill and
+   the accent bar together with the title. */
+main :not(header) > h1[class*="text-center"]:not(.hp-h1)::before,
+main :not(header) > h1[class*="text-center"]:not(.hp-h1)::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Mobile tables: NO horizontal scrolling on phones (owner
    requirement) and no squeezed columns either. Below 640px every
    content table becomes stacked cards: each row is a block, the
